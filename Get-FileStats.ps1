@@ -1,12 +1,12 @@
 <#
     .SYNOPSIS
-        Gets file age and owner from a specified path.
+        Gets file stats and owner from a specified path.
     
     .DESCRIPTION
-        Retrieves the file age (with Last Write Time, Last Modified Time) and Owner from files in a specified path.
+        Retrieves the file stats (with Size, Last Write Time, Last Modified Time) and Owner from files in a specified path. Outputs sizes in MiB, by default.
 
     .NOTES
-        Name: Get-FileAge.ps1
+        Name: Get-FileStats.ps1
         Author: Aaron Parker
         Twitter: @stealthpuppy
         
@@ -177,7 +177,7 @@ Process {
         # Create an array from what was returned for specific data and sort on file path
         $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.Name}}, `
         @{Name = "Owner"; Expression = {(Get-Acl -Path $_.FullName).Owner}}, `
-        @{Name = "Size(MiB)"; Expression = {Convert-Size -From B -To MiB -Value $_.Length}}, `
+        @{Name = "Size"; Expression = {"$(Convert-Size -From B -To MiB -Value $_.Length) MiB"}}, `
         @{Name = "LastWriteTime"; Expression = {$_.LastWriteTime}}, `
         @{Name = "LastAccessTime"; Expression = {$_.LastAccessTime}}
     }
