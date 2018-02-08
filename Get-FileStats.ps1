@@ -37,7 +37,7 @@
 [CmdletBinding(SupportsShouldProcess = $False)]
 Param (
     [Parameter(Mandatory = $False, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
-            HelpMessage = 'Specify a target path, paths or a list of files to scan for age.')]
+            HelpMessage = 'Specify a target path, paths or a list of files to scan for stats.')]
     [Alias('FullName', 'PSPath')]
     [string[]]$Path = ".\", 
 
@@ -153,7 +153,7 @@ Begin {
         return [Math]::Round($value,$Precision,[MidPointRounding]::AwayFromZero)
     }
 
-    Write-Verbose "Beginning file age trawling."
+    Write-Verbose "Beginning file stats trawling."
     $Files = @()
 }
 Process {
@@ -164,18 +164,18 @@ Process {
         If ((Get-Item -Path $Path).PSIsContainer) {
 
             # Target is a folder, so trawl the folder for files in the target and sub-folders
-            Write-Verbose "Getting age for files in folder: $Path"
+            Write-Verbose "Getting stats for files in folder: $Path"
             $items = Get-ChildItem -Path $Path -Recurse -File -Include $Include
         }
         Else {
 
             # Target is a file, so just get metadata for the file
-            Write-Verbose "Getting age for file: $Path"
+            Write-Verbose "Getting stats for file: $Path"
             $items = Get-ChildItem -Path $Path
         }
 
         # Create an array from what was returned for specific data and sort on file path
-        $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.Name}}, `
+        $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.FullName}}, `
         @{Name = "Owner"; Expression = {(Get-Acl -Path $_.FullName).Owner}}, `
         @{Name = "Size"; Expression = {"$(Convert-Size -From B -To MiB -Value $_.Length) MiB"}}, `
         @{Name = "LastWriteTime"; Expression = {$_.LastWriteTime}}, `
@@ -189,6 +189,6 @@ End {
 
     # Return the array of file paths and metadata
     $StopWatch.Stop()
-    Write-Verbose "File age trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
-    Return $Files | Sort-Object -Property LastWriteTime, Name
+    Write-Verbose "File stats trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
+    Return $Files | Sort-Object -Property @{Expression = "LastWriteTime"; Descending = $True}, @{Expression = "Name"; Descending = $False}
 }
