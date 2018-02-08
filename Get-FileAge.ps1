@@ -75,6 +75,7 @@ Process {
         # Create an array from what was returned for specific data and sort on file path
         $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.FullName}}, `
         @{Name = "Owner"; Expression = {(Get-Acl -Path $_.FullName).Owner}}, `
+        @{Name = "Size"; Expression = {$_.Length/1GB}}, `
         @{Name = "LastAccessTime"; Expression = {$_.LastAccessTime}}, `
         @{Name = "LastWriteTime"; Expression = {$_.LastWriteTime}}
     }
