@@ -1,38 +1,38 @@
 <#
-        .SYNOPSIS
-            Gets file age and owner from a specified path.
+    .SYNOPSIS
+        Gets file age and owner from a specified path.
+    
+    .DESCRIPTION
+        Retrieves the file age (with Last Write Time, Last Modified Time) and Owner from files in a specified path.
+
+    .NOTES
+        Name: Get-FileAge.ps1
+        Author: Aaron Parker
+        Twitter: @stealthpuppy
         
-        .DESCRIPTION
-            Retrieves the file age (with Last Write Time, Last Modified Time) and Owner from files in a specified path.
+    .LINK
+        http://stealthpuppy.com
 
-        .NOTES
-            Name: Get-FileAge.ps1
-            Author: Aaron Parker
-            Twitter: @stealthpuppy
-        
-        .LINK
-            http://stealthpuppy.com
+    .OUTPUTS
+        [System.Array]
 
-        .OUTPUTS
-            [System.Array]
+    .PARAMETER Path
+        Specified a path to one or more location which to scan files.
 
-        .PARAMETER Path
-            Specified a path to one or more location which to scan files.
+    .EXAMPLE
+        .\Get-FileAge.ps1 -Path "\\server\share\folder"
 
-        .EXAMPLE
-            .\Get-FileAge.ps1 -Path "\\server\share\folder"
+        Description:
+        Scans the specified path returns the age and owner for each file.
 
-            Description:
-            Scans the specified path returns the age and owner for each file.
+    .PARAMETER Include
+        Gets only the specified items.
 
-        .PARAMETER Include
-            Gets only the specified items.
+    .EXAMPLE
+        .\Get-FileAge.ps1 -Path "\\server\share\folder" -Include ".vhdx"
 
-        .EXAMPLE
-            .\Get-FileAge.ps1 -Path "\\server\share\folder" -Include ".vhdx"
-
-            Description:
-            Scans the specified path returns the age and owner for each .vhdx file.
+        Description:
+        Scans the specified path returns the age and owner for each .vhdx file.
 #>
 [CmdletBinding(SupportsShouldProcess = $False)]
 Param (
@@ -50,6 +50,108 @@ Param (
 Begin {
     # Measure time taken to gather data
     $StopWatch = [system.diagnostics.stopwatch]::StartNew()
+
+    Function Convert-Size {
+        <#
+            .SYNOPSIS
+                Converts computer data sizes between one format and another. 
+    
+            .DESCRIPTION
+                This function handles conversion from any-to-any (e.g. Bits, Bytes, KB, KiB, MB,
+                MiB, etc.) It also has the ability to specify the precision of digits you want to
+                recieve as the output.
+        
+                International System of Units (SI) Binary and Standard
+                http://physics.nist.gov/cuu/Units/binary.html
+                https://en.wikipedia.org/wiki/Binary_prefix
+            
+            .NOTES
+                Author: Techibee posted on July 7, 2014
+                Modified By: Void, modified on December 9, 2016
+        
+            .LINK
+                http://techibee.com/powershell/convert-from-any-to-any-bytes-kb-mb-gb-tb-using-powershell/2376
+    
+            .EXAMPLE
+                Convert-Size -From KB -To GB -Value 1024
+                0.001
+        
+                Convert from Kilobyte to Gigabyte (Base 10)
+
+            .EXAMPLE
+                Convert-Size -From GB -To GiB -Value 1024
+                953.6743
+        
+                Convert from Gigabyte (Base 10) to GibiByte (Base 2)
+
+            .EXAMPLE
+                Convert-Size -From TB -To TiB -Value 1024 -Precision 2
+                931.32
+        
+                Convert from Terabyte (Base 10) to Tebibyte (Base 2) with only 2 digits after the decimal
+        #>
+        [cmdletbinding()]
+        param(
+            [validateset("b", "B","KB","KiB","MB","MiB","GB","GiB","TB","TiB","PB","PiB","EB","EiB", "ZB", "ZiB", "YB", "YiB")]
+            [Parameter(Mandatory=$true)]
+            [string]$From,
+    
+            [validateset("b", "B","KB","KiB","MB","MiB","GB","GiB","TB","TiB","PB","PiB","EB","EiB", "ZB", "ZiB", "YB", "YiB")]
+            [Parameter(Mandatory=$true)]
+            [string]$To,
+    
+            [Parameter(Mandatory=$true)]
+            [double]$Value,
+    
+            [int]$Precision = 4
+        )
+    
+        # Convert the supplied value to Bytes
+        switch -casesensitive ($From) {
+            "b" {$value = $value/8 }
+            "B" {$value = $Value }
+            "KB" {$value = $Value * 1000 }
+            "KiB" {$value = $value * 1024 }
+            "MB" {$value = $Value * 1000000 }
+            "MiB" {$value = $value * 1048576 }
+            "GB" {$value = $Value * 1000000000 }
+            "GiB" {$value = $value * 1073741824 }
+            "TB" {$value = $Value * 1000000000000 }
+            "TiB" {$value = $value * 1099511627776 }
+            "PB" {$value = $value * 1000000000000000 }
+            "PiB" {$value = $value * 1125899906842624 }
+            "EB" {$value = $value * 1000000000000000000 }
+            "EiB" {$value = $value * 1152921504606850000 }
+            "ZB" {$value = $value * 1000000000000000000000 }
+            "ZiB" {$value = $value * 1180591620717410000000 }
+            "YB" {$value = $value * 1000000000000000000000000 }
+            "YiB" {$value = $value * 1208925819614630000000000 }
+        }
+    
+        # Convert the number of Bytes to the desired output
+        switch -casesensitive ($To) {
+            "b" {$value = $value * 8}
+            "B" {return $value }
+            "KB" {$Value = $Value/1000 }
+            "KiB" {$value = $value/1024 }
+            "MB" {$Value = $Value/1000000 }
+            "MiB" {$Value = $Value/1048576 }
+            "GB" {$Value = $Value/1000000000 }
+            "GiB" {$Value = $Value/1073741824 }
+            "TB" {$Value = $Value/1000000000000 }
+            "TiB" {$Value = $Value/1099511627776 }
+            "PB" {$Value = $Value/1000000000000000 }
+            "PiB" {$Value = $Value/1125899906842624 }
+            "EB" {$Value = $Value/1000000000000000000 }
+            "EiB" {$Value = $Value/1152921504606850000 }
+            "ZB" {$value = $value/1000000000000000000000 }
+            "ZiB" {$value = $value/1180591620717410000000 }
+            "YB" {$value = $value/1000000000000000000000000 }
+            "YiB" {$value = $value/1208925819614630000000000 }
+        }
+    
+        return [Math]::Round($value,$Precision,[MidPointRounding]::AwayFromZero)
+    }
 
     Write-Verbose "Beginning file age trawling."
     $Files = @()
@@ -73,11 +175,11 @@ Process {
         }
 
         # Create an array from what was returned for specific data and sort on file path
-        $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.FullName}}, `
+        $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.Name}}, `
         @{Name = "Owner"; Expression = {(Get-Acl -Path $_.FullName).Owner}}, `
-        @{Name = "Size"; Expression = {$_.Length/1GB}}, `
-        @{Name = "LastAccessTime"; Expression = {$_.LastAccessTime}}, `
-        @{Name = "LastWriteTime"; Expression = {$_.LastWriteTime}}
+        @{Name = "Size(MiB)"; Expression = {Convert-Size -From B -To MiB -Value $_.Length}}, `
+        @{Name = "LastWriteTime"; Expression = {$_.LastWriteTime}}, `
+        @{Name = "LastAccessTime"; Expression = {$_.LastAccessTime}}
     }
     Else {
         Write-Error "Path does not exist: $Path"
@@ -88,5 +190,5 @@ End {
     # Return the array of file paths and metadata
     $StopWatch.Stop()
     Write-Verbose "File age trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
-    Return $Files | Sort-Object -Property LastWriteTime
+    Return $Files | Sort-Object -Property LastWriteTime, Name
 }
