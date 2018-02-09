@@ -13,8 +13,12 @@
     .LINK
         http://stealthpuppy.com
 
+    .INPUTS
+        System.String[]
+            You can pipe a file system path (in quotation marks) to Get-FileStats
+    
     .OUTPUTS
-        [System.Array]
+        System.Array
 
     .PARAMETER Path
         Specified a path to one or more location which to scan files.
@@ -34,7 +38,8 @@
         Description:
         Scans the specified path returns the age and owner for each .vhdx file.
 #>
-[CmdletBinding(SupportsShouldProcess = $False)]
+[CmdletBinding(SupportsShouldProcess = $False, HelpUri = 'https://github.com/aaronparker/FSLogix/')]
+[OutputType([System.Array])]
 Param (
     [Parameter(Mandatory = $False, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
             HelpMessage = 'Specify a target path, paths or a list of files to scan for stats.')]
@@ -103,7 +108,7 @@ Begin {
             [Parameter(Mandatory=$true)]
             [double]$Value,
     
-            [int]$Precision = 4
+            [int]$Precision = 2
         )
     
         # Convert the supplied value to Bytes
@@ -150,7 +155,7 @@ Begin {
             "YiB" {$value = $value/1208925819614630000000000 }
         }
     
-        return [Math]::Round($value,$Precision,[MidPointRounding]::AwayFromZero)
+        [Math]::Round($value,$Precision,[MidPointRounding]::AwayFromZero)
     }
 
     Write-Verbose "Beginning file stats trawling."
@@ -190,5 +195,5 @@ End {
     # Return the array of file paths and metadata
     $StopWatch.Stop()
     Write-Verbose "File stats trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
-    Return $Files | Sort-Object -Property @{Expression = "LastWriteTime"; Descending = $True}, @{Expression = "Name"; Descending = $False}
+    $Files | Sort-Object -Property @{Expression = "LastWriteTime"; Descending = $True}, @{Expression = "Name"; Descending = $False}
 }
