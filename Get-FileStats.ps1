@@ -170,13 +170,13 @@ Process {
 
             # Target is a folder, so trawl the folder for files in the target and sub-folders
             Write-Verbose "Getting stats for files in folder: $Path"
-            $items = Get-ChildItem -Path $Path -Recurse -File -Include $Include
+            $items = Get-ChildItem -Path $Path -Recurse -File -Include $Include -ErrorAction SilentlyContinue
         }
         Else {
 
             # Target is a file, so just get metadata for the file
             Write-Verbose "Getting stats for file: $Path"
-            $items = Get-ChildItem -Path $Path
+            $items = Get-ChildItem -Path $Path -ErrorAction SilentlyContinue
         }
 
         # Create an array from what was returned for specific data and sort on file path
