@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<targetManifest schemaVersion="1.0">
+    <Targets>
+        <Target Name="Windows">
+            <Path Days="0">%TEMP%</Path>
+        </Target>
+        <Target Name="Firefox">
+            <Path Days="5">%LocalAppData%\Mozilla\Firefox\Profiles\*\cache</Path>
+            <Path Days="5">%LocalAppData%\Mozilla\Firefox\Profiles\*\cache2</Path>
+            <Path Days="30">%LocalAppData%\Mozilla\Firefox\Profiles\*\OfflineCache</Path>
+        </Target>
+        <Target Name="Remote Desktop Client"> 
+            <Path Days="5">%LocalAppData%\Microsoft\Terminal Server Client\Cache</Path>
+    </Targets>
+</targetManifest
