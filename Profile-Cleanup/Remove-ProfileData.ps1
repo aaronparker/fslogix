@@ -28,25 +28,30 @@ Param (
     [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, 
         ValueFromRemainingArguments = $false, Position = 0, ParameterSetName = 'Default')]
     [ValidateNotNullOrEmpty()]
-    [ValidateScript({ If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find file $_" } })]
+    [ValidateScript( { If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find file $_" } })]
     [Alias("Path")]
     [string[]]$Xml
 )
 Begin {
 }
 Process {
-    If ($pscmdlet.ShouldProcess("Target", "Operation")) {
-    }
-
     # Read the specifed XML document
     Try { [xml]$xmlDocument = Get-Content -Path $Xml -ErrorVariable xmlReadError }
     Catch { Throw "Unable to read: $Xml. $xmlReadError" }
 
+    # Select each Target XPath
     $Targets = Select-Xml -Xml $xmlDocument -XPath "//Target"
+
+    # Walk through each target to delete files
     ForEach ($Target in $Targets) {
-        Write-Host $Target.Node.Name
+        Write-Verbose "Processing: $($Target.Node.Name)"
         ForEach ($Path in $Target.Node.Path) {
-            Write-Host "$($Path.Days), $($Path.innerText)"
+            Write-Verbose "Processing: $($Path.innerText)"
+            $DateFilter = (Get-Date).AddDays(- $Path.Days)
+            $Files = Get-ChildItem -Path $Path.innerText -Include *.* -Recurse -Force | Where-Object { $_.PSIsContainer -eq $False -and $_.LastWriteTime -le $DateFilter }
+            If ($pscmdlet.ShouldProcess("File", "Delete")) {
+                $Files | Remove-Item -Force
+            }
         }
     }
 }
