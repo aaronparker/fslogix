@@ -42,9 +42,13 @@ Process {
     Try { [xml]$xmlDocument = Get-Content -Path $Xml -ErrorVariable xmlReadError }
     Catch { Throw "Unable to read: $Xml. $xmlReadError" }
 
-    # Select Paths
-    Select-Xml -Xml $xmlDocument -XPath "//Target/Path" | ForEach-Object {$_.node.InnerXML}
-    Select-Xml -Xml $xmlDocument -XPath "//Target/Path" | Select-Object -ExpandProperty Days
+    $Targets = Select-Xml -Xml $xmlDocument -XPath "//Target"
+    ForEach ($Target in $Targets) {
+        Write-Host $Target.Node.Name
+        ForEach ($Path in $Target.Node.Path) {
+            Write-Host "$($Path.Days), $($Path.innerText)"
+        }
+    }
 }
 End {
 }
