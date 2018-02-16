@@ -20,54 +20,31 @@
 .FUNCTIONALITY
    The functionality that best describes this cmdlet
 #>
-function Verb-Noun {
-    [CmdletBinding(DefaultParameterSetName = 'Parameter Set 1', 
-        SupportsShouldProcess = $true, 
-        PositionalBinding = $false,
-        HelpUri = 'http://www.microsoft.com/',
-        ConfirmImpact = 'Medium')]
-    [Alias()]
-    [OutputType([String])]
-    Param
-    (
-        # Param1 help description
-        [Parameter(Mandatory = $true, 
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
-            ValueFromRemainingArguments = $false, 
-            Position = 0,
-            ParameterSetName = 'Parameter Set 1')]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
-        [ValidateCount(0, 5)]
-        [ValidateSet("sun", "moon", "earth")]
-        [Alias("p1")] 
-        $Param1,
-
-        # Param2 help description
-        [Parameter(ParameterSetName = 'Parameter Set 1')]
-        [AllowNull()]
-        [AllowEmptyCollection()]
-        [AllowEmptyString()]
-        [ValidateScript( {$true})]
-        [ValidateRange(0, 5)]
-        [int]
-        $Param2,
-
-        # Param3 help description
-        [Parameter(ParameterSetName = 'Another Parameter Set')]
-        [ValidatePattern("[a-z]*")]
-        [ValidateLength(0, 15)]
-        [String]
-        $Param3
-    )
-
-    Begin {
+[CmdletBinding(DefaultParameterSetName = 'Default', SupportsShouldProcess = $true, 
+    PositionalBinding = $false, HelpUri = 'https://stealthpuppy.com/', ConfirmImpact = 'High')]
+[OutputType([String])]
+Param (
+    # Param1 help description
+    [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, 
+        ValueFromRemainingArguments = $false, Position = 0, ParameterSetName = 'Default')]
+    [ValidateNotNullOrEmpty()]
+    [ValidateScript({ If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find file $_" } })]
+    [Alias("Path")]
+    [string[]]$Xml
+)
+Begin {
+}
+Process {
+    If ($pscmdlet.ShouldProcess("Target", "Operation")) {
     }
-    Process {
-        if ($pscmdlet.ShouldProcess("Target", "Operation")) {
-        }
-    }
-    End {
-    }
+
+    # Read the specifed XML document
+    Try { [xml]$xmlDocument = Get-Content -Path $Xml -ErrorVariable xmlReadError }
+    Catch { Throw "Unable to read: $Xml. $xmlReadError" }
+
+    # Select Paths
+    Select-Xml -Xml $xmlDocument -XPath "//Target/Path" | ForEach-Object {$_.node.InnerXML}
+    Select-Xml -Xml $xmlDocument -XPath "//Target/Path" | Select-Object -ExpandProperty Days
+}
+End {
 }

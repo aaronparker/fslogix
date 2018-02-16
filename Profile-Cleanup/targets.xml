@@ -2,9 +2,9 @@
 <Targets>
     <Target Name="Windows">
         <Path Days="0">%TEMP%</Path>
-        <Path Age="5">%LocalAppData%\Microsoft\Windows\Explorer</Path>
-        <Path Age="5">%LocalAppData%\Microsoft\Windows\INetCache\IE</Path>
-        <Path Age="5">%LocalAppData%\Microsoft\Windows\INetCache\Low</Path>
+        <Path Days="5">%LocalAppData%\Microsoft\Windows\Explorer</Path>
+        <Path Days="5">%LocalAppData%\Microsoft\Windows\INetCache\IE</Path>
+        <Path Days="5">%LocalAppData%\Microsoft\Windows\INetCache\Low</Path>
     </Target>
     <Target Name="Mozilla Firefox">
         <Path Days="0">%AppData%\Mozilla\Firefox\Crash Reports</Path>
@@ -21,23 +21,23 @@
     <Target Name="Slack">
         <Path Days="5">%AppData%\Slack\Cache</Path>
         <Path Days="5">%AppData%\Slack\GPUCache</Path>
-        <Path Days="5">%AppData%\Slack\Local Storage</Path>
+        <Path Days="5">%AppData%\Slack\Local StorDays</Path>
         <Path Days="5">%AppData%\Slack\logs</Path>
     </Target>
     <Target Name="Microsoft Edge">
-        <Path Days="5">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache</Path>
-        <Path Days="5">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\*\MicrosoftEdge\Cache</Path>
-        <Path Days="5">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\Temp</Path>
+        <Path Days="5">%LocalAppData%\PackDayss\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache</Path>
+        <Path Days="5">%LocalAppData%\PackDayss\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\*\MicrosoftEdge\Cache</Path>
+        <Path Days="5">%LocalAppData%\PackDayss\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\Temp</Path>
     </Target>
     <Target Name="Bing News">
-        <Path Days="5">%LocalAppData%\Packages\Microsoft.BingNews_8wekyb3d8bbwe\AC\Microsoft\CryptnetUrlCache</Path>
+        <Path Days="5">%LocalAppData%\PackDayss\Microsoft.BingNews_8wekyb3d8bbwe\AC\Microsoft\CryptnetUrlCache</Path>
     </Target>
     <Target Name="Google Chrome">
         <Path Days="0">%LocalAppData%\Google\Chrome\User Data\Default\Cache</Path>
-        <Path Days="1">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\CacheStorage</Path>
+        <Path Days="1">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\CacheStorDays</Path>
         <Path Days="1">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\Database</Path>
         <Path Days="30">%LocalAppData%\Google\Chrome\User Data\ShaderCache\GPUCache</Path>
-        <Path Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Local Storage</Path>
+        <Path Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Local StorDays</Path>
         <Path Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Media Cache</Path>
         <Path Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\ScriptCache</Path>
     </Target>
