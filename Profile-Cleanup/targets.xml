@@ -1,15 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<targetManifest schemaVersion="1.0">
-    <Targets>
-        <Target Name="Windows">
-            <Path Days="0">%TEMP%</Path>
-        </Target>
-        <Target Name="Firefox">
-            <Path Days="5">%LocalAppData%\Mozilla\Firefox\Profiles\*\cache</Path>
-            <Path Days="5">%LocalAppData%\Mozilla\Firefox\Profiles\*\cache2</Path>
-            <Path Days="30">%LocalAppData%\Mozilla\Firefox\Profiles\*\OfflineCache</Path>
-        </Target>
-        <Target Name="Remote Desktop Client"> 
-            <Path Days="5">%LocalAppData%\Microsoft\Terminal Server Client\Cache</Path>
-    </Targets>
-</targetManifest
+<Targets>
+    <Target Name="Windows">
+        <Path Days="0">%TEMP%</Path>
+        <Path Age="5">%LocalAppData%\Microsoft\Windows\Explorer</Path>
+        <Path Age="5">%LocalAppData%\Microsoft\Windows\INetCache\IE</Path>
+        <Path Age="5">%LocalAppData%\Microsoft\Windows\INetCache\Low</Path>
+    </Target>
+    <Target Name="Mozilla Firefox">
+        <Path Days="0">%AppData%\Mozilla\Firefox\Crash Reports</Path>
+        <Path Days="1">%LocalAppData%\Mozilla\Firefox\Profiles\*\cache</Path>
+        <Path Days="1">%LocalAppData%\Mozilla\Firefox\Profiles\*\cache2</Path>
+        <Path Days="30">%LocalAppData%\Mozilla\Firefox\Profiles\*\OfflineCache</Path>
+        <Path Days="30">%LocalAppData%\Mozilla\Firefox\Profiles\*\jumpListCache</Path>
+        <Path Days="30">%LocalAppData%\Mozilla\Firefox\Profiles\*\startupCache</Path>
+        <Path Days="30">%LocalAppData%\Mozilla\Firefox\Profiles\*\thumbnails</Path>
+    </Target>
+    <Target Name="Remote Desktop Client">
+        <Path Days="5">%LocalAppData%\Microsoft\Terminal Server Client\Cache</Path>
+    </Target>
+    <Target Name="Slack">
+        <Path Days="5">%AppData%\Slack\Cache</Path>
+        <Path Days="5">%AppData%\Slack\GPUCache</Path>
+        <Path Days="5">%AppData%\Slack\Local Storage</Path>
+        <Path Days="5">%AppData%\Slack\logs</Path>
+    </Target>
+    <Target Name="Microsoft Edge">
+        <Path Days="5">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache</Path>
+        <Path Days="5">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\*\MicrosoftEdge\Cache</Path>
+        <Path Days="5">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\Temp</Path>
+    </Target>
+    <Target Name="Bing News">
+        <Path Days="5">%LocalAppData%\Packages\Microsoft.BingNews_8wekyb3d8bbwe\AC\Microsoft\CryptnetUrlCache</Path>
+    </Target>
+    <Target Name="Google Chrome">
+        <Path Days="0">%LocalAppData%\Google\Chrome\User Data\Default\Cache</Path>
+        <Path Days="1">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\CacheStorage</Path>
+        <Path Days="1">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\Database</Path>
+        <Path Days="30">%LocalAppData%\Google\Chrome\User Data\ShaderCache\GPUCache</Path>
+        <Path Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Local Storage</Path>
+        <Path Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Media Cache</Path>
+        <Path Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\ScriptCache</Path>
+    </Target>
+</Targets>
