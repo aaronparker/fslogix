@@ -1,31 +1,33 @@
 <#
 .Synopsis
-   Short description
+   Removes files and folders in the user profile to reduce profile size.
+
 .DESCRIPTION
-   Long description
+   Reads a list of files and folders from an XML file to delete data based on age.
+   The script reads an XML file that defines a list of files and folders to remove to reduce profile size.
+   Supports -WhatIf and -Verbose output and returns a list of files removed from the profile.
+
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   .\Remove-ProfileData.ps1 -Xml .\targets.xml
+
 .INPUTS
-   Inputs to this cmdlet (if any)
+   XML file that defines target files and folders to remove.
+
 .OUTPUTS
-   Output from this cmdlet (if any)
+   System.Array
+
 .NOTES
-   General notes
-.COMPONENT
-   The component this cmdlet belongs to
-.ROLE
-   The role this cmdlet belongs to
+   Windows profiles can be cleaned up to reduce profile size and bloat.
+   Use with traditional profile solutions to clean up profiles or with Container-based solution to keep Container sizes to minimum.
+
 .FUNCTIONALITY
-   The functionality that best describes this cmdlet
+
 #>
 [CmdletBinding(DefaultParameterSetName = 'Default', SupportsShouldProcess = $true, 
     PositionalBinding = $false, HelpUri = 'https://stealthpuppy.com/', ConfirmImpact = 'High')]
 [OutputType([String])]
 Param (
-    # Param1 help description
-    [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, 
+    [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $false, 
         ValueFromRemainingArguments = $false, Position = 0, ParameterSetName = 'Default')]
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find file $_" } })]
@@ -33,7 +35,6 @@ Param (
     [string[]]$Xml
 )
 Begin {
-
     Function ConvertTo-Path {
         <#
           .SYNOPSIS
@@ -50,6 +51,9 @@ Begin {
         }
         $Path
     }
+
+    # Output array, will contain the list of files/folders removed
+    $Output = @()
 }
 Process {
     # Read the specifed XML document
@@ -58,8 +62,6 @@ Process {
 
     # Select each Target XPath
     $Targets = Select-Xml -Xml $xmlDocument -XPath "//Target"
-
-    $Output = @()
 
     # Walk through each target to delete files
     ForEach ($Target in $Targets) {
@@ -70,10 +72,9 @@ Process {
             # Get file age from Days value in XML
             $DateFilter = (Get-Date).AddDays( - $Path.Days)
 
-            # Get files to delete from Paths and file age
+            # Get files to delete from Paths and file age; build output array
             $Files = Get-ChildItem -Path $(ConvertTo-Path -Path $Path.innerText) -Include *.* -Recurse -Force -ErrorAction SilentlyContinue `
                 | Where-Object { $_.PSIsContainer -eq $False -and $_.LastWriteTime -le $DateFilter }
-
             $Output += $Files
 
             # Delete files with support for -WhatIf
