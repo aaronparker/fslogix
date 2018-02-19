@@ -8,7 +8,18 @@
    Supports -WhatIf and -Verbose output and returns a list of files removed from the profile.
 
 .EXAMPLE
-   .\Remove-ProfileData.ps1 -Xml .\targets.xml
+   .\Remove-ProfileData.ps1 -Xml .\targets.xml -WhatIf
+
+    Description:
+    Reads targets.xml that defines a list of files and folders to delete from the user profile.
+    Reports on the files/folders to delete without deleting them.
+
+.EXAMPLE
+   $Files = .\Remove-ProfileData.ps1 -Xml .\targets.xml -Confirm:$False -Verbose
+
+    Description:
+    Reads targets.xml that defines a list of files and folders to delete from the user profile.
+    Deletes the targets and returns the list of files into $Files. Also reports on the total size of files removed.
 
 .INPUTS
    XML file that defines target files and folders to remove.
@@ -145,6 +156,9 @@ Begin {
 
     # Output array, will contain the list of files/folders removed
     $Output = @()
+
+    # Measure time taken to gather data
+    $StopWatch = [system.diagnostics.stopwatch]::StartNew()
 }
 Process {
     # Read the specifed XML document
@@ -183,6 +197,9 @@ End {
     # Output total size of files deleted
     $Size = ($Output | Measure-Object -Sum Length).Sum
     Write-Verbose "Total file size deleted: $(Convert-Size -From B -To MiB -Value $Size) MiB"
+
+    $StopWatch.Stop()
+    Write-Verbose "Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
     
     # Return the files array (e.g. output for logging)
     Write-Output $Output
