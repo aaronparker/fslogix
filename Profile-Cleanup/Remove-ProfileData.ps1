@@ -34,7 +34,7 @@
 .FUNCTIONALITY
 
 #>
-# -Requires Version 3
+# Requires -Version 3
 [CmdletBinding(DefaultParameterSetName = 'Default', SupportsShouldProcess = $true, 
     PositionalBinding = $false, HelpUri = 'https://stealthpuppy.com/', ConfirmImpact = 'High')]
 [OutputType([String])]
@@ -184,10 +184,12 @@ Process {
 
             # Delete files with support for -WhatIf
             ForEach ( $File in $Files ) {
-                If (Test-Path -Path $File.FullName) {
-                    If ($pscmdlet.ShouldProcess($File, "Delete")) {
+                If (Test-Path -Path $File.FullName -ErrorAction SilentlyContinue) {
+                    If ($pscmdlet.ShouldProcess($File.FullName, "Delete")) {
                         Remove-Item -Path $File.FullName -Force -Recurse -ErrorAction SilentlyContinue
                     }
+                } ElseIf ( $Error[0].Exception -is [System.UnauthorizedAccessException] ) {
+                    Write-Verbose "[UnauthorizedAccessException] accessing $($File.FullName)"
                 }
             }
         }

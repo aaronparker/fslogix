@@ -2,7 +2,8 @@
 <Targets>
     <Target Name="Windows">
         <Path Days="0">%TEMP%</Path>
-        <Path Days="0">%LocalAppData%\Microsoft\Windows\Explorer</Path>
+        <Path Days="0">%LocalAppData%\Microsoft\Windows\Explorer\IconCacheToDelete</Path>
+        <Path Days="0">%LocalAppData%\Microsoft\Windows\Explorer\ThumbCacheToDelete</Path>        
         <Path Days="0">%LocalAppData%\Microsoft\Windows\INetCache\IE</Path>
         <Path Days="0">%LocalAppData%\Microsoft\Windows\INetCache\Low</Path>
     </Target>
