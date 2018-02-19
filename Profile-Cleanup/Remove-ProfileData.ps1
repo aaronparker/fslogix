@@ -23,6 +23,7 @@
 .FUNCTIONALITY
 
 #>
+# -Requires Version 3
 [CmdletBinding(DefaultParameterSetName = 'Default', SupportsShouldProcess = $true, 
     PositionalBinding = $false, HelpUri = 'https://stealthpuppy.com/', ConfirmImpact = 'High')]
 [OutputType([String])]
