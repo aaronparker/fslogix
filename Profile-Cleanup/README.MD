@@ -6,4 +6,4 @@ Supports -WhatIf and -Verbose output and returns a list of files removed from th
 
 WARNING: The script will remove target files and folders.
 
-![Output from Remove-ProfileData.png](https://raw.githubusercontent.com/aaronparker/FSLogix/master/img/RemoveProfileData.PNG "Output from Remove-ProfileData.png")
+![Output from Remove-ProfileData.png](https://raw.githubusercontent.com/aaronparker/FSLogix/master/img/ProfileDataOutput.png "Output from Remove-ProfileData.png")
