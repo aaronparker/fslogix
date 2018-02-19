@@ -163,14 +163,16 @@ Process {
             $DateFilter = (Get-Date).AddDays( - $Path.Days)
 
             # Get files to delete from Paths and file age; build output array
-            $Files = Get-ChildItem -Path $(ConvertTo-Path -Path $Path.innerText) -Include *.* -Recurse -Force -ErrorAction SilentlyContinue `
-                | Where-Object { $_.PSIsContainer -eq $False -and $_.LastWriteTime -le $DateFilter }
+            $Files = Get-ChildItem -Path $(ConvertTo-Path -Path $Path.innerText) -Recurse -Force -ErrorAction SilentlyContinue `
+                | Where-Object { $_.LastWriteTime -le $DateFilter }
             $Output += $Files
 
             # Delete files with support for -WhatIf
             ForEach ( $File in $Files ) {
-                If ($pscmdlet.ShouldProcess($File, "Delete")) {
-                    Remove-Item -Path $File -Force
+                If (Test-Path -Path $File.FullName) {
+                    If ($pscmdlet.ShouldProcess($File, "Delete")) {
+                        Remove-Item -Path $File.FullName -Force -Recurse -ErrorAction SilentlyContinue
+                    }
                 }
             }
         }
