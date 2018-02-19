@@ -178,7 +178,7 @@ Process {
 }
 End {
     # Output total size of files deleted
-    $Size = ($Output | Measure-Object -Sum -Legth).Sum
+    $Size = ($Output | Measure-Object -Sum Length).Sum
     Write-Verbose "Total file size deleted: $(Convert-Size -From B -To MiB -Value $Size) MiB"
     
     # Return the files array (e.g. output for logging)
