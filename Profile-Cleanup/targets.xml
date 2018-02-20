@@ -9,6 +9,7 @@
         <Path Days="0">%AppData%\Microsoft\Installer</Path>
         <Path Days="0">%LocalAppData%\CrashDumps</Path>
         <Path Days="0">%LocalAppData%\Diagnostics</Path>
+        <Path Days="0">%LocalAppData%\Package Cache</Path>
         <Path Days="0">%USERPROFILE%\Downloads</Path>
     </Target>
     <Target Name="Mozilla Firefox">
@@ -55,6 +56,9 @@
     <Target Name="Adobe Flash Player">
         <Path Days="0">%AppData%\Macromedia\Flash Player\#SharedObjects</Path>
     </Target>
+    <Target Name="Adobe Reader">
+        <Path Days="0">%LocalAppData%\Adobe\AcroCef\DC\Acrobat\Cache</Path>
+    </Target>
     <Target Name="Microsoft Edge">
         <Path Days="0">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache</Path>
         <Path Days="0">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\*\MicrosoftEdge\Cache</Path>
@@ -77,5 +81,19 @@
     </Target>
     <Target Name="Cisco WebEx">
         <Path Days="0">%LocalAppData%\WebEx\wbxcache</Path>
+    </Target>
+    <Target Name="CheckPoint Cloud Connector">
+        <Path Days="0">%LocalAppData%\CheckPoint\Cloud Connector\*.log.?</Path>
+    </Target>
+    <Target Name="Spotify">
+        <Path Days="0">%LocalAppData%\Spotify\Browser\Cache</Path>
+        <Path Days="0">%LocalAppData%\Spotify\Browser\GPUCache</Path>
+        <Path Days="0">%LocalAppData%\Spotify\Storage</Path>
+    </Target>
+    <Target Name="Grammarly">
+        <Path Days="0">%AppData%\Grammarly\Updates</Path>
+    </Target>
+    <Target Name="Xink">
+        <Path Days="0">%AppData%\Xink\Xink Client\updates\*.msi</Path>
     </Target>
 </Targets>
