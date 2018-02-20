@@ -81,7 +81,7 @@ Begin {
                 Author: Techibee posted on July 7, 2014
                 Modified By: Void, modified on December 9, 2016
             .LINK
-                http://techibee.com/powershell/convert-from-any-to-any-bytes-kb-mb-gb-tb-using-powershell/2376
+                https://techibee.com/powershell/convert-from-any-to-any-bytes-kb-mb-gb-tb-using-powershell/2376
             .EXAMPLE
                 Convert-Size -From KB -To GB -Value 1024
                 0.001
