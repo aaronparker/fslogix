@@ -57,6 +57,7 @@ Begin {
             [string]$Path
         )
         Switch ($Path) {
+            { $_ -match "%USERPROFILE%" } { $Path = $Path -replace "%USERPROFILE%", $env:USERPROFILE }
             { $_ -match "%LocalAppData%" } { $Path = $Path -replace "%LocalAppData%", $env:LocalAppData }
             { $_ -match "%AppData%" } { $Path = $Path -replace "%AppData%", $env:AppData }
             { $_ -match "%TEMP%" } { $Path = $Path -replace "%TEMP%", $env:Temp }

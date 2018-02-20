@@ -3,12 +3,13 @@
     <Target Name="Windows">
         <Path Days="0">%TEMP%</Path>
         <Path Days="0">%LocalAppData%\Microsoft\Windows\Explorer\IconCacheToDelete</Path>
-        <Path Days="0">%LocalAppData%\Microsoft\Windows\Explorer\ThumbCacheToDelete</Path>        
+        <Path Days="0">%LocalAppData%\Microsoft\Windows\Explorer\ThumbCacheToDelete</Path>
         <Path Days="0">%LocalAppData%\Microsoft\Windows\INetCache\IE</Path>
         <Path Days="0">%LocalAppData%\Microsoft\Windows\INetCache\Low</Path>
         <Path Days="0">%AppData%\Microsoft\Installer</Path>
         <Path Days="0">%LocalAppData%\CrashDumps</Path>
         <Path Days="0">%LocalAppData%\Diagnostics</Path>
+        <Path Days="0">%USERPROFILE%\Downloads</Path>
     </Target>
     <Target Name="Mozilla Firefox">
         <Path Days="0">%AppData%\Mozilla\Firefox\Crash Reports</Path>
