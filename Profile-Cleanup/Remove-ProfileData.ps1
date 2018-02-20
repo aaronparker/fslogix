@@ -100,19 +100,19 @@ Begin {
         #>
         [cmdletbinding()]
         param(
-            [validateset("b", "B","KB","KiB","MB","MiB","GB","GiB","TB","TiB","PB","PiB","EB","EiB", "ZB", "ZiB", "YB", "YiB")]
-            [Parameter(Mandatory=$true)]
+            [validateset("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
+            [Parameter(Mandatory = $true)]
             [string]$From,
-            [validateset("b", "B","KB","KiB","MB","MiB","GB","GiB","TB","TiB","PB","PiB","EB","EiB", "ZB", "ZiB", "YB", "YiB")]
-            [Parameter(Mandatory=$true)]
+            [validateset("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
+            [Parameter(Mandatory = $true)]
             [string]$To,
-            [Parameter(Mandatory=$true)]
+            [Parameter(Mandatory = $true)]
             [double]$Value,
             [int]$Precision = 2
         )
         # Convert the supplied value to Bytes
         switch -casesensitive ($From) {
-            "b" {$value = $value/8 }
+            "b" {$value = $value / 8 }
             "B" {$value = $Value }
             "KB" {$value = $Value * 1000 }
             "KiB" {$value = $value * 1024 }
@@ -135,24 +135,24 @@ Begin {
         switch -casesensitive ($To) {
             "b" {$value = $value * 8}
             "B" {return $value }
-            "KB" {$Value = $Value/1000 }
-            "KiB" {$value = $value/1024 }
-            "MB" {$Value = $Value/1000000 }
-            "MiB" {$Value = $Value/1048576 }
-            "GB" {$Value = $Value/1000000000 }
-            "GiB" {$Value = $Value/1073741824 }
-            "TB" {$Value = $Value/1000000000000 }
-            "TiB" {$Value = $Value/1099511627776 }
-            "PB" {$Value = $Value/1000000000000000 }
-            "PiB" {$Value = $Value/1125899906842624 }
-            "EB" {$Value = $Value/1000000000000000000 }
-            "EiB" {$Value = $Value/1152921504606850000 }
-            "ZB" {$value = $value/1000000000000000000000 }
-            "ZiB" {$value = $value/1180591620717410000000 }
-            "YB" {$value = $value/1000000000000000000000000 }
-            "YiB" {$value = $value/1208925819614630000000000 }
+            "KB" {$Value = $Value / 1000 }
+            "KiB" {$value = $value / 1024 }
+            "MB" {$Value = $Value / 1000000 }
+            "MiB" {$Value = $Value / 1048576 }
+            "GB" {$Value = $Value / 1000000000 }
+            "GiB" {$Value = $Value / 1073741824 }
+            "TB" {$Value = $Value / 1000000000000 }
+            "TiB" {$Value = $Value / 1099511627776 }
+            "PB" {$Value = $Value / 1000000000000000 }
+            "PiB" {$Value = $Value / 1125899906842624 }
+            "EB" {$Value = $Value / 1000000000000000000 }
+            "EiB" {$Value = $Value / 1152921504606850000 }
+            "ZB" {$value = $value / 1000000000000000000000 }
+            "ZiB" {$value = $value / 1180591620717410000000 }
+            "YB" {$value = $value / 1000000000000000000000000 }
+            "YiB" {$value = $value / 1208925819614630000000000 }
         }
-        [Math]::Round($value,$Precision,[MidPointRounding]::AwayFromZero)
+        [Math]::Round($value, $Precision, [MidPointRounding]::AwayFromZero)
     }
 
     # Output array, will contain the list of files/folders removed
@@ -189,7 +189,8 @@ Process {
                     If ($pscmdlet.ShouldProcess($File.FullName, "Delete")) {
                         Remove-Item -Path $File.FullName -Force -Recurse -ErrorAction SilentlyContinue
                     }
-                } ElseIf ( $Error[0].Exception -is [System.UnauthorizedAccessException] ) {
+                }
+                ElseIf ( $Error[0].Exception -is [System.UnauthorizedAccessException] ) {
                     Write-Verbose "[UnauthorizedAccessException] accessing $($File.FullName)"
                 }
             }
