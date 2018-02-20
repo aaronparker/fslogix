@@ -6,6 +6,9 @@
         <Path Days="0">%LocalAppData%\Microsoft\Windows\Explorer\ThumbCacheToDelete</Path>        
         <Path Days="0">%LocalAppData%\Microsoft\Windows\INetCache\IE</Path>
         <Path Days="0">%LocalAppData%\Microsoft\Windows\INetCache\Low</Path>
+        <Path Days="0">%AppData%\Microsoft\Installer</Path>
+        <Path Days="0">%LocalAppData%\CrashDumps</Path>
+        <Path Days="0">%LocalAppData%\Diagnostics</Path>
     </Target>
     <Target Name="Mozilla Firefox">
         <Path Days="0">%AppData%\Mozilla\Firefox\Crash Reports</Path>
@@ -25,6 +28,32 @@
         <Path Days="0">%AppData%\Slack\Local Storage</Path>
         <Path Days="0">%AppData%\Slack\logs</Path>
     </Target>
+    <Target Name="Microsoft Yammer">
+        <Path Days="0">%AppData%\Yammer\Cache</Path>
+        <Path Days="0">%AppData%\Yammer\GPUCache</Path>
+    </Target>
+    <Target Name="Microsoft Windows Media Player">
+        <Path Days="0">%LocalAppData%\Microsoft\Media Player\Transcoded Files Cache</Path>
+    </Target>
+    <Target Name="Microsoft Teams">
+        <Path Days="0">%AppData%\Teams\logs</Path>
+        <Path Days="0">%AppData%\Microsoft\Teams\Application Cache</Path>
+        <Path Days="0">%AppData%\Microsoft\Teams\Cache</Path>
+        <Path Days="0">%AppData%\Microsoft\Teams\GPUCache</Path>
+        <Path Days="0">%AppData%\Microsoft\Teams\DownloadedUpdate</Path>
+    </Target>
+    <Target Name="Microsoft Visual Studio Code">
+        <Path Days="0">%AppData%\Code\logs</Path>
+        <Path Days="0">%AppData%\Code\Cache</Path>
+        <Path Days="0">%AppData%\Code\CachedData</Path>
+        <Path Days="0">%AppData%\Code\GPUCache</Path>
+    </Target>
+    <Target Name="Citrix Receiver">
+        <Path Days="0">%AppData%\ICAClient\Cache</Path>
+    </Target>
+    <Target Name="Adobe Flash Player">
+        <Path Days="0">%AppData%\Macromedia\Flash Player\#SharedObjects</Path>
+    </Target>
     <Target Name="Microsoft Edge">
         <Path Days="0">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache</Path>
         <Path Days="0">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\*\MicrosoftEdge\Cache</Path>
@@ -41,5 +70,11 @@
         <Path Days="0">%LocalAppData%\Google\Chrome\User Data\Default\Local Storage</Path>
         <Path Days="0">%LocalAppData%\Google\Chrome\User Data\Default\Media Cache</Path>
         <Path Days="0">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\ScriptCache</Path>
+    </Target>
+    <Target Name="Symantec Endpoint Protection">
+        <Path Days="0">%LocalAppData%\Symantec\Symantec Endpoint Protection\Logs</Path>
+    </Target>
+    <Target Name="Cisco WebEx">
+        <Path Days="0">%LocalAppData%\WebEx\wbxcache</Path>
     </Target>
 </Targets>
