@@ -35,7 +35,7 @@
 
 #>
 # Requires -Version 3
-[CmdletBinding(DefaultParameterSetName = 'Default', SupportsShouldProcess = $true, 
+[CmdletBinding(DefaultParameterSetName = 'Default', SupportsShouldProcess = $true,
     PositionalBinding = $false, HelpUri = 'https://stealthpuppy.com/', ConfirmImpact = 'High')]
 [OutputType([String])]
 Param (
@@ -44,7 +44,11 @@ Param (
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find file $_" } })]
     [Alias("Path")]
-    [string[]]$Xml
+    [string[]]$Xml,
+
+    [Parameter(Mandatory = $false, ValueFromPipeline = $false, ValueFromPipelineByPropertyName = $false,
+        ValueFromRemainingArguments = $false, ParameterSetName = 'Default')]
+    [switch]$Override
 )
 Begin {
     Function ConvertTo-Path {
@@ -155,6 +159,38 @@ Begin {
         [Math]::Round($value, $Precision, [MidPointRounding]::AwayFromZero)
     }
 
+    Function Remove-ExceptLatest {
+        <#
+          .SYNOPSIS
+            Remove all sub-folders except the most recent folder
+        #>
+        Param (
+            [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True)]
+            [string]$Path
+        )
+        $Latest = Get-ChildItem -Path $Path | Sort-Object -Descending | Select-Object -First 1
+        Get-ChildItem -Path $Path -Exclude $Latest | Remove-Item -Recurse -Force
+    }
+
+    Function Get-TestPath {
+        <#
+          .SYNOPSIS
+            Check whether path includes wildcards in file names
+            If so, return parent path, or just return the same path
+        #>
+        Param (
+            [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True)]
+            [string]$Path
+        )
+        If ((Split-Path -Path $Path -Leaf) -match "[*?]") {
+            $Output = Split-Path -Path $Path -Parent
+        }
+        Else {
+            $Output = $Path
+        }
+        $Output
+    }
+
     # Output array, will contain the list of files/folders removed
     $Output = @()
 
@@ -166,32 +202,35 @@ Process {
     Try { [xml]$xmlDocument = Get-Content -Path $Xml -ErrorVariable xmlReadError }
     Catch { Throw "Unable to read: $Xml. $xmlReadError" }
 
-    # Select each Target XPath
-    $Targets = Select-Xml -Xml $xmlDocument -XPath "//Target"
-
-    # Walk through each target to delete files
-    ForEach ($Target in $Targets) {
+    # Select each Target XPath; walk through each target to delete files
+    ForEach ($Target in (Select-Xml -Xml $xmlDocument -XPath "//Target")) {
         Write-Verbose "Processing target: [$($Target.Node.Name)]"
         ForEach ($Path in $Target.Node.Path) {
-            Write-Verbose "Processing folder: $(ConvertTo-Path -Path $Path.innerText)"
+            
+            # Convert path from XML with environment variable to actual path
+            $ThisPath = $(ConvertTo-Path -Path $Path.innerText)
+            Write-Verbose "Processing folder: $ThisPath"
 
-            # Get file age from Days value in XML
-            $DateFilter = (Get-Date).AddDays( - $Path.Days)
+            # Get file age from Days value in XML; if -Override used, set $DateFilter to now
+            If ($Override) { $DateFilter = Get-Date } Else { $DateFilter = (Get-Date).AddDays( - $Path.Days) }
 
             # Get files to delete from Paths and file age; build output array
-            $Files = Get-ChildItem -Path $(ConvertTo-Path -Path $Path.innerText) -Recurse -Force -ErrorAction SilentlyContinue `
-                | Where-Object { $_.LastWriteTime -le $DateFilter }
-            $Output += $Files
+            If (Test-Path -Path $(Get-TestPath -Path $ThisPath) -ErrorAction SilentlyContinue) {
 
-            # Delete files with support for -WhatIf
-            ForEach ( $File in $Files ) {
-                If (Test-Path -Path $File.FullName -ErrorAction SilentlyContinue) {
-                    If ($pscmdlet.ShouldProcess($File.FullName, "Delete")) {
-                        Remove-Item -Path $File.FullName -Force -Recurse -ErrorAction SilentlyContinue
+                $Files = Get-ChildItem -Path $ThisPath -Recurse -Force -ErrorAction SilentlyContinue `
+                    | Where-Object { $_.LastWriteTime -le $DateFilter }
+                $Output += $Files
+
+                # Delete files with support for -WhatIf
+                ForEach ( $File in $Files ) {
+                    If (Test-Path -Path $File.FullName -ErrorAction SilentlyContinue) {
+                        If ($pscmdlet.ShouldProcess($File.FullName, "Delete")) {
+                            Remove-Item -Path $File.FullName -Force -Recurse -ErrorAction SilentlyContinue
+                        }
                     }
-                }
-                ElseIf ( $Error[0].Exception -is [System.UnauthorizedAccessException] ) {
-                    Write-Verbose "[UnauthorizedAccessException] accessing $($File.FullName)"
+                    ElseIf ( $Error[0].Exception -is [System.UnauthorizedAccessException] ) {
+                        Write-Verbose "[UnauthorizedAccessException] accessing $($File.FullName)"
+                    }
                 }
             }
         }
