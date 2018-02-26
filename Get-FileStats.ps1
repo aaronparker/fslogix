@@ -165,7 +165,8 @@ Process {
         }
 
         # Create an array from what was returned for specific data and sort on file path
-        $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.FullName}}, `
+        $Files += $items | Select-Object @{Name = "Location"; Expression = {$_.Directory}}, `
+        @{Name = "ContainerName"; Expression = {$_.Name}}, 
         @{Name = "Owner"; Expression = {(Get-Acl -Path $_.FullName).Owner}}, `
         @{Name = "Size"; Expression = {"$(Convert-Size -From B -To MiB -Value $_.Length) MiB"}}, `
         @{Name = "LastWriteTime"; Expression = {$_.LastWriteTime}}, `
