@@ -69,6 +69,7 @@
     </Target>
     <Target Name="Microsoft CRM">
         <Path Action="Prune" Days="1">%LocalAppData%\Microsoft\MSCRM\Logs</Path>
+        <Path Action="Prune" Days="1">%AppData%\Microsoft\MSCRM\Logs</Path>
     </Target>
     <Target Name="Microsoft IPC">
         <Path Action="Prune" Days="1">%LocalAppData%\Microsoft\MSIPC\Logs</Path>
