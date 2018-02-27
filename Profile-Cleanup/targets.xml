@@ -25,7 +25,9 @@
         <Path Action="Prune" Days="10">%AppData%\Microsoft\Windows\IEDownloadHistory</Path>
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Windows\IETldCache</Path>
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Installer</Path>
+        <Path Action="Prune" Days="30">%AppData%\Microsoft\Windows\Recent\*.lnk</Path>
         <Path Action="Prune" Days="10">%USERPROFILE%\Downloads</Path>
+        <Path Action="Prune" Days="30">%USERPROFILE%\AppData\LocalLow\Microsoft\Windows\AppCache</Path>
     </Target>
     <Target Name="Mozilla Firefox">
         <Path Action="Prune" Days="1">%AppData%\Mozilla\Firefox\Crash Reports</Path>
@@ -71,6 +73,13 @@
     <Target Name="Microsoft IPC">
         <Path Action="Prune" Days="1">%LocalAppData%\Microsoft\MSIPC\Logs</Path>
         <Path Action="Prune" Days="1">%LocalAppData%\Microsoft\WINMSIPC\csr\Logs</Path>
+    </Target>
+    <Target Name="Microsoft Office">
+        <Path Action="Prune" Days="7">%AppData%\Microsoft\Word\*.asd</Path>
+        <Path Action="Prune" Days="7">%AppData%\Microsoft\Word\*.wbk</Path>
+        <Path Action="Prune" Days="7">%AppData%\Microsoft\Word\*.wbk</Path>
+        <Path Action="Prune" Days="7">%AppData%\Microsoft\Word\*.tmp</Path>
+        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Office\16.0\Lync\Tracing</Path>
     </Target>
     <Target Name="Citrix Receiver">
         <Path Action="Prune" Days="5">%AppData%\ICAClient\Cache</Path>
