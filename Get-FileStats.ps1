@@ -1,3 +1,4 @@
+# Requires -Version 2
 <#
     .SYNOPSIS
         Gets file stats and owner from a specified path.

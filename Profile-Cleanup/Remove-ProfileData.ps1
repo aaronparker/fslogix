@@ -1,3 +1,4 @@
+# Requires -Version 2
 <#
 .SYNOPSIS
    Removes files and folders in the user profile to reduce profile size.
