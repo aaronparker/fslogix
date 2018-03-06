@@ -12,8 +12,6 @@
         <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\WebCache</Path>
         <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\History</Path>
         <Path Action="Delete" Days="0">%LocalAppData%\Microsoft\Windows\WER</Path>
-<!--        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\*.log</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\*.regtrans-ms</Path> -->
         <Path Action="Delete" Days="0">%LocalAppData%\Microsoft\MSOIdentityCRL\Tracing</Path>
         <Path Action="Delete" Days="0">%LocalAppData%\CrashDumps</Path>
 <!--        <Path Action="Delete" Days="0">%LocalAppData%\Diagnostics</Path> -->
@@ -103,6 +101,7 @@
         <Path Action="Prune" Days="30">%LocalAppData%\Packages\Microsoft.BingNews_8wekyb3d8bbwe\AC\Microsoft\CryptnetUrlCache</Path>
     </Target>
     <Target Name="Google Chrome">
+        <Path Action="Prune" Days="5">%LocalAppData%\Google\Chrome\User Data\*.tmp</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Cache</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\CacheStorage</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\Database</Path>
@@ -110,6 +109,8 @@
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Local Storage</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Media Cache</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\ScriptCache</Path>
+        <Path Action="Prune" Days="5">%LocalAppData%\Google\Sotware Reporter Tool\*.log</Path>
+        <Path Action="Prune" Days="5">%LocalAppData%\Google\Sotware Reporter Tool\reports\*.dmp</Path>
     </Target>
     <Target Name="Symantec Endpoint Protection">
         <Path Action="Prune" Days="1">%LocalAppData%\Symantec\Symantec Endpoint Protection\Logs</Path>
