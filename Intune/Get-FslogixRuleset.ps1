@@ -14,11 +14,15 @@
     .LINK
         https://stealthpuppy.com
 #>
-#Requires -Version 3
-
-# Common Variables
-$VerbosePreference = "Continue"
-$LogFile = "$env:ProgramData\stealthpuppy\Logs\$($MyInvocation.MyCommand.Name).log"
+[CmdletBinding(ConfirmImpact='Low', HelpURI='https://stealthpuppy.com/', SupportsPaging=$False,
+    SupportsShouldProcess=$False, PositionalBinding=$False)]
+Param (
+    [Parameter()]$LogFile = "$env:ProgramData\stealthpuppy\Logs\$($MyInvocation.MyCommand.Name).log",
+    [Parameter()]$Source = "https://stlhppymdrn.blob.core.windows.net/fslogix-ruleset/?comp=list",
+    [Parameter()]$RegPath = "HKLM:\SOFTWARE\FSLogix\Apps",
+    [Parameter()]$RegExDirectory = "^[a-zA-Z]:\\[\\\S|*\S]?.*$",
+    [Parameter()]$VerbosePreference = "Continue"
+)
 Start-Transcript -Path $LogFile
 
 Function Get-AzureBlobItems {
@@ -76,13 +80,8 @@ Function Get-AzureBlobItems {
         $Item | Add-Member -Type NoteProperty -Name 'LastModified' -Value ($Node | Select-Object -ExpandProperty LastModified)
         $Output += $Item
     }
-    Return $Output
+    $Output
 }
-
-#Variables
-$Source = "https://stlhppymdrn.blob.core.windows.net/fslogix-ruleset/?comp=list"
-$RegPath = "HKLM:\SOFTWARE\FSLogix\Apps"
-$RegExDirectory = "^[a-zA-Z]:\\[\\\S|*\S]?.*$"
 
 # Get the FSLogix Agent CompiledRules folder from path stored in the registry
 If (Test-Path -Path $RegPath) {
@@ -120,5 +119,4 @@ If ($NewRuleset = Get-AzureBlobItems -Url $Source) {
         Start-BitsTransfer -Source $file.url -Destination "$RulesFolder\$($file.name)" -Priority High -TransferPolicy Always -ErrorAction Continue
     }
 }
-
 Stop-Transcript

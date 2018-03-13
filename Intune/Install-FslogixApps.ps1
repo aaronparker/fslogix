@@ -15,30 +15,30 @@
     .LINK
         https://stealthpuppy.com
 #>
-#Requires -Version 3
-
-# Variables
-$VerbosePreference = "Continue"
-$LogFile = "$env:ProgramData\stealthpuppy\Logs\$($MyInvocation.MyCommand.Name).log"
+[CmdletBinding(ConfirmImpact='Low', HelpURI='https://stealthpuppy.com/', SupportsPaging=$False,
+    SupportsShouldProcess=$False, PositionalBinding=$False)]
+Param (
+    [Parameter()]$LogFile = "$env:ProgramData\stealthpuppy\Logs\$($MyInvocation.MyCommand.Name).log",
+    [Parameter()]$Target = "$env:ProgramData\stealthpuppy\Scripts",
+    [Parameter()]$ScriptUrl = "https://raw.githubusercontent.com/aaronparker/intune/master/FSLogix/Get-FslogixRuleset.ps1",
+    [Parameter()]$Script = (Split-Path -Path $ScriptUrl -Leaf),
+    [Parameter()]$TaskName = "Get FSLogix Ruleset",
+    [Parameter()]$Group = "NT AUTHORITY\SYSTEM",
+    [Parameter()]$Execute = "powershell.exe",
+    [Parameter()]$ScriptArguments = "-ExecutionPolicy Bypass -NonInteractive -WindowStyle Minimized -File $Target\$Script",
+    [Parameter()]$InstallerArguments = "/install /quiet /norestart ProductKey=TRIAL-G6KID-WKRKO-J96IA-O9SB7",
+    [Parameter()]$VerbosePreference = "Continue"
+)
 Start-Transcript -Path $LogFile
-
-$Target = "$env:ProgramData\stealthpuppy\Scripts"
-$ScriptUrl = "https://raw.githubusercontent.com/aaronparker/intune/master/FSLogix/Get-FslogixRuleset.ps1"
-$Script = Split-Path -Path $ScriptUrl -Leaf
-$TaskName = "Get FSLogix Ruleset"
-$Group = "NT AUTHORITY\SYSTEM"
-$Execute = "powershell.exe"
-$ScriptArguments = "-ExecutionPolicy Bypass -NonInteractive -WindowStyle Minimized -File $Target\$Script"
-$InstallerArguments = "/install /quiet /norestart ProductKey=TRIAL-G6KID-WKRKO-J96IA-O9SB7"
 
 # Set installer download URL based on processor architecture
 Switch ((Get-WmiObject Win32_OperatingSystem).OSArchitecture) {
     "32-bit" { Write-Verbose -Message "32-bit processor"; $Url = "https://stlhppymdrn.blob.core.windows.net/fslogix-agent/x86/FSLogixAppsSetup.exe" }
     "64-bit" { Write-Verbose -Message "64-bit processor"; $Url = "https://stlhppymdrn.blob.core.windows.net/fslogix-agent/x64/FSLogixAppsSetup.exe" }
 }
+$Installer = "$env:SystemRoot\Temp\$(Split-Path -Path $Url -Leaf)"
 
 # Download FSLogix Agent installer; Get file info from the downloaded file to compare against what's installed
-$Installer = "$env:SystemRoot\Temp\$(Split-Path -Path $Url -Leaf)"
 Write-Verbose -Message "Downloading $Url to $Installer"
 Start-BitsTransfer -Source $Url -Destination $Installer -Priority High -TransferPolicy Always -ErrorAction Continue -ErrorVariable $ErrorBits
 $ProductVersion = (Get-ItemProperty -Path $Installer).VersionInfo.ProductVersion
@@ -51,7 +51,6 @@ If ($Agent) { Write-Verbose -Message "Found FSLogix Apps $($Agent.Version)." }
 
 # Install the FSLogix Agent
 If (Test-Path $Installer) {
-
     # If installed version less than downloaded version, install the update
     If (!($Agent) -or ($Agent.Version -lt $ProductVersion)) {
         Write-Verbose -Message "Installing the FSLogix Agent $ProductVersion."; 
@@ -61,7 +60,6 @@ If (Test-Path $Installer) {
         $Agent = Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -Like "FSLogix Apps" } | Select-Object Name, Version
         Write-Verbose -Message "Installed FSLogix Agent: $($Agent.Version)."
     } Else {
-
         # Skip install if agent already installed and up to date
         Write-Verbose -Message "Skipping installation of the FSLogix Agent. Version $($Agent.Version) already installed."
     }
@@ -82,7 +80,6 @@ If (Test-Path $Installer) {
 
 # If the agent is installed, create the scheduled task
 If ($Agent) {
-
     # Download the script that will download FSLogix ruleset files
     If (!(Test-Path -Path $Target)) { New-Item -Path $Target -ItemType Directory }
     Start-BitsTransfer -Source $ScriptUrl -Destination "$Target\$Script" -Priority High -TransferPolicy Always -ErrorAction Continue -ErrorVariable $ErrorBits
@@ -105,5 +102,4 @@ If ($Agent) {
     $Task.Triggers.Repetition.Interval = "PT2H"
     $Task | Set-ScheduledTask -User $Group
 }
-
 Stop-Transcript

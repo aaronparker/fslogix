@@ -35,9 +35,8 @@
 .FUNCTIONALITY
 
 #>
-# Requires -Version 3
-[CmdletBinding(DefaultParameterSetName = 'Default', SupportsShouldProcess = $true,
-    PositionalBinding = $false, HelpUri = 'https://stealthpuppy.com/', ConfirmImpact = 'High')]
+[CmdletBinding(SupportsShouldProcess = $true, PositionalBinding = $false, `
+HelpUri = 'https://stealthpuppy.com/', ConfirmImpact = 'High')]
 [OutputType([String])]
 Param (
     [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $false, 
