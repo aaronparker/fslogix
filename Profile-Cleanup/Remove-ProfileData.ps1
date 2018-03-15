@@ -39,15 +39,15 @@
 HelpUri = 'https://stealthpuppy.com/', ConfirmImpact = 'High')]
 [OutputType([String])]
 Param (
-    [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $false, 
-        ValueFromRemainingArguments = $false, Position = 0, ParameterSetName = 'Default')]
+    [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, 
+        ValueFromRemainingArguments = $false, Position = 0)]
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find file $_" } })]
     [Alias("Path")]
     [string[]]$Xml,
 
     [Parameter(Mandatory = $false, ValueFromPipeline = $false, ValueFromPipelineByPropertyName = $false,
-        ValueFromRemainingArguments = $false, ParameterSetName = 'Default')]
+        ValueFromRemainingArguments = $false)]
     [switch]$Override
 )
 Begin {
