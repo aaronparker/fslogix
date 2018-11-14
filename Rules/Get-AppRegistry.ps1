@@ -45,8 +45,9 @@ $location = Get-Location
 ForEach ($key in $Keys) {
     Write-Verbose -Message "Checking $key."
 
-    # Change location to $key
     try {
+
+        # Attempt change location to $key
         Push-Location $key -ErrorAction SilentlyContinue -ErrorVariable CdError
     }
     catch {
