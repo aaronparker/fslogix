@@ -23,7 +23,6 @@
 
     .PARAMETER Name
         An array of strings to check for application names
-
 #> 
 [CmdletBinding()]
 Param (
@@ -35,7 +34,7 @@ Param (
 
     [Parameter()]
     [string[]]
-    $Name = @("Visio", "Word", "Excel", "PowerPoint", "Outlook", "Project", "Access", "Lync", "Publisher")
+    $Name = @("Visio", "Word", "Excel", "PowerPoint", "Outlook", "Project", "Lync", "Publisher")
 )
 
 # Get current location
