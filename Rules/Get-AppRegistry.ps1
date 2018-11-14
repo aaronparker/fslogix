@@ -23,7 +23,7 @@
 
     .PARAMETER Name
         An array of strings to check for application names
-#> 
+#>
 [CmdletBinding()]
 Param (
     [Parameter()]
@@ -34,7 +34,7 @@ Param (
 
     [Parameter()]
     [string[]]
-    $Name = @("Visio", "Word", "Excel", "PowerPoint", "Outlook", "Project", "Lync", "Publisher")
+    $Name = @("Visio", "Project")
 )
 
 # Get current location
@@ -52,7 +52,7 @@ ForEach ($key in $Keys) {
     catch {
         
         # If $key is not a valid location, fail somewhat gracefully
-        Write-Error "Unable to change location to $key."
+        Write-Error "Unable to change location to $key with error: $CdError"
         Break
     }
     finally {
