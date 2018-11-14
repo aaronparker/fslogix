@@ -17,10 +17,16 @@
 <# 
     .DESCRIPTION 
         Returns strings from well known Registry keys that define a Windows application.
+
+    .PARAMETER Keys
+        An array of Registry keys to check child keys for application details
+
+    .PARAMETER Name
+        An array of strings to check for application names
+
 #> 
 [CmdletBinding()]
 Param (
-    # Parameter help description
     [Parameter()]
     [string[]]
     $Keys = @("HKLM:\SOFTWARE\Classes\CLSID", "HKLM:\SOFTWARE\Classes", "HKLM:\SOFTWARE\Wow6432Node\Classes", `
@@ -29,7 +35,7 @@ Param (
 
     [Parameter()]
     [string[]]
-    $Name = "Visio"
+    $Name = @("Visio", "Word", "Excel", "PowerPoint", "Outlook", "Project", "Access", "Lync", "Publisher")
 )
 
 # Get current location
