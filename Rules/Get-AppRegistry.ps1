@@ -23,20 +23,46 @@ Param (
     # Parameter help description
     [Parameter()]
     [string[]]
-    $Keys = @("HKLM:\SOFTWARE\Classes\clsid", "HKLM:\SOFTWARE\Classes"),
+    $Keys = @("HKLM:\SOFTWARE\Classes\CLSID", "HKLM:\SOFTWARE\Classes", "HKLM:\SOFTWARE\Wow6432Node\Classes", `
+            "HKLM:\SOFTWARE\Wow6432Node\Classes\CLSID", "HKLM:\Software\Microsoft\Office\Outlook\Addins", `
+            "HKCU:\Software\Microsoft\Office\Outlook\Addins"),
 
     [Parameter()]
-    [string]
+    [string[]]
     $Name = "Visio"
 )
 
+# Get current location
+$location = Get-Location
+
+# Walk through $Keys
 ForEach ($key in $Keys) {
-    Push-Location $key
-    $items = Get-ChildItem
-    ForEach ($item in $items) {
-        If (($item | Get-ItemProperty).'(default)' | Where-Object { $_ -like "*$Name *" }) {
-            Write-Output $item.Name
+    Write-Verbose -Message "Checking $key."
+
+    # Change location to $key
+    try {
+        Push-Location $key -ErrorAction SilentlyContinue -ErrorVariable CdError
+    }
+    catch {
+        
+        # If $key is not a valid location, fail somewhat gracefully
+        Write-Error "Unable to change location to $key."
+        Break
+    }
+    finally {
+
+        # Get child keys and match against data in the default values
+        $items = Get-ChildItem
+        ForEach ($item in $items) {
+            ForEach ($string in $Name) {
+                If (($item | Get-ItemProperty).'(default)' | Where-Object { $_ -like "*$string *" }) {
+                    Write-Verbose "Found '$(($item | Get-ItemProperty).'(default)')'."
+                    Write-Output $item.Name
+                }
+            }
         }
     }
-    Pop-Location
 }
+
+# Change back to original location
+Set-Location $location
