@@ -1,55 +1,67 @@
-# Requires -Version 2
+#Requires -Version 2
 <#
-.SYNOPSIS
-   Removes files and folders in the user profile to reduce profile size.
+    .SYNOPSIS
+    Removes files and folders in the user profile to reduce profile size.
 
-.DESCRIPTION
-   Reads a list of files and folders from an XML file to delete data based on age.
-   The script reads an XML file that defines a list of files and folders to remove to reduce profile size.
-   Supports -WhatIf and -Verbose output and returns a list of files removed from the profile.
+    .DESCRIPTION
+    Reads a list of files and folders from an XML file to delete data based on age.
+    The script reads an XML file that defines a list of files and folders to remove to reduce profile size.
+    Supports -WhatIf and -Verbose output and returns a list of files removed from the profile.
 
-.EXAMPLE
-   .\Remove-ProfileData.ps1 -Xml .\targets.xml -WhatIf
+    .PARAMETER Xml
+        Path to an XML file that defines the profile paths to prune and delete
 
-    Description:
-    Reads targets.xml that defines a list of files and folders to delete from the user profile.
-    Reports on the files/folders to delete without deleting them.
+    .PARAMETER Override
+        Override the days value listed for each path in the XML file resulting in forced removal of all files in the path.
 
-.EXAMPLE
-   $Files = .\Remove-ProfileData.ps1 -Xml .\targets.xml -Confirm:$False -Verbose
+    .PARAMETER LogFile
+        Path to file for logging all files that are removed.
 
-    Description:
-    Reads targets.xml that defines a list of files and folders to delete from the user profile.
-    Deletes the targets and returns the list of files into $Files. Also reports on the total size of files removed.
+    .EXAMPLE
+    .\Remove-ProfileData.ps1 -Xml .\targets.xml -WhatIf
 
-.INPUTS
-   XML file that defines target files and folders to remove.
+        Description:
+        Reads targets.xml that defines a list of files and folders to delete from the user profile.
+        Reports on the files/folders to delete without deleting them.
 
-.OUTPUTS
-   System.Array
+    .EXAMPLE
+    $files = .\Remove-ProfileData.ps1 -Xml .\targets.xml -Confirm:$False -Verbose
 
-.NOTES
-   Windows profiles can be cleaned up to reduce profile size and bloat.
-   Use with traditional profile solutions to clean up profiles or with Container-based solution to keep Container sizes to minimum.
+        Description:
+        Reads targets.xml that defines a list of files and folders to delete from the user profile.
+        Deletes the targets and returns the list of files into $files. Also reports on the total size of files removed.
 
-.FUNCTIONALITY
+    .INPUTS
+    XML file that defines target files and folders to remove.
+
+    .OUTPUTS
+    System.String
+
+    .NOTES
+    Windows profiles can be cleaned up to reduce profile size and bloat.
+    Use with traditional profile solutions to clean up profiles or with Container-based solution to keep Container sizes to minimum.
+
+    .FUNCTIONALITY
 
 #>
 [CmdletBinding(SupportsShouldProcess = $true, PositionalBinding = $false, `
-HelpUri = 'https://stealthpuppy.com/', ConfirmImpact = 'High')]
+        HelpUri = 'https://stealthpuppy.com/', ConfirmImpact = 'High')]
 [OutputType([String])]
 Param (
-    [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, 
-        ValueFromRemainingArguments = $false, Position = 0)]
+    [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0)]
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find file $_" } })]
     [Alias("Path")]
-    [string[]]$Xml,
+    [string[]] $Xml,
 
-    [Parameter(Mandatory = $false, ValueFromPipeline = $false, ValueFromPipelineByPropertyName = $false,
-        ValueFromRemainingArguments = $false)]
-    [switch]$Override
+    [Parameter(Mandatory = $false)]
+    [ValidateScript( { If (Test-Path (Split-Path $LogFile -Parent) -PathType 'Container') { $True } Else { Throw "Cannot find log file directory." } })]
+    [string] $LogFile = $(Join-Path (Resolve-Path ".\") $("Remove-ProfileData-" + $((Get-Date).ToFileTimeUtc()) + ".log")),
+
+    [Parameter(Mandatory = $false)]
+    [switch] $Override
 )
+
 Begin {
     Function ConvertTo-Path {
         <#
@@ -104,14 +116,17 @@ Begin {
         #>
         [cmdletbinding()]
         param(
-            [validateset("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
+            [ValidateSet("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
             [Parameter(Mandatory = $true)]
-            [string]$From,
-            [validateset("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
+            [string] $From,
+            
+            [ValidateSet("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
             [Parameter(Mandatory = $true)]
-            [string]$To,
+            [string] $To,
+            
             [Parameter(Mandatory = $true)]
-            [double]$Value,
+            [double] $Value,
+
             [int]$Precision = 2
         )
         # Convert the supplied value to Bytes
@@ -166,7 +181,7 @@ Begin {
         #>
         Param (
             [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True)]
-            [string]$Path
+            [string] $Path
         )
         $Latest = Get-ChildItem -Path $Path | Sort-Object -Descending | Select-Object -First 1
         Get-ChildItem -Path $Path -Exclude $Latest | Remove-Item -Recurse -Force
@@ -180,70 +195,91 @@ Begin {
         #>
         Param (
             [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True)]
-            [string]$Path
+            [string] $Path
         )
         If ((Split-Path -Path $Path -Leaf) -match "[*?]") {
-            $Output = Split-Path -Path $Path -Parent
+            $fileList = Split-Path -Path $Path -Parent
         }
         Else {
-            $Output = $Path
+            $fileList = $Path
         }
-        $Output
+        Write-Output $fileList
     }
 
     # Output array, will contain the list of files/folders removed
-    $Output = @()
+    $fileList = @()
 
     # Measure time taken to gather data
-    $StopWatch = [system.diagnostics.stopwatch]::StartNew()
+    $stopWatch = [system.diagnostics.stopwatch]::StartNew()
+    "[Remove-ProfileData]" | Out-File -FilePath $LogFile -Append
+    Write-Warning "Writing file list to $LogFile."
 }
+
 Process {
     # Read the specifed XML document
-    Try { [xml]$xmlDocument = Get-Content -Path $Xml -ErrorVariable xmlReadError }
-    Catch { Throw "Unable to read: $Xml. $xmlReadError" }
+    Try {
+        [xml] $xmlDocument = Get-Content -Path $Xml -ErrorVariable xmlReadError -ErrorAction SilentlyContinue
+    }
+    Catch {
+        Throw "Unable to read: $Xml. $xmlReadError"
+        Break
+    }
 
     # Select each Target XPath; walk through each target to delete files
-    ForEach ($Target in (Select-Xml -Xml $xmlDocument -XPath "//Target")) {
-        Write-Verbose "Processing target: [$($Target.Node.Name)]"
-        ForEach ($Path in $Target.Node.Path) {
+    ForEach ($target in (Select-Xml -Xml $xmlDocument -XPath "//Target")) {
+        Write-Verbose "Processing target: [$($target.Node.Name)]"
+        ForEach ($path in $target.Node.Path) {
             
             # Convert path from XML with environment variable to actual path
-            $ThisPath = $(ConvertTo-Path -Path $Path.innerText)
-            Write-Verbose "Processing folder: $ThisPath"
+            $thisPath = $(ConvertTo-Path -Path $path.innerText)
+            Write-Verbose "Processing folder: $thisPath"
 
-            # Get file age from Days value in XML; if -Override used, set $DateFilter to now
-            If ($Override) { $DateFilter = Get-Date } Else { $DateFilter = (Get-Date).AddDays( - $Path.Days) }
+            # Get file age from Days value in XML; if -Override used, set $dateFilter to now
+            If ($Override) {
+                $dateFilter = Get-Date
+            }
+            Else {
+                $dateFilter = (Get-Date).AddDays( - $Path.Days)
+            }
 
             # Get files to delete from Paths and file age; build output array
             If (Test-Path -Path $(Get-TestPath -Path $ThisPath) -ErrorAction SilentlyContinue) {
 
-                $Files = Get-ChildItem -Path $ThisPath -Recurse -Force -ErrorAction SilentlyContinue `
-                    | Where-Object { $_.LastWriteTime -le $DateFilter }
-                $Output += $Files
+                # Construct the file list for this folder and add to the full list for logging
+                $files = Get-ChildItem -Path $ThisPath -Recurse -Force -ErrorAction SilentlyContinue `
+                    | Where-Object { $_.LastWriteTime -le $dateFilter }
+                $fileList += $files
 
                 # Delete files with support for -WhatIf
-                ForEach ( $File in $Files ) {
-                    If (Test-Path -Path $File.FullName -ErrorAction SilentlyContinue) {
-                        If ($pscmdlet.ShouldProcess($File.FullName, "Delete")) {
-                            Remove-Item -Path $File.FullName -Force -Recurse -ErrorAction SilentlyContinue
+                ForEach ($file in $files) {
+                    If (Test-Path -Path $file.FullName -ErrorAction SilentlyContinue) {
+                        If ($pscmdlet.ShouldProcess($file.FullName, "Delete")) {
+                            Remove-Item -Path $file.FullName -Force -Recurse -ErrorAction SilentlyContinue
                         }
                     }
-                    ElseIf ( $Error[0].Exception -is [System.UnauthorizedAccessException] ) {
-                        Write-Verbose "[UnauthorizedAccessException] accessing $($File.FullName)"
+                    ElseIf ($Error[0].Exception -is [System.UnauthorizedAccessException]) {
+                        Write-Verbose "[UnauthorizedAccessException] accessing $($file.FullName)"
                     }
                 }
             }
         }
     }
 }
+
 End {
     # Output total size of files deleted
-    $Size = ($Output | Measure-Object -Sum Length).Sum
-    Write-Verbose "Total file size deleted: $(Convert-Size -From B -To MiB -Value $Size) MiB"
+    $size = ($fileList | Measure-Object -Sum Length).Sum
+    Write-Verbose "Total file size deleted: $(Convert-Size -From B -To MiB -Value $size) MiB"
 
-    $StopWatch.Stop()
-    Write-Verbose "Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
+    # Stop time recording
+    $stopWatch.Stop()
+    Write-Verbose "Script took $($stopWatch.Elapsed.TotalMilliseconds) ms to complete."
     
-    # Return the files array (e.g. output for logging)
-    Write-Output $Output
+    # Write deleted file list out to the log file
+    ($fileList | Select-Object FullName).FullName | Out-File -FilePath $LogFile -Append
+    "[Remove-ProfileData: Time to complete $($stopWatch.Elapsed.TotalMilliseconds) ms]" | Out-File -FilePath $LogFile -Append
+    "[Remove-ProfileData: Total file size deleted $(Convert-Size -From B -To MiB -Value $size) MiB]" | Out-File -FilePath $LogFile -Append
+
+    # Return the size of the deleted files in MiB to the pipeline
+    Write-Output (Convert-Size -From B -To MiB -Value $size)
 }
