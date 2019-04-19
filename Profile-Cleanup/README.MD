@@ -1,8 +1,8 @@
 # Profile Cleanup
 
-## **WARNING** - Caveat Emptor
+## WARNING - Caveat Emptor
 
-This script will DELETE target files and folders. Be certain that the targets listed in the XML are OK to be removed. Test and test again before putting the script into production.
+This script will **DELETE** target files and folders. Be certain that the targets listed in the XML are OK to be removed. Test and test again before putting the script into production.
 
 ## About
 
