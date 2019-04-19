@@ -1,0 +1,60 @@
+%LocalAppData%\Apps
+%LocalAppData%\Downloaded Installations
+%LocalAppData%\assembly
+%LocalAppData%\CEF
+%LocalAppData%\Deployment
+%LocalAppData%\FSLogix
+%LocalAppData%\GroupPolicy
+%LocalAppData%\Microsoft Help
+%LocalAppData%\Packages
+%LocalAppData%\Sun
+%LocalAppData%\VirtualStore
+%LocalAppData%\Microsoft\Notifications
+%LocalAppData%\Microsoft\Internet Explorer\DOMStore
+%LocalAppData%\Microsoft\Internet Explorer\Recovery
+%LocalAppData%\Microsoft\MSOIdentityCRL\Tracing
+%LocalAppData%\Microsoft\Messenger
+%LocalAppData%\Microsoft\Terminal Server Client
+%LocalAppData%\Microsoft\UEV
+%LocalAppData%\Microsoft\GraphicsCache
+%LocalAppData%\Microsoft\MSIPC\Logs
+
+%LocalAppData%\Microsoft\Windows\Application Shortcuts
+%LocalAppData%\Microsoft\Windows\Mail
+%LocalAppData%\Microsoft\Windows\WebCache.old
+%LocalAppData%\Microsoft\Windows\AppCache
+%LocalAppData%\Microsoft\Windows\Caches
+%LocalAppData%\Microsoft\Windows\Explorer
+%LocalAppData%\Microsoft\Windows\GameExplorer
+%LocalAppData%\Microsoft\Windows\DNTException
+%LocalAppData%\Microsoft\Windows\IECompatCache
+%LocalAppData%\Microsoft\Windows\iecompatuaCache
+%LocalAppData%\Microsoft\Windows\Notifications
+%LocalAppData%\Microsoft\Windows\PRICache
+%LocalAppData%\Microsoft\Windows\PrivacIE
+%LocalAppData%\Microsoft\Windows\RoamingTiles
+%LocalAppData%\Microsoft\Windows\WebCache
+%LocalAppData%\Microsoft\Windows\1031
+
+%AppData%\Google\Chrome\UserData\BrowserMetrics
+%AppData%\GoogleChrome\UserData\Default\Code Cache\js
+%AppData%\Google\Chrome\UserData\CertificateRevocation
+%AppData%\Google\Chrome\UserData\CertificateTransparency
+%AppData%\Google\Chrome\UserData\Crashpad
+%AppData%\Google\Chrome\UserData\FileTypePolicies
+%AppData%\Google\Chrome\UserData\InterventionPolicyDatabase
+%AppData%\Google\Chrome\UserData\MEIPreload
+%AppData%\Google\Chrome\UserData\PepperFlash
+%AppData%\Google\Chrome\UserData\pnacl
+%AppData%\Google\Chrome\UserData\Safe Browsing
+%AppData%\Google\Chrome\UserData\ShaderCache
+%AppData%\Google\Chrome\UserData\SSLErrorAssistant
+%AppData%\Google\Chrome\UserData\Subresource Filter
+%AppData%\Google\Chrome\UserData\SwReporter
+%AppData%\Google\Chrome\UserData\Default\JumpListIcons
+%AppData%\Google\Chrome\UserData\Default\JumpListIconsOld
+
+%AppData%\com.adobe.formscentral.FormsCentralForAcrobat
+
+        <!--        <Path Action="Delete" Days="0">%LocalAppData%\Diagnostics</Path> -->
+        <!--        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\SchCache</Path> -->

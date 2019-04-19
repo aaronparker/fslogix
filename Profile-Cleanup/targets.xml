@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Targets>
     <Target Name="Windows">
-        <Path Action="Delete" Days="0">%TEMP%</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\Temporary Internet Files</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\Explorer\IconCacheToDelete</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\Explorer\ThumbCacheToDelete</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\INetCache\IE</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\INetCache\Low</Path>
-<!--        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\SchCache</Path> -->
-        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\AppCache</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\WebCache</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Windows\History</Path>
-        <Path Action="Delete" Days="0">%LocalAppData%\Microsoft\Windows\WER</Path>
-        <Path Action="Delete" Days="0">%LocalAppData%\Microsoft\MSOIdentityCRL\Tracing</Path>
-        <Path Action="Delete" Days="0">%LocalAppData%\CrashDumps</Path>
-<!--        <Path Action="Delete" Days="0">%LocalAppData%\Diagnostics</Path> -->
-        <Path Action="Delete" Days="0">%LocalAppData%\Package Cache</Path>
+        <Path Action="Delete">%TEMP%</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\Temporary Internet Files</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\Explorer\IconCacheToDelete</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\Explorer\ThumbCacheToDelete</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\INetCache\IE</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\INetCache\Low</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\AppCache</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\WebCache</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\History</Path>
+        <Path Action="Delete">%LocalAppData%\Microsoft\Windows\WER</Path>
+        <Path Action="Delete">%LocalAppData%\Microsoft\Windows\CrashReports</Path>
+        <Path Action="Delete">%LocalAppData%\Microsoft\MSOIdentityCRL\Tracing</Path>
+        <Path Action="Delete">%LocalAppData%\CrashDumps</Path>
+        <Path Action="Delete">%LocalAppData%\Package Cache</Path>
+        <Path Action="Delete">%LocalAppData%\D3DSCache</Path>
+        <Path Action="Delete">%LocalAppData%\Microsoft\TokenBroker\Cache</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\Cookies</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\DNTException</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\IECompatCache</Path>
@@ -24,13 +25,15 @@
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Windows\IETldCache</Path>
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Installer</Path>
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Windows\Recent\*.lnk</Path>
+        <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\Network Shortcuts</Path>
+        <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\Printer Shortcuts</Path>
         <Path Action="Prune" Days="10">%USERPROFILE%\Downloads</Path>
         <Path Action="Prune" Days="30">%USERPROFILE%\AppData\LocalLow\Microsoft\Windows\AppCache</Path>
     </Target>
     <Target Name="Mozilla Firefox">
         <Path Action="Prune" Days="1">%AppData%\Mozilla\Firefox\Crash Reports</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Mozilla\Firefox\Profiles\*\cache</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Mozilla\Firefox\Profiles\*\cache2</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Mozilla\Firefox\Profiles\*\cache</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Mozilla\Firefox\Profiles\*\cache2</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Mozilla\Firefox\Profiles\*\OfflineCache</Path>
         <Path Action="Prune" Days="60">%LocalAppData%\Mozilla\Firefox\Profiles\*\jumpListCache</Path>
         <Path Action="Prune" Days="60">%LocalAppData%\Mozilla\Firefox\Profiles\*\startupCache</Path>
@@ -43,7 +46,7 @@
         <Path Action="Prune" Days="30">%AppData%\Slack\Cache</Path>
         <Path Action="Prune" Days="30">%AppData%\Slack\GPUCache</Path>
         <Path Action="Prune" Days="30">%AppData%\Slack\Local Storage</Path>
-        <Path Action="Prune" Days="5">%AppData%\Slack\logs</Path>
+        <Path Action="Prune" Days="7">%AppData%\Slack\logs</Path>
     </Target>
     <Target Name="Microsoft Yammer">
         <Path Action="Prune" Days="30">%AppData%\Yammer\Cache</Path>
@@ -54,13 +57,14 @@
     </Target>
     <Target Name="Microsoft Teams">
         <Path Action="Prune" Days="1">%AppData%\Teams\logs</Path>
+        <Path Action="Prune" Days="1">%AppData%\Microsoft Teams\logs</Path>
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Teams\Application Cache</Path>
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Teams\Cache</Path>
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Teams\GPUCache</Path>
-        <Path Action="Prune" Days="5">%AppData%\Microsoft\Teams\DownloadedUpdate</Path>
+        <Path Action="Prune" Days="7">%AppData%\Microsoft\Teams\DownloadedUpdate</Path>
     </Target>
     <Target Name="Microsoft Visual Studio Code">
-        <Path Action="Prune" Days="5">%AppData%\Code\logs</Path>
+        <Path Action="Prune" Days="7">%AppData%\Code\logs</Path>
         <Path Action="Prune" Days="30">%AppData%\Code\Cache</Path>
         <Path Action="Prune" Days="30">%AppData%\Code\CachedData</Path>
         <Path Action="Prune" Days="30">%AppData%\Code\GPUCache</Path>
@@ -78,19 +82,27 @@
         <Path Action="Prune" Days="7">%AppData%\Microsoft\Word\*.wbk</Path>
         <Path Action="Prune" Days="7">%AppData%\Microsoft\Word\*.wbk</Path>
         <Path Action="Prune" Days="7">%AppData%\Microsoft\Word\*.tmp</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Microsoft\Office\16.0\Lync\Tracing</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Office\16.0\Lync\Tracing</Path>
     </Target>
-    <Target Name="Citrix Receiver">
-        <Path Action="Prune" Days="5">%AppData%\ICAClient\Cache</Path>
+    <Target Name="Microsoft OneDrive">
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft OneDrive\Update\OneDriveSetup.exe</Path>
+    </Target>
+    <Target Name="Citrix Workspace app">
+        <Path Action="Prune" Days="7">%AppData%\ICAClient\Cache</Path>
+        <Path Action="Prune" Days="7">%AppData%\Citrix\PNAgent\AppCache</Path>
+        <Path Action="Prune" Days="7">%AppData%\Citrix\PNAgent\IconCache</Path>
+        <Path Action="Prune" Days="7">%AppData%\Citrix\PNAgent\ResourceCache</Path>
     </Target>
     <Target Name="LogMeIn GoToMeeting">
-        <Path Action="KeepLatest" Days="5">%LocalAppData%\GoToMeeting</Path>
+        <Path Action="Trim">%LocalAppData%\GoToMeeting</Path>
     </Target>
     <Target Name="Adobe Flash Player">
         <Path Action="Prune" Days="30">%AppData%\Macromedia\Flash Player\#SharedObjects</Path>
     </Target>
-    <Target Name="Adobe Reader">
-        <Path Action="Prune" Days="5">%LocalAppData%\Adobe\AcroCef\DC\Acrobat\Cache</Path>
+    <Target Name="Adobe Acrobat">
+        <Path Action="Prune" Days="7">%LocalAppData%\Adobe\AcroCef\DC\Acrobat\Cache</Path>
+        <Path Action="Prune" Days="7">%AppData%\Adobe\SLData</Path>
+        <Path Action="Prune" Days="7">%AppData%\Adobe\Common\Media Cache Files</Path>
     </Target>
     <Target Name="Microsoft Edge">
         <Path Action="Prune" Days="30">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache</Path>
@@ -101,7 +113,7 @@
         <Path Action="Prune" Days="30">%LocalAppData%\Packages\Microsoft.BingNews_8wekyb3d8bbwe\AC\Microsoft\CryptnetUrlCache</Path>
     </Target>
     <Target Name="Google Chrome">
-        <Path Action="Prune" Days="5">%LocalAppData%\Google\Chrome\User Data\*.tmp</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Google\Chrome\User Data\*.tmp</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Cache</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\CacheStorage</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\Database</Path>
@@ -109,17 +121,17 @@
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Local Storage</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Media Cache</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\ScriptCache</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Google\Sotware Reporter Tool\*.log</Path>
-        <Path Action="Prune" Days="5">%LocalAppData%\Google\Sotware Reporter Tool\reports\*.dmp</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Google\Sotware Reporter Tool\*.log</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Google\Sotware Reporter Tool\reports\*.dmp</Path>
     </Target>
     <Target Name="Symantec Endpoint Protection">
         <Path Action="Prune" Days="1">%LocalAppData%\Symantec\Symantec Endpoint Protection\Logs</Path>
     </Target>
     <Target Name="Cisco WebEx">
-        <Path Action="Prune" Days="5">%LocalAppData%\WebEx\wbxcache</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\WebEx\wbxcache</Path>
     </Target>
     <Target Name="CheckPoint Cloud Connector">
-        <Path Action="Delete" Days="0">%LocalAppData%\CheckPoint\Cloud Connector\*.log.?</Path>
+        <Path Action="Delete">%LocalAppData%\CheckPoint\Cloud Connector\*.log.?</Path>
     </Target>
     <Target Name="Spotify">
         <Path Action="Prune" Days="10">%LocalAppData%\Spotify\Browser\Cache</Path>
@@ -127,9 +139,14 @@
         <Path Action="Prune" Days="10">%LocalAppData%\Spotify\Storage</Path>
     </Target>
     <Target Name="Grammarly">
-        <Path Action="Delete" Days="0">%AppData%\Grammarly\Updates</Path>
+        <Path Action="Delete">%AppData%\Grammarly\Updates</Path>
     </Target>
     <Target Name="Xink">
-        <Path Action="Delete" Days="0">%AppData%\Xink\Xink Client\updates\*.msi</Path>
+        <Path Action="Delete">%AppData%\Xink\Xink Client\updates\*.msi</Path>
+    </Target>
+    <Target Name="Oracle Java">
+        <Path Action="Prune" Days="10">%AppData%\Sun\Java\Deployment\cache</Path>
+        <Path Action="Prune" Days="10">%AppData%\Sun\Java\Deployment\log</Path>
+        <Path Action="Prune" Days="10">%AppData%\Sun\Java\Deployment\tmp</Path>
     </Target>
 </Targets>
