@@ -271,7 +271,8 @@ Process {
                             }
                         }
 
-                        "Delete" { 
+                        "Delete" {
+                            # Delete the target folder
                             If ($pscmdlet.ShouldProcess($thisPath, "Delete")) {
                                 Remove-Item -Path $thisPath -Force -Recurse -ErrorAction SilentlyContinue
                             }
@@ -281,10 +282,11 @@ Process {
                         }
 
                         "Trim" {
+                            # Determine sub-folders of the target path to delete
                             $folders = Get-AllExceptLatest -Path $thisPath
                             ForEach ($folder in $folders) {
                                 If ($pscmdlet.ShouldProcess($thisPath, "Trim")) {
-                                    Remove-Item -Path $thisPath -Force -Recurse -ErrorAction SilentlyContinue
+                                    Remove-Item -Path $folder -Force -Recurse -ErrorAction SilentlyContinue
                                 }
                                 ElseIf ($Error[0].Exception -is [System.UnauthorizedAccessException]) {
                                     Write-Verbose -Message "[UnauthorizedAccessException] accessing $($file.FullName)"
@@ -293,7 +295,7 @@ Process {
                         }
                     
                         Default {
-                            Write-Verbose -Message "Unable to determine action for $thisPath"
+                            Write-Verbose -Message "[Unable to determine action for $thisPath]"
                         }
                     }
                 }
@@ -304,18 +306,23 @@ Process {
 
 End {
     # Output total size of files deleted
-    $size = ($fileList | Measure-Object -Sum Length).Sum
-    $size = Convert-Size -From B -To MiB -Value $size
+    If ($fileList.Count -gt 1) {
+        $size = ($fileList | Measure-Object -Sum Length).Sum
+        $size = Convert-Size -From B -To MiB -Value $size
+    }
+    Else {
+        $size = 0
+    }
     Write-Verbose -Message "Total file size deleted: $size MiB"
+
+    # Write deleted file list out to the log file
+    ($fileList | Select-Object FullName).FullName | Out-File -FilePath $LogFile -Append
 
     # Stop time recording
     $stopWatch.Stop()
-    Write-Verbose -Message "Script took $($stopWatch.Elapsed.TotalMilliseconds) ms to complete."
-    
-    # Write deleted file list out to the log file
-    ($fileList | Select-Object FullName).FullName | Out-File -FilePath $LogFile -Append
     "[Remove-ProfileData: Time to complete $($stopWatch.Elapsed.TotalMilliseconds) ms]" | Out-File -FilePath $LogFile -Append
     "[Remove-ProfileData: Total file size deleted $size MiB]" | Out-File -FilePath $LogFile -Append
+    Write-Verbose -Message "Script took $($stopWatch.Elapsed.TotalMilliseconds) ms to complete."
 
     # Return the size of the deleted files in MiB to the pipeline
     Write-Output "Total file size deleted: $size MiB"
