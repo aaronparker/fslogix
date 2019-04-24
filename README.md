@@ -9,3 +9,7 @@ To report on FSLogix Containers usage, you can use `Get-FileStats.ps1` to retrie
 ## Profile-Cleanup\Remove-ProfileData.ps1
 
 `Remove-ProfileData.ps1` is used to delete files and folders in the user profile to reduce profile size, thus keeping Profile Containers sizes to a minimum. The script reads an XML file that defines a list of files and folders to remove from the profile.
+
+## Rules\Get-AppRegistry.ps1
+
+`Get-AppRegistry.ps1` returns Registry keys from well known locations that contain application information to return application keys for App Masking rules.
