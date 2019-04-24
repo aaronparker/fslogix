@@ -16,4 +16,10 @@ Supports `-WhatIf` and `-Verbose` output and returns a list of files removed fro
 
 Deleting files from the profile can potentially result in data loss, so testing is advised and the use of `-Confirm:$false` is required for the script perform a delete.
 
+Usage:
+
+```powershell
+.\Remove-ProfileData.ps1 -Targets .\targets.xml
+``
+
 ![Output from Remove-ProfileData.png](https://raw.githubusercontent.com/aaronparker/FSLogix/master/img/ProfileDataOutput.png "Output from Remove-ProfileData.png")

@@ -39,7 +39,7 @@
         Description:
         Scans the specified path returns the age and owner for each .vhdx file.
 #>
-[CmdletBinding(SupportsShouldProcess = $False, HelpUri = 'https://github.com/aaronparker/FSLogix/')]
+[CmdletBinding(SupportsShouldProcess = $False, HelpUri = 'https://github.com/aaronparker/FSLogix/Stats/README.MD')]
 [OutputType([System.Array])]
 Param (
     [Parameter(Mandatory = $True, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
@@ -103,45 +103,45 @@ Begin {
         )
         # Convert the supplied value to Bytes
         switch -casesensitive ($From) {
-            "b" {$value = $value / 8 }
-            "B" {$value = $Value }
-            "KB" {$value = $Value * 1000 }
-            "KiB" {$value = $value * 1024 }
-            "MB" {$value = $Value * 1000000 }
-            "MiB" {$value = $value * 1048576 }
-            "GB" {$value = $Value * 1000000000 }
-            "GiB" {$value = $value * 1073741824 }
-            "TB" {$value = $Value * 1000000000000 }
-            "TiB" {$value = $value * 1099511627776 }
-            "PB" {$value = $value * 1000000000000000 }
-            "PiB" {$value = $value * 1125899906842624 }
-            "EB" {$value = $value * 1000000000000000000 }
-            "EiB" {$value = $value * 1152921504606850000 }
-            "ZB" {$value = $value * 1000000000000000000000 }
-            "ZiB" {$value = $value * 1180591620717410000000 }
-            "YB" {$value = $value * 1000000000000000000000000 }
-            "YiB" {$value = $value * 1208925819614630000000000 }
+            "b" { $value = $value / 8 }
+            "B" { $value = $Value }
+            "KB" { $value = $Value * 1000 }
+            "KiB" { $value = $value * 1024 }
+            "MB" { $value = $Value * 1000000 }
+            "MiB" { $value = $value * 1048576 }
+            "GB" { $value = $Value * 1000000000 }
+            "GiB" { $value = $value * 1073741824 }
+            "TB" { $value = $Value * 1000000000000 }
+            "TiB" { $value = $value * 1099511627776 }
+            "PB" { $value = $value * 1000000000000000 }
+            "PiB" { $value = $value * 1125899906842624 }
+            "EB" { $value = $value * 1000000000000000000 }
+            "EiB" { $value = $value * 1152921504606850000 }
+            "ZB" { $value = $value * 1000000000000000000000 }
+            "ZiB" { $value = $value * 1180591620717410000000 }
+            "YB" { $value = $value * 1000000000000000000000000 }
+            "YiB" { $value = $value * 1208925819614630000000000 }
         }
         # Convert the number of Bytes to the desired output
         switch -casesensitive ($To) {
-            "b" {$value = $value * 8}
-            "B" {return $value }
-            "KB" {$Value = $Value / 1000 }
-            "KiB" {$value = $value / 1024 }
-            "MB" {$Value = $Value / 1000000 }
-            "MiB" {$Value = $Value / 1048576 }
-            "GB" {$Value = $Value / 1000000000 }
-            "GiB" {$Value = $Value / 1073741824 }
-            "TB" {$Value = $Value / 1000000000000 }
-            "TiB" {$Value = $Value / 1099511627776 }
-            "PB" {$Value = $Value / 1000000000000000 }
-            "PiB" {$Value = $Value / 1125899906842624 }
-            "EB" {$Value = $Value / 1000000000000000000 }
-            "EiB" {$Value = $Value / 1152921504606850000 }
-            "ZB" {$value = $value / 1000000000000000000000 }
-            "ZiB" {$value = $value / 1180591620717410000000 }
-            "YB" {$value = $value / 1000000000000000000000000 }
-            "YiB" {$value = $value / 1208925819614630000000000 }
+            "b" { $value = $value * 8 }
+            "B" { return $value }
+            "KB" { $Value = $Value / 1000 }
+            "KiB" { $value = $value / 1024 }
+            "MB" { $Value = $Value / 1000000 }
+            "MiB" { $Value = $Value / 1048576 }
+            "GB" { $Value = $Value / 1000000000 }
+            "GiB" { $Value = $Value / 1073741824 }
+            "TB" { $Value = $Value / 1000000000000 }
+            "TiB" { $Value = $Value / 1099511627776 }
+            "PB" { $Value = $Value / 1000000000000000 }
+            "PiB" { $Value = $Value / 1125899906842624 }
+            "EB" { $Value = $Value / 1000000000000000000 }
+            "EiB" { $Value = $Value / 1152921504606850000 }
+            "ZB" { $value = $value / 1000000000000000000000 }
+            "ZiB" { $value = $value / 1180591620717410000000 }
+            "YB" { $value = $value / 1000000000000000000000000 }
+            "YiB" { $value = $value / 1208925819614630000000000 }
         }
         [Math]::Round($value, $Precision, [MidPointRounding]::AwayFromZero)
     }
@@ -166,12 +166,12 @@ Process {
         }
 
         # Create an array from what was returned for specific data and sort on file path
-        $Files += $items | Select-Object @{Name = "Location"; Expression = {$_.Directory}}, `
-        @{Name = "ContainerName"; Expression = {$_.Name}}, 
-        @{Name = "Owner"; Expression = {(Get-Acl -Path $_.FullName).Owner}}, `
-        @{Name = "Size"; Expression = {"$(Convert-Size -From B -To MiB -Value $_.Length) MiB"}}, `
-        @{Name = "LastWriteTime"; Expression = {$_.LastWriteTime}}, `
-        @{Name = "LastAccessTime"; Expression = {$_.LastAccessTime}}
+        $Files += $items | Select-Object @{Name = "Location"; Expression = { $_.Directory } }, `
+        @{Name = "ContainerName"; Expression = { $_.Name } }, 
+        @{Name = "Owner"; Expression = { (Get-Acl -Path $_.FullName).Owner } }, `
+        @{Name = "Size"; Expression = { "$(Convert-Size -From B -To MiB -Value $_.Length) MiB" } }, `
+        @{Name = "LastWriteTime"; Expression = { $_.LastWriteTime } }, `
+        @{Name = "LastAccessTime"; Expression = { $_.LastAccessTime } }
     }
     Else {
         Write-Error "Path does not exist: $Path"
@@ -181,5 +181,6 @@ End {
     # Return the array of file paths and metadata
     $StopWatch.Stop()
     Write-Verbose "File stats trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
-    $Files | Sort-Object -Property @{Expression = "LastWriteTime"; Descending = $True}, @{Expression = "Name"; Descending = $False}
+    $output = $Files | Sort-Object -Property @{Expression = "LastWriteTime"; Descending = $True }, @{Expression = "Name"; Descending = $False }
+    Write-Output $output
 }

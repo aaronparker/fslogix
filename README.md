@@ -2,14 +2,10 @@
 
 Various scripts for use with FSLogix Apps, Containers etc.
 
-## Get-FileStats.ps1
+## Stats\Get-FileStats.ps1
 
-To report on FSLogix Containers usage, you can use Get-FileStats.ps1 to retrieve the file size, last write time, last modifed time and file owner for Containers (.vhdx, .vhdx) files in a target file share.
+To report on FSLogix Containers usage, you can use `Get-FileStats.ps1` to retrieve the file size, last write time, last modifed time and file owner for Containers (.vhdx, .vhdx) files in a target file share.
 
-Example - this will retrieve details for container files in a target share and output the results to a Gridview window:
+## Profile-Cleanup\Remove-ProfileData.ps1
 
-    .\Get-FileStats.ps1 -Path \\server\share\folder -Include *.vhd, *.vhdx | Out-GridView
-
-Outputing a view similar to this:
-
-![File stats for FSLogix Containers](https://raw.githubusercontent.com/aaronparker/FSLogix/master/img/FileStatsGridView.PNG "File stats for FSLogix Containers")
+`Remove-ProfileData.ps1` is used to delete files and folders in the user profile to reduce profile size, thus keeping Profile Containers sizes to a minimum. The script reads an XML file that defines a list of files and folders to remove from the profile.
