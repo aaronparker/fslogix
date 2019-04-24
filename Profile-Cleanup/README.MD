@@ -20,6 +20,6 @@ Usage:
 
 ```powershell
 .\Remove-ProfileData.ps1 -Targets .\targets.xml
-``
+```
 
 ![Output from Remove-ProfileData.png](https://raw.githubusercontent.com/aaronparker/FSLogix/master/img/ProfileDataOutput.png "Output from Remove-ProfileData.png")

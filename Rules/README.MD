@@ -10,4 +10,4 @@ The following example will find keys related to Microsoft Visio
 
 ```powershell
 Get-AppRegistry.ps1 -Name "Visio"
-``
+```
