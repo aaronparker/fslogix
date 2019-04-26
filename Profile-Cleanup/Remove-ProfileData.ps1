@@ -26,11 +26,11 @@
         Reports on the files/folders to delete without deleting them.
 
     .EXAMPLE
-    $files = .\Remove-ProfileData.ps1 -Targets .\targets.xml -Confirm:$False -Verbose
+    .\Remove-ProfileData.ps1 -Targets .\targets.xml -Confirm:$False -Verbose
 
         Description:
         Reads targets.xml that defines a list of files and folders to delete from the user profile.
-        Deletes the targets and returns the list of files into $files. Also reports on the total size of files removed.
+        Deletes the targets and reports on the total size of files removed.
 
     .INPUTS
     XML file that defines target files and folders to remove.
@@ -215,7 +215,14 @@ Begin {
 
     # Measure time taken to gather data
     $stopWatch = [system.diagnostics.stopwatch]::StartNew()
-    "[Remove-ProfileData]" | Out-File -FilePath $LogFile -Append
+    If ($WhatIfPreference -eq $True) {
+        $WhatIfPreference = $False
+        "[Remove-ProfileData] WhatIf mode" | Out-File -FilePath $LogFile -Append
+        $WhatIfPreference = $True
+    }
+    Else {
+        "[Remove-ProfileData] Delete mode" | Out-File -FilePath $LogFile -Append
+    }
     Write-Warning -Message "Writing file list to $LogFile."
 }
 
@@ -242,7 +249,7 @@ Process {
                 Write-Verbose -Message "Processing folder: $thisPath"
 
                 # Get files to delete from Paths and file age; build output array
-                If (Test-Path -Path $(Get-TestPath -Path $ThisPath) -ErrorAction SilentlyContinue) {
+                If (Test-Path -Path $(Get-TestPath -Path $thisPath) -ErrorAction SilentlyContinue) {
 
                     Switch ($path.Action) {
                         "Prune" {
@@ -255,7 +262,7 @@ Process {
                             }
 
                             # Construct the file list for this folder and add to the full list for logging
-                            $files = Get-ChildItem -Path $ThisPath -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -le $dateFilter }
+                            $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -le $dateFilter }
                             $fileList += $files
 
                             # Delete files with support for -WhatIf
@@ -272,6 +279,10 @@ Process {
                         }
 
                         "Delete" {
+                            # Construct the file list for this folder and add to the full list for logging
+                            $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue
+                            $fileList += $files
+
                             # Delete the target folder
                             If ($pscmdlet.ShouldProcess($thisPath, "Delete")) {
                                 Remove-Item -Path $thisPath -Force -Recurse -ErrorAction SilentlyContinue
@@ -284,7 +295,13 @@ Process {
                         "Trim" {
                             # Determine sub-folders of the target path to delete
                             $folders = Get-AllExceptLatest -Path $thisPath
+
                             ForEach ($folder in $folders) {
+
+                                # Construct the file list for this folder and add to the full list for logging
+                                $files = Get-ChildItem -Path $folder -Recurse -Force -ErrorAction SilentlyContinue
+                                $fileList += $files
+
                                 If ($pscmdlet.ShouldProcess($thisPath, "Trim")) {
                                     Remove-Item -Path $folder -Force -Recurse -ErrorAction SilentlyContinue
                                 }
@@ -316,12 +333,15 @@ End {
     Write-Verbose -Message "Total file size deleted: $size MiB"
 
     # Write deleted file list out to the log file
+    If ($WhatIfPreference -eq $True) { $WhatIfPreference = $False }
+    "[Remove-ProfileData] File list start" | Out-File -FilePath $LogFile -Append
     ($fileList | Select-Object FullName).FullName | Out-File -FilePath $LogFile -Append
+    "[Remove-ProfileData] File list end" | Out-File -FilePath $LogFile -Append
 
     # Stop time recording
     $stopWatch.Stop()
-    "[Remove-ProfileData: Time to complete $($stopWatch.Elapsed.TotalMilliseconds) ms]" | Out-File -FilePath $LogFile -Append
-    "[Remove-ProfileData: Total file size deleted $size MiB]" | Out-File -FilePath $LogFile -Append
+    "[Remove-ProfileData] Time to complete $($stopWatch.Elapsed.TotalMilliseconds) ms" | Out-File -FilePath $LogFile -Append
+    "[Remove-ProfileData] Total file size deleted $size MiB" | Out-File -FilePath $LogFile -Append
     Write-Verbose -Message "Script took $($stopWatch.Elapsed.TotalMilliseconds) ms to complete."
 
     # Return the size of the deleted files in MiB to the pipeline
