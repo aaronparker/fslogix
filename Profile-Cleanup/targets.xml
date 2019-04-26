@@ -182,4 +182,7 @@
         <Path Action="Prune" Days="10">%AppData%\Sun\Java\Deployment\log</Path>
         <Path Action="Prune" Days="10">%AppData%\Sun\Java\Deployment\tmp</Path>
     </Target>
+    <Target Name="OpenVPN">
+        <Path Action="Delete">%USERPROFILE%\\OpenVPN\log\*.log</Path>
+    </Target>
 </Targets>
