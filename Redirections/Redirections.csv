@@ -2,76 +2,76 @@ Action,Copy,Path,Description
 Exclude,0,Videos,Videos folder
 Exclude,0,Saved Games,Saved Games folder
 Exclude,0,Contacts,Windows Contacts
-Exclude,0,Citrix,
-Exclude,0,Tracing,Debugging logs
+Exclude,0,Citrix,Citrix
+Exclude,0,Tracing,Skype for Business debug logs
 Exclude,0,Music,Music folder
+Exclude,0,Downloads,Downloads folder
 Exclude,0,$Recycle.Bin,User's Recycle bin folder
-Exclude,0,AppData\LocalLow,
-Exclude,0,AppData\Local\Apps,
-Exclude,0,AppData\Local\Downloaded Installations,
-Exclude,0,AppData\Local\assembly,
-Exclude,0,AppData\Local\CEF,
-Exclude,0,AppData\Local\Deployment,
-Exclude,0,AppData\Local\GroupPolicy,
-Exclude,0,AppData\Local\Microsoft Help,
-Exclude,0,AppData\Local\Sun,
-Exclude,0,AppData\Local\VirtualStore,
+Exclude,0,AppData\LocalLow,Low Integrity Local AppData
+Exclude,0,AppData\Local\Apps,Microsoft Windows
+Exclude,0,AppData\Local\Downloaded Installations,Microsoft Windows
+Exclude,0,AppData\Local\assembly,Microsoft Windows
+Exclude,0,AppData\Local\CEF,Microsoft Windows
+Exclude,0,AppData\Local\Deployment,Microsoft Windows
+Exclude,0,AppData\Local\GroupPolicy,Group Policy
+Exclude,0,AppData\Local\Microsoft Help,Microsoft Help
+Exclude,0,AppData\Local\Sun,Sun Java cache
+Exclude,0,AppData\Local\VirtualStore,UAC redirection
+Exclude,0,AppData\Local\CrashDumps, Windows application crash dumps
+Exclude,0,AppData\Local\Package Cache, Package cache
+Exclude,0,AppData\Local\D3DSCache, D3DSCache
+Exclude,0,AppData\Local\Microsoft\TokenBroker\Cache, Token Broker cache
 Exclude,0,AppData\Local\Microsoft\Notifications,
 Exclude,0,AppData\Local\Microsoft\Internet Explorer\DOMStore,
 Exclude,0,AppData\Local\Microsoft\Internet Explorer\Recovery,
-Exclude,0,AppData\Local\Microsoft\MSOIdentityCRL\Tracing,
-Exclude,0,AppData\Local\Microsoft\Messenger,
-Exclude,0,AppData\Local\Microsoft\Terminal Server Client,
-Exclude,0,AppData\Local\Microsoft\UEV,
-Exclude,0,AppData\Local\Microsoft\Windows\Application Shortcuts,
-Exclude,0,AppData\Local\Microsoft\Windows\Mail,
-Exclude,0,AppData\Local\Microsoft\Windows\WebCache.old,
-Exclude,0,AppData\Local\Microsoft\Windows\AppCache,
-Exclude,0,AppData\Local\Microsoft\Windows\Caches,
-Exclude,0,AppData\Local\Microsoft\Windows\Explorer,
-Exclude,0,AppData\Local\Microsoft\Windows\GameExplorer,
-Exclude,0,AppData\Local\Microsoft\Windows\DNTException,
-Exclude,0,AppData\Local\Microsoft\Windows\IECompatCache,
-Exclude,0,AppData\Local\Microsoft\Windows\iecompatuaCache,
-Exclude,0,AppData\Local\Microsoft\Windows\Notifications,
-Exclude,0,AppData\Local\Microsoft\Windows\PRICache,
-Exclude,0,AppData\Local\Microsoft\Windows\PrivacIE,
-Exclude,0,AppData\Local\Microsoft\Windows\RoamingTiles,
-Exclude,0,AppData\Local\Microsoft\Windows\SchCache,
-Exclude,0,AppData\Local\Microsoft\Windows\Temporary Internet Files,
-Exclude,0,AppData\Local\Microsoft\Windows\WebCache,
-Exclude,0,AppData\Local\Microsoft\Windows\1031,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\BrowserMetrics,
-Exclude,0,AppData\Roaming\GoogleChrome\UserData\Default\Code Cache\js,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\CertificateRevocation,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\CertificateTransparency,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\Crashpad,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\FileTypePolicies,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\InterventionPolicyDatabase,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\MEIPreload,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\PepperFlash,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\pnacl,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\Safe Browsing,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\ShaderCache,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\SSLErrorAssistant,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\Subresource Filter,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\SwReporter,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\Default\JumpListIcons,
-Exclude,0,AppData\Roaming\Google\Chrome\UserData\Default\JumpListIconsOld,
-Exclude,0,AppData\Roaming\com.adobe.formscentral.FormsCentralForAcrobat,
-Exclude,0,AppData\Roaming\Adobe\Acrobat\DC,
-Exclude,0,AppData\Roaming\Adobe\SLData,
-Exclude,0,AppData\Roaming\Microsoft\Document Building Blocks,
-Exclude,0,AppData\Roaming\Microsoft\Windows\Network Shortcuts,
-Exclude,0,AppData\Roaming\Microsoft\Windows\Printer Shortcuts,
-Exclude,0,AppData\Roaming\Sun\Java\Deployment\cache,
-Exclude,0,AppData\Roaming\Sun\Java\Deployment\log,
-Exclude,0,AppData\Roaming\Sun\Java\Deployment\tmp,
-Exclude,0,AppData\Roaming\Sun\Java\Deployment\tmp,
-Exclude,0,AppData\Roaming\Citrix\PNAgent\AppCache,
-Exclude,0,AppData\Roaming\Citrix\PNAgent\IconCache,
-Exclude,0,AppData\Roaming\Citrix\PNAgent\ResourceCache,
-Exclude,0,AppData\Roaming\ICAClient\Cache,
-Exclude,0,AppData\Roaming\Macromedia\Flash Player\macromedia.com\support\flashplayer\sys,
-Exclude,0,AppData\Roaming\Macromedia\Flash Player\macromedia.com\support\flashplayer\flashplayer\#SharedObjects,
-Include,3,AppData\LocalLow\Sun\Java\Deployment\security,
+Exclude,0,AppData\Local\Microsoft\MSOIdentityCRL\Tracing,Microsoft Online Services Sign-in Assistant debug logs
+Exclude,0,AppData\Local\Microsoft\Messenger,Microsoft Messenger
+Exclude,0,AppData\Local\Microsoft\Terminal Server Client,Microsoft Remote Desktop Client cache
+Exclude,0,AppData\Local\Microsoft\UEV,Microsoft UEV
+Exclude,0,AppData\Local\Microsoft\Windows\Application Shortcuts,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\Mail,Microsoft Mail
+Exclude,0,AppData\Local\Microsoft\Windows\WebCache.old,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\AppCache,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\Caches,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\Explorer,Windows Explorer cache
+Exclude,0,AppData\Local\Microsoft\Windows\GameExplorer,Windows Game Explorer cache
+Exclude,0,AppData\Local\Microsoft\Windows\DNTException,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\IECompatCache,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\iecompatuaCache,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\Notifications,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\PRICache,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\PrivacIE,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\RoamingTiles,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\SchCache,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\WebCache,Microsoft Windows
+Exclude,0,AppData\Local\Microsoft\Windows\1031,Microsoft Windows
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\BrowserMetrics,Google Chrome
+Exclude,0,AppData\Roaming\GoogleChrome\UserData\Default\Code Cache\js,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\CertificateRevocation,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\CertificateTransparency,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Crashpad,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\FileTypePolicies,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\InterventionPolicyDatabase,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\MEIPreload,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\PepperFlash,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\pnacl,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Safe Browsing,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\ShaderCache,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\SSLErrorAssistant,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Subresource Filter,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\SwReporter,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Default\JumpListIcons,Google Chrome
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Default\JumpListIconsOld,Google Chrome
+Exclude,0,AppData\Roaming\com.adobe.formscentral.FormsCentralForAcrobat,Adobe Acrobat Forms Central
+Exclude,0,AppData\Roaming\Adobe\Acrobat\DC,Adobe Acrobat
+Exclude,0,AppData\Roaming\Adobe\SLData,Adobe Acrobat
+Exclude,0,AppData\Roaming\Sun\Java\Deployment\cache,Oracle JRE cache folder
+Exclude,0,AppData\Roaming\Sun\Java\Deployment\log,Oracle JRE log folder
+Exclude,0,AppData\Roaming\Sun\Java\Deployment\tmp,Oracle JRE temp folder
+Exclude,0,AppData\Roaming\Citrix\PNAgent\AppCache,Citrix Workspace app cache
+Exclude,0,AppData\Roaming\Citrix\PNAgent\IconCache,Citrix Workspace app cache
+Exclude,0,AppData\Roaming\Citrix\PNAgent\ResourceCache,Citrix Workspace app cache
+Exclude,0,AppData\Roaming\ICAClient\Cache,Citrix Workspace app cache
+Exclude,0,AppData\Roaming\Macromedia\Flash Player\macromedia.com\support\flashplayer\sys,Adobe Flash Player
+Exclude,0,AppData\Roaming\Macromedia\Flash Player\macromedia.com\support\flashplayer\flashplayer\#SharedObjects,Adobe Flash Player cookies and cache
+Include,3,AppData\LocalLow\Sun\Java\Deployment\security,Java exception site list
