@@ -13,3 +13,7 @@ To report on FSLogix Containers usage, you can use `Get-FileStats.ps1` to retrie
 ## Rules\Get-AppRegistry.ps1
 
 `Get-AppRegistry.ps1` returns Registry keys from well known locations that contain application information to return application keys for App Masking rules.
+
+## Redirections\ConvertTo-RedirectionsXml.ps1
+
+`ConvertTo-RedirectionsXml.ps1` is used to convert a list of folder redirections into the correct XML format for use with Profile Containers.
