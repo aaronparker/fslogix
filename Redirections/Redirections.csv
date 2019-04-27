@@ -1,12 +1,11 @@
 Action,Copy,Path,Description
-Exclude,0,Videos,
-Exclude,0,Saved Games,
-Exclude,0,Contacts,
-Exclude,0,Searches,
+Exclude,0,Videos,Videos folder
+Exclude,0,Saved Games,Saved Games folder
+Exclude,0,Contacts,Windows Contacts
 Exclude,0,Citrix,
-Exclude,0,Tracing,
-Exclude,0,Music,
-Exclude,0,$Recycle.Bin,
+Exclude,0,Tracing,Debugging logs
+Exclude,0,Music,Music folder
+Exclude,0,$Recycle.Bin,User's Recycle bin folder
 Exclude,0,AppData\LocalLow,
 Exclude,0,AppData\Local\Apps,
 Exclude,0,AppData\Local\Downloaded Installations,

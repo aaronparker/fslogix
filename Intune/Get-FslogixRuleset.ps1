@@ -1,4 +1,4 @@
-# Requires -Version 3
+#Requires -Version 3
 <#
     .SYNOPSIS
         Gets an FSLogix App Masking ruleset from a specified location; Downloads to the local rules folder.
