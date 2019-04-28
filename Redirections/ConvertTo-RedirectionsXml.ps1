@@ -1,9 +1,47 @@
+<#PSScriptInfo
+
+.VERSION 0.1
+
+.GUID 118b1874-d4b2-45bc-a698-f91f9568416c
+
+.AUTHOR Aaron Parker
+
+.COMPANYNAME stealthpuppy
+
+.COPYRIGHT 2019, Aaron Parker. All rights reserved.
+
+.TAGS FSLogix Profile-Containers
+
+.LICENSEURI https://github.com/aaronparker/FSLogix/blob/master/LICENSE
+
+.PROJECTURI https://github.com/aaronparker/FSLogix/tree/master/Redirections
+
+.ICONURI
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+
+.RELEASENOTES
+First version
+
+.PRIVATEDATA
+#>
 #Requires -Version 3
 <#
     .SYNOPSIS
         Converts an input CSV file into an FSLogix Redirections.xml
 
     .DESCRIPTION
+        Converts an input CSV file into an FSLogix Redirections.xml
+
+    .PARAMETER Redirections
+        The URI to the Redirections.csv hosted in the FSLogix repo.
+
+    .PARAMETER OutFile
+        A local file to save the output to. The default output file will be Redirections.xml in the curent directory.
         
     .NOTES
         Author: Aaron Parker
@@ -11,6 +49,16 @@
 
     .LINK
         https://stealthpuppy.com
+
+    .EXAMPLE
+        ConvertTo-RedirectionsXml.ps1
+
+        Output Redirections.xml to the current directory.
+
+    .EXAMPLE
+        ConvertTo-RedirectionsXml.ps1 -OutFile C:\Temp\Redirections.xml
+
+        Output Redirections.xml to the C:\Temp\Redirections.xml.
 #>
 [CmdletBinding()]
 Param (
