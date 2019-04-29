@@ -49,6 +49,14 @@ Describe "General project validation" {
     }
 }
 
+Describe "Script info validation" {
+    It "Should pass Test-ScriptFileInfo" {
+        ForEach ($script in $scripts) {
+            { Test-ScriptFileInfo -Path $script.FullName } | Should -Not -Throw
+        }
+    }
+}
+
 Describe "ConvertTo-RedirectionsXml.ps1" {
     If (Test-Path -Path (Join-Path $PWD "redirections.xml")) { Remove-Item -Path (Join-Path $PWD "redirections.xml") -Force }
     ForEach ($script in $scripts) {
