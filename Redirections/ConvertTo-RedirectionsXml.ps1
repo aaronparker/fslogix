@@ -135,7 +135,7 @@ Else {
     # Append the FrxProfileFolderRedirection root node to the XML document
     $xmlDoc.AppendChild($root) | Out-Null
 
-    # Check supplied output path and save to an XML file
+    # Check supplied output path and resolve full path
     $Parent = Split-Path -Path $OutFile -Parent
     If ($Parent.Length -eq 0) {
         $Parent = $PWD
@@ -144,7 +144,14 @@ Else {
         $Parent = Resolve-Path -Path $Parent
     }
     $output = Join-Path $Parent (Split-Path -Path $OutFile -Leaf)
-    $xmlDoc.Save($output)
+
+    # Save to an XML file
+    Try {
+        $xmlDoc.Save($output)
+    }
+    Catch {
+        Throw "Failed when saving XML to path: $output."
+    }
 
     # Write the output file path to the pipeline
     Write-Output $output
