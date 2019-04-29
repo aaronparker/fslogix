@@ -52,12 +52,14 @@ Describe "General project validation" {
 Describe "ConvertTo-RedirectionsXml.ps1" {
     If (Test-Path -Path (Join-Path $PWD "redirections.xml")) { Remove-Item -Path (Join-Path $PWD "redirections.xml") -Force }
     ForEach ($script in $scripts) {
+        # Run the script to create the redirections.xml locally
         Write-Host -ForegroundColor Cyan "Script: $($script.FullName)"
         $file = . $script.FullName -Verbose
     }
 
     It "Should output redirections.xml to disk" {
         Write-Host -ForegroundColor Cyan "File: $file"
+        Write-Host ""
         $file | Should Exist
     }
 
@@ -66,6 +68,9 @@ Describe "ConvertTo-RedirectionsXml.ps1" {
         $Xml = $Content | ConvertTo-Xml
         $Xml | Should -BeOfType System.Xml.XmlNode
     }
+
+    # Remove redirections.xml to ensure a clean state for next test run
+    Remove-Item -Path $file -Force
 }
 
 Describe "Test Redirections CSV source" {
@@ -73,11 +78,24 @@ Describe "Test Redirections CSV source" {
         $r = Invoke-WebRequest -Uri $RedirectionsUri -UseBasicParsing
         $r.StatusCode | Should -Be "200"
     }
+}
 
+Describe "Convert from CSV format" {
     It "Should convert from CSV format" {
         $Csv = Get-RedirectionsCsv
         $Redirections = ($Csv.Content | ConvertFrom-Csv)
         $Redirections | Should -BeOfType PSCustomObject
+    }
+
+    It "Should have expected properties" {
+        $Csv = Get-RedirectionsCsv
+        $Redirections = ($Csv.Content | ConvertFrom-Csv)
+        $Redirections | Should -BeOfType PSCustomObject
+
+        $Redirections.Action.Length | Should -BeGreaterThan 0
+        $Redirections.Copy.Length | Should -BeGreaterThan 0
+        $Redirections.Path.Length | Should -BeGreaterThan 0
+        $Redirections.Description.Length | Should -BeGreaterThan 0
     }
 }
 #endregion

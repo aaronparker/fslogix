@@ -1,6 +1,5 @@
 <#PSScriptInfo
-
-.VERSION 0.1
+.VERSION 1.0.1
 
 .GUID 118b1874-d4b2-45bc-a698-f91f9568416c
 
@@ -17,25 +16,22 @@
 .PROJECTURI https://github.com/aaronparker/FSLogix/tree/master/Redirections
 
 .ICONURI
-
 .EXTERNALMODULEDEPENDENCIES 
-
 .REQUIREDSCRIPTS
-
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-First version
+    - April 2019, Initial version
 
 .PRIVATEDATA
 #>
 #Requires -Version 3
 <#
     .SYNOPSIS
-        Converts an input CSV file into an FSLogix Redirections.xml
+        Converts a correctly formatted input CSV file into an FSLogix Redirections.xml for use with Profile Container.
 
     .DESCRIPTION
-        Converts an input CSV file into an FSLogix Redirections.xml
+        Downloads the redirections data from the source repo hosted on GitHub and converts the input CSV file into an FSLogix Redirections.xml.
 
     .PARAMETER Redirections
         The URI to the Redirections.csv hosted in the FSLogix repo.
@@ -60,7 +56,8 @@ First version
 
         Output Redirections.xml to the C:\Temp\Redirections.xml.
 #>
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess = $True, HelpURI = "https://github.com/aaronparker/FSLogix/blob/master/Redirections/README.MD")]
+[OutputType([String])]
 Param (
     [Parameter(Mandatory = $false)]
     [string] $Redirections = "https://raw.githubusercontent.com/aaronparker/FSLogix/master/Redirections/Redirections.csv",
@@ -71,44 +68,65 @@ Param (
 
 # Read the file and convert from CSV
 Try {
-    $Paths = (Invoke-WebRequest -Uri $Redirections -UseBasicParsing).Content | ConvertFrom-Csv
+    $Content = Invoke-WebRequest -Uri $Redirections -UseBasicParsing
 }
 Catch {
-    Write-Error -Message "Failed to read source file."
+    Throw "Failed to read source file at $Redirections. Check that the URI exists or this machine has access to the internet."
+}
+If ($Null -ne $Content) {
+    Try {
+        $Paths = $Content.Content | ConvertFrom-Csv
+    }
+    Catch {
+        Throw "Failed to convert CSV content."
+    }
 }
 
+# Convert
 If ($Null -eq $Paths) {
-    Write-Warning -Message "List of paths is null."
+    Write-Error -Message "List of redirection paths is null."
 }
 Else {
+    # Strings
+    $xmlVersion = "1.0"
+    $xmlEncoding = "UTF-8"
+    $xmlComment = "Generated $(Get-Date -Format yyyy-MM-dd) from $Redirections"
+    $xmlRootNode = "FrxProfileFolderRedirection"
+    $xmlRootNodeAttribute1 = "ExcludeCommonFolders"
+    $xmlRootNodeAttribute1Value = "0"
+    $xmlExcludeNode = "Excludes"
+    $xmlExcludeNodeElement = "Exclude"
+    $xmlIncludeNode = "Includes"
+    $xmlIncludeNodeElement = "Include"
+    $xmlNodeAttribute1 = "Copy"
+
     # Create the XML document
     [xml] $xmlDoc = New-Object System.Xml.XmlDocument
-    $declaration = $xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", $Null)
+    $declaration = $xmlDoc.CreateXmlDeclaration($xmlVersion, $xmlEncoding, $Null)
     $xmlDoc.AppendChild($declaration) | Out-Null
 
     # Add a comment with generation details
-    $comment = "Generated $(Get-Date -Format yyyy-MM-dd) from $Redirections"
-    $xmlDoc.AppendChild($xmlDoc.CreateComment($comment)) | Out-Null
+    $xmlDoc.AppendChild($xmlDoc.CreateComment($xmlComment)) | Out-Null
 
     # Create the FrxProfileFolderRedirection root node
-    $root = $xmlDoc.CreateNode("element", "FrxProfileFolderRedirection", $Null)
-    $root.SetAttribute("ExcludeCommonFolders", "0")
+    $root = $xmlDoc.CreateNode("element", $xmlRootNode, $Null)
+    $root.SetAttribute($xmlRootNodeAttribute1, $xmlRootNodeAttribute1Value)
 
     # Create the Excludes child node of FrxProfileFolderRedirection
-    $excludes = $xmlDoc.CreateNode("element", "Excludes", $Null)
-    ForEach ($path in ($Paths | Where-Object { $_.Action -eq "Exclude" })) {
-        $node = $xmlDoc.CreateElement("Exclude")
-        $node.SetAttribute("Copy", $path.Copy)
+    $excludes = $xmlDoc.CreateNode("element", $xmlExcludeNode, $Null)
+    ForEach ($path in ($Paths | Where-Object { $_.Action -eq $xmlExcludeNodeElement })) {
+        $node = $xmlDoc.CreateElement($xmlExcludeNodeElement)
+        $node.SetAttribute($xmlNodeAttribute1, $path.Copy)
         $node.InnerText = $path.Path
         $excludes.AppendChild($node) | Out-Null
     }
     $root.AppendChild($excludes) | Out-Null
 
     # Create the Includes child node of FrxProfileFolderRedirection
-    $includes = $xmlDoc.CreateNode("element", "Includes", $Null)
-    ForEach ($path in ($Paths | Where-Object { $_.Action -eq "Include" })) {
-        $node = $xmlDoc.CreateElement("Include")
-        $node.SetAttribute("Copy", $path.Copy)
+    $includes = $xmlDoc.CreateNode("element", $xmlIncludeNode, $Null)
+    ForEach ($path in ($Paths | Where-Object { $_.Action -eq $xmlIncludeNodeElement })) {
+        $node = $xmlDoc.CreateElement($xmlIncludeNodeElement)
+        $node.SetAttribute($xmlNodeAttribute1, $path.Copy)
         $node.InnerText = $path.Path
         $includes.AppendChild($node) | Out-Null
     }
@@ -117,7 +135,7 @@ Else {
     # Append the FrxProfileFolderRedirection root node to the XML document
     $xmlDoc.AppendChild($root) | Out-Null
 
-    # Check path and output to an XML file
+    # Check supplied output path and save to an XML file
     $Parent = Split-Path -Path $OutFile -Parent
     If ($Parent.Length -eq 0) {
         $Parent = $PWD
