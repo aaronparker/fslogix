@@ -2,12 +2,10 @@ Action,Copy,Path,Description
 Exclude,0,Videos,Videos folder
 Exclude,0,Saved Games,Saved Games folder
 Exclude,0,Contacts,Windows Contacts
-Exclude,0,Citrix,Citrix
 Exclude,0,Tracing,Skype for Business debug logs
 Exclude,0,Music,Music folder
 Exclude,0,Downloads,Downloads folder
 Exclude,0,$Recycle.Bin,User's Recycle bin folder
-Exclude,0,AppData\LocalLow,Low Integrity Local AppData
 Exclude,0,AppData\Local\Apps,Microsoft Windows
 Exclude,0,AppData\Local\Downloaded Installations,Microsoft Windows
 Exclude,0,AppData\Local\assembly,Microsoft Windows
@@ -18,12 +16,11 @@ Exclude,0,AppData\Local\Microsoft Help,Microsoft Help
 Exclude,0,AppData\Local\Sun,Sun Java cache
 Exclude,0,AppData\Local\VirtualStore,UAC redirection
 Exclude,0,AppData\Local\CrashDumps, Windows application crash dumps
-Exclude,0,AppData\Local\Package Cache, Package cache
-Exclude,0,AppData\Local\D3DSCache, D3DSCache
+Exclude,0,AppData\Local\Package Cache,Package cache
+Exclude,0,AppData\Local\D3DSCache,D3DSCache
 Exclude,0,AppData\Local\Microsoft\TokenBroker\Cache, Token Broker cache
-Exclude,0,AppData\Local\Microsoft\Notifications,
-Exclude,0,AppData\Local\Microsoft\Internet Explorer\DOMStore,
-Exclude,0,AppData\Local\Microsoft\Internet Explorer\Recovery,
+Exclude,0,AppData\Local\Microsoft\Notifications,Windows 10 notifications & live tiles
+Exclude,0,AppData\Local\Microsoft\Internet Explorer\DOMStore,Internet Explorer persistent client-side data
 Exclude,0,AppData\Local\Microsoft\MSOIdentityCRL\Tracing,Microsoft Online Services Sign-in Assistant debug logs
 Exclude,0,AppData\Local\Microsoft\Messenger,Microsoft Messenger
 Exclude,0,AppData\Local\Microsoft\Terminal Server Client,Microsoft Remote Desktop Client cache
@@ -74,4 +71,7 @@ Exclude,0,AppData\Roaming\Citrix\PNAgent\ResourceCache,Citrix Workspace app cach
 Exclude,0,AppData\Roaming\ICAClient\Cache,Citrix Workspace app cache
 Exclude,0,AppData\Roaming\Macromedia\Flash Player\macromedia.com\support\flashplayer\sys,Adobe Flash Player
 Exclude,0,AppData\Roaming\Macromedia\Flash Player\macromedia.com\support\flashplayer\flashplayer\#SharedObjects,Adobe Flash Player cookies and cache
+Exclude,0,AppData\Roaming\ConnectWise\CrashDumps,ConnectWise crash dumps
+Exclude,0,AppData\Roaming\ConnectWise\cache,ConnectWise cache
+Exclude,0,AppData\LocalLow,Low Integrity Local AppData
 Include,3,AppData\LocalLow\Sun\Java\Deployment\security,Java exception site list

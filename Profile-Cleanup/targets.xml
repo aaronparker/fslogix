@@ -184,4 +184,8 @@
     <Target Name="OpenVPN">
         <Path Action="Delete">%USERPROFILE%\OpenVPN\log\*.log</Path>
     </Target>
+    <Target Name="ConnectWise">
+        <Path Action="Prune" Days="7">%AppData%\ConnectWise\CrashDumps</Path>
+        <Path Action="Prune" Days="7">%AppData%\ConnectWise\cache</Path>
+    </Target>
 </Targets>
