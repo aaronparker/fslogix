@@ -11,18 +11,36 @@ Contributions to the list of folders to exclude or include from the Profile Cont
 1. [Fork the repo](https://help.github.com/en/articles/fork-a-repo), update `redirections.csv` and create a [Pull Request](https://help.github.com/en/desktop/contributing-to-projects/creating-a-pull-request)
 2. If would prefer not to create a pull request, you can instead [create a new issue to request an addition or improvement](https://github.com/aaronparker/FSLogix/issues/new?assignees=&labels=&template=custom.md&title=)
 
+## Install the Script
+
+There are two methods for installing the script:
+
+1. Install from the [PowerShell Gallery](https://www.powershellgallery.com/packages/ConvertTo-RedirectionsXml/). This is the preferred method as the installation can be handled directly from Windows PowerShell or PowerShell Core with the following command:
+
+    ```powershell
+    Install-Script -Name ConvertTo-RedirectionsXml
+    ```
+
+2. Download from this repository. `ConvertTo-RedirectionsXml.ps1` can be downloaded directly from this repository and saved to a preferred location.
+
 ## Creating Redirections.xml
 
-`ConvertTo-RedirectionsXml.ps1` is used to convert the CSV list into the correct XML format for use with Profile Containers. This script will read the `redirections.csv` from GitHub repo and output `redirections.xml` locally for use with Profile Containers.
+`ConvertTo-RedirectionsXml` is used to convert the CSV list into the correct XML format for use with Profile Containers. This script will read the `Redirections.csv` from GitHub repo and output `Redirections.xml` locally for use with Profile Containers.
 
-To output `redirections.xml` to the current folder, just run the script without arguments.
+To output `Redirections.xml` to the current folder, just run the script without arguments.
 
 ```powershell
-ConvertTo-RedirectionsXml.ps1
+ConvertTo-RedirectionsXml
 ```
 
 A custom path can be provided for the output file - for example, the following command will output the file to `C:\Temp\Redirections.xml`:
 
 ```powershell
-ConvertTo-RedirectionsXml.ps1 -OutFile C:\Temp\Redirections.xml
+ConvertTo-RedirectionsXml -OutFile C:\Temp\Redirections.xml
+```
+
+If you have saved the script locally instead of installing from the PowerShell Gallery, remember to run the script with the correct synatx:
+
+```powershell
+.\ConvertTo-RedirectionsXml.ps1
 ```

@@ -1,4 +1,5 @@
 <#PSScriptInfo
+
 .VERSION 1.0.1
 
 .GUID 118b1874-d4b2-45bc-a698-f91f9568416c
@@ -11,13 +12,18 @@
 
 .TAGS FSLogix Profile-Containers
 
+.DESCRIPTION Converts a correctly formatted input CSV file into an FSLogix Redirections.xml for use with FSLogix Profile Containers. Downloads the redirections data from the source repo hosted on GitHub and converts the input CSV file into an FSLogix Redirections.xml.
+
 .LICENSEURI https://github.com/aaronparker/FSLogix/blob/master/LICENSE
 
 .PROJECTURI https://github.com/aaronparker/FSLogix/tree/master/Redirections
 
 .ICONURI
+
 .EXTERNALMODULEDEPENDENCIES 
+
 .REQUIREDSCRIPTS
+
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
@@ -25,13 +31,12 @@
 
 .PRIVATEDATA
 #>
-#Requires -Version 3
 <#
     .SYNOPSIS
         Converts a correctly formatted input CSV file into an FSLogix Redirections.xml for use with Profile Container.
 
     .DESCRIPTION
-        Downloads the redirections data from the source repo hosted on GitHub and converts the input CSV file into an FSLogix Redirections.xml.
+        Converts a correctly formatted input CSV file into an FSLogix Redirections.xml for use with FSLogix Profile Containers. Downloads the redirections data from the source repo hosted on GitHub and converts the input CSV file into an FSLogix Redirections.xml.
 
     .PARAMETER Redirections
         The URI to the Redirections.csv hosted in the FSLogix repo.
