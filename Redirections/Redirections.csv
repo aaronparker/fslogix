@@ -1,14 +1,14 @@
-Action,Copy,Path,Description
-Exclude,0,Videos,Videos folder
-Exclude,0,Saved Games,Saved Games folder
-Exclude,0,Contacts,Windows Contacts
-Exclude,0,Tracing,Skype for Business debug logs
-Exclude,0,Music,Music folder
-Exclude,0,Downloads,Downloads folder
-Exclude,0,$Recycle.Bin,User's Recycle bin folder
-Exclude,0,AppData\Local\Apps,Microsoft Windows
-Exclude,0,AppData\Local\Downloaded Installations,Microsoft Windows
-Exclude,0,AppData\Local\assembly,Microsoft Windows
+Action,Copy,Path,Description,Notes
+Exclude,0,Videos,Videos folder,Omit if redirected to the network
+Exclude,0,Saved Games,Saved Games folder,Omit if redirected to the network
+Exclude,0,Contacts,Windows Contacts,Omit if redirected to the network
+Exclude,0,Music,Music folder,Omit if redirected to the network
+Exclude,0,Downloads,Downloads folder,Omit if redirected to the network
+Exclude,0,$Recycle.Bin,User's Recycle bin folder,Omit if GPO manages Recycle Bin
+Exclude,0,Tracing,Skype for Business debug logs,Path can be pointed to %TEMP% via Registry
+Exclude,0,AppData\Local\Apps,Microsoft Windows,May be required for UWP and other apps
+Exclude,0,AppData\Local\Downloaded Installations,Microsoft Windows,May break per-user installed apps
+Exclude,0,AppData\Local\assembly,.NET Framework Shadow Copies,May impact performance of .NET apps
 Exclude,0,AppData\Local\CEF,Microsoft Windows
 Exclude,0,AppData\Local\Deployment,Microsoft Windows
 Exclude,0,AppData\Local\GroupPolicy,Group Policy
