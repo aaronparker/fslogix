@@ -50,8 +50,8 @@ Describe "General project validation" {
 }
 
 Describe "Script info validation" {
-    It "Should pass Test-ScriptFileInfo" {
-        ForEach ($script in $scripts) {
+    ForEach ($script in $scripts) {
+        It "Should pass Test-ScriptFileInfo" {
             { Test-ScriptFileInfo -Path $script.FullName } | Should -Not -Throw
         }
     }
@@ -81,25 +81,33 @@ Describe "ConvertTo-RedirectionsXml.ps1" {
     Remove-Item -Path $file -Force
 }
 
-Describe "Test Redirections CSV source" {
+Describe "Test Redirections.csv GitHub source" {
     It "Should exist at the known URL" {
         $r = Invoke-WebRequest -Uri $RedirectionsUri -UseBasicParsing
         $r.StatusCode | Should -Be "200"
     }
 }
 
+Describe "Test local Redirections.csv as input" {
+    Invoke-WebRequest -Uri $RedirectionsUri -OutFile (Join-Path $PWD "RedirectionsLocal.csv") -UseBasicParsing
+    ForEach ($script in $scripts) {
+        It "Should read Redirections.csv from local disk" {
+            { . $script.FullName -Redirections (Join-Path $PWD "RedirectionsLocal.csv") } | Should -Not -Throw
+        }
+    }
+    Remove-Item -Path (Join-Path $PWD "RedirectionsLocal.csv") -Force
+}
+
 Describe "Convert from CSV format" {
+    $Csv = Invoke-WebRequest -Uri $RedirectionsUri -UseBasicParsing
+
     It "Should convert from CSV format" {
-        $Csv = Get-RedirectionsCsv
         $Redirections = ($Csv.Content | ConvertFrom-Csv)
         $Redirections | Should -BeOfType PSCustomObject
     }
 
     It "Should have expected properties" {
-        $Csv = Get-RedirectionsCsv
         $Redirections = ($Csv.Content | ConvertFrom-Csv)
-        $Redirections | Should -BeOfType PSCustomObject
-
         $Redirections.Action.Length | Should -BeGreaterThan 0
         $Redirections.Copy.Length | Should -BeGreaterThan 0
         $Redirections.Path.Length | Should -BeGreaterThan 0

@@ -2,7 +2,7 @@
 
 A list of folder redirections for use with FSLogix Profile Containers and a method for generating the list in the expected XML format. See [Controlling the Content of the Profile Container](https://docs.fslogix.com/display/20170529/Controlling+the+Content+of+the+Profile+Container) for more details.
 
-The list of redirections (`Redirections.csv`) is hosted here in CSV format so that it can be easily rendered in a table when viewed on GitHub and to simplify adding to or updating the list.
+The list of redirections (`Redirections.csv`) is hosted here in CSV format so that it can be [rendered in a table when viewed on GitHub](https://help.github.com/en/articles/rendering-csv-and-tsv-data) and to simplify adding to or updating the list.
 
 ## Test Before Implementing in Production
 

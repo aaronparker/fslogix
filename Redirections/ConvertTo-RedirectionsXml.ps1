@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.1
+.VERSION 1.0.2
 
 .GUID 118b1874-d4b2-45bc-a698-f91f9568416c
 
@@ -10,7 +10,7 @@
 
 .COPYRIGHT 2019, Aaron Parker. All rights reserved.
 
-.TAGS FSLogix Profile-Containers
+.TAGS FSLogix Profile-Containers Profile
 
 .DESCRIPTION Converts a correctly formatted input CSV file into an FSLogix Redirections.xml for use with FSLogix Profile Containers. Downloads the redirections data from the source repo hosted on GitHub and converts the input CSV file into an FSLogix Redirections.xml.
 
@@ -27,7 +27,8 @@
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-    - April 2019, Initial version
+    - April 2019, 1.0.1, Initial version
+    - April 2019, 1.0.2, Support local Redirections.csv as input
 
 .PRIVATEDATA
 #>
@@ -71,19 +72,44 @@ Param (
     [string] $OutFile = "Redirections.xml"
 )
 
-# Read the file and convert from CSV
-Try {
-    $Content = Invoke-WebRequest -Uri $Redirections -UseBasicParsing
-}
-Catch {
-    Throw "Failed to read source file at $Redirections. Check that the URI exists or this machine has access to the internet."
-}
-If ($Null -ne $Content) {
+# Read the file and convert from CSV. Support https or local file source
+If ($Redirections -match "http.*://") {
     Try {
-        $Paths = $Content.Content | ConvertFrom-Csv
+        $Content = Invoke-WebRequest -Uri $Redirections -UseBasicParsing
     }
     Catch {
-        Throw "Failed to convert CSV content."
+        Throw "Failed to read source file at $Redirections. Check that the URI exists or this machine has access to the internet."
+    }
+    # Convert the content from CSV into an object
+    If ($Null -ne $Content) {
+        Try {
+            $Paths = $Content.Content | ConvertFrom-Csv
+        }
+        Catch {
+            Throw "Failed to convert CSV content."
+        }
+    }
+}
+Else {
+    If (Test-Path -Path (Resolve-Path -Path $Redirections)) {
+        Try {
+            $Content = Get-Content -Path (Resolve-Path -Path $Redirections) -Raw
+        }
+        Catch {
+            Throw "Failed to read source file at $Redirections. Check that the file content is valid."
+        }
+    }
+    Else {
+        Throw "Failed to read source file at $Redirections. Check that the path exists."
+    }
+    # Convert the content from CSV into an object
+    If ($Null -ne $Content) {
+        Try {
+            $Paths = $Content | ConvertFrom-Csv
+        }
+        Catch {
+            Throw "Failed to convert CSV content."
+        }
     }
 }
 
