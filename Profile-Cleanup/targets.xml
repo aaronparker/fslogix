@@ -145,13 +145,13 @@
     </Target>
     <Target Name="Google Chrome">
         <Path Action="Prune" Days="7">%LocalAppData%\Google\Chrome\User Data\*.tmp</Path>
-        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Cache</Path>
-        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\CacheStorage</Path>
-        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\Database</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\*\Cache</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\*\Service Worker\CacheStorage</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\*\Service Worker\Database</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\ShaderCache\GPUCache</Path>
-        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Local Storage</Path>
-        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Media Cache</Path>
-        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\Default\Service Worker\ScriptCache</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\*\Local Storage</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\*\Media Cache</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Google\Chrome\User Data\*\Service Worker\ScriptCache</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Google\Sotware Reporter Tool\*.log</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Google\Sotware Reporter Tool\reports\*.dmp</Path>
     </Target>
@@ -187,5 +187,35 @@
     <Target Name="ConnectWise">
         <Path Action="Prune" Days="7">%AppData%\ConnectWise\CrashDumps</Path>
         <Path Action="Prune" Days="7">%AppData%\ConnectWise\cache</Path>
+    </Target>
+    <Target Name="WhatsApp">
+        <Path Action="Prune" Days="10">%LocalAppData%\WhatsApp\*\Resources</Path>
+        <Path Action="Prune" Days="10">%LocalAppData%\WhatsApp\*\Locales</Path>
+    </Target>
+    <Target Name="GitHub Desktop">
+        <Path Action="Prune" Days="10">%LocalAppData%\GitHubDesktop\*\Resources</Path>
+        <Path Action="Prune" Days="10">%LocalAppData%\GitHubDesktop\*\Locales</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\GitHubDesktop\*</Path>
+    </Target>
+    <Target Name="Slack">
+        <Path Action="Prune" Days="30">%AppData%\Slack\*\Resources</Path>
+        <Path Action="Prune" Days="30">%AppData%\Slack\*\Locales</Path>
+    </Target>
+    <Target Name="Edge Dev">
+        <Path Action="Prune" Days="30">%AppData%\Edge Dev\User Data\*\Cache</Path>
+        <Path Action="Prune" Days="30">%AppData%\Edge Dev\User Data\*\Local Storage</Path>
+        <Path Action="Prune" Days="30">%AppData%\Edge Dev\User Data\*\GPUCache</Path>
+    </Target>
+    <Target Name="LogMeIn GoToAssist Remote Support Customer">
+        <Path Action="Prune" Days="10">%LocalAppData%\GoToAssist Remote Support Customer</Path>
+    </Target>
+    <Target Name="LogMeIn GoTo Opener">
+        <Path Action="Prune" Days="10">%LocalAppData%\GoTo Opener</Path>
+    </Target>
+    <Target Name="KaseyaLiveConnect">
+        <Path Action="Prune" Days="10">%LocalAppData%\Kaseya\Log\KaseyaLiveConnect</Path>
+        <Path Action="Prune" Days="10">%LocalAppData%\Kaseya\Data\KaseyaLiveConnect\Web\Cache</Path>
+        <Path Action="Prune" Days="10">%LocalAppData%\Kaseya\Data\KaseyaLiveConnect\Web\GPUCache</Path>
+        <Path Action="Prune" Days="10">%LocalAppData%\Kaseya\Data\KaseyaLiveConnect\Web\Local Storage</Path>
     </Target>
 </Targets>
