@@ -73,6 +73,8 @@
         <Path Action="Prune" Days="30">%AppData%\Slack\GPUCache</Path>
         <Path Action="Prune" Days="30">%AppData%\Slack\Local Storage</Path>
         <Path Action="Prune" Days="7">%AppData%\Slack\logs</Path>
+        <Path Action="Prune" Days="30">%AppData%\Slack\*\Resources</Path>
+        <Path Action="Prune" Days="30">%AppData%\Slack\*\Locales</Path>
     </Target>
     <Target Name ="Electron">
         <Path Action="Prune" Days="7">%LocalAppData%\SquirrelTemp</Path>
@@ -195,11 +197,6 @@
     <Target Name="GitHub Desktop">
         <Path Action="Prune" Days="10">%LocalAppData%\GitHubDesktop\*\Resources</Path>
         <Path Action="Prune" Days="10">%LocalAppData%\GitHubDesktop\*\Locales</Path>
-        <Path Action="Prune" Days="30">%LocalAppData%\GitHubDesktop\*</Path>
-    </Target>
-    <Target Name="Slack">
-        <Path Action="Prune" Days="30">%AppData%\Slack\*\Resources</Path>
-        <Path Action="Prune" Days="30">%AppData%\Slack\*\Locales</Path>
     </Target>
     <Target Name="Edge Dev">
         <Path Action="Prune" Days="30">%AppData%\Edge Dev\User Data\*\Cache</Path>
