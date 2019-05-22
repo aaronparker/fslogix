@@ -1,3 +1,11 @@
+<#
+    .SYNOPSIS
+        Create a container and copy in target OST/PST file
+
+    .NOTES
+        https://github.com/FSLogix/Fslogix.Powershell.Disk/tree/master/Dave%20Young/Ost%20Migration/Release
+#>
+
 [CmdletBinding(SupportsShouldProcess = $True)]
 [OutputType([String])]
 Param (
@@ -22,12 +30,13 @@ Param (
     [string] $VHDLocation = "\\server\FSLogixContainers",
 
     [Parameter(Mandatory = $False)]
-    [string] $FileType = "*.ost"
+    [string[]] $FileType = "*.ost"
 )
 
 Set-StrictMode -Version Latest
 #Requires -RunAsAdministrator
 #Requires -Modules "ActiveDirectory"
+#Requires -Modules "Hyper-V"
 #Requires -Modules "FsLogix.PowerShell.Disk"
 
 # Variables
@@ -135,7 +144,9 @@ Set-Location -path (Split-Path -Path $FrxPath -Parent)
 
 Try {
     # Get AD group members
-    $groupMembers = Get-AdGroupMember -Identity $Group -Recursive -ErrorAction Stop
+    If ($pscmdlet.ShouldProcess($Group, "Get member")) {
+        $groupMembers = Get-AdGroupMember -Identity $Group -Recursive -ErrorAction Stop
+    }
 }
 Catch {
     Write-Warning -Message "Error Code: $(Get-LineNumber)"
@@ -143,7 +154,7 @@ Catch {
 }
 
 ForEach ($User in $groupMembers) {
-    Write-Verbose -Message "Generate container: $User.SamAccountName."
+    Write-Verbose -Message "Generate container: $($User.SamAccountName)."
     Try {
         If ($flipFlop) {
             $Directory = New-FslDirectory -SamAccountName $User.SamAccountName -SID $User.SID -Destination $VHDLocation `
@@ -166,12 +177,16 @@ ForEach ($User in $groupMembers) {
     Write-Verbose -Message "VHDLocation: $vhdPath."
 
     If (Test-Path -Path $vhdPath) {
-        Remove-Item -Path $vhdPath -Force -ErrorAction SilentlyContinue
+        If ($pscmdlet.ShouldProcess($vhdPath, "Remove")) {
+            Remove-Item -Path $vhdPath -Force -ErrorAction SilentlyContinue
+        }
     }
     Try {
         $cmd = Resolve-Path -Path ".\frx.exe"
         $arguments = "create-vhd -filename $vhdPath -size-mbs=$VHDSize -dynamic=$vhdIsDynamic -label $($User.SamAccountName)"
-        Invoke-Process -FilePath $cmd -ArgumentList $arguments
+        If ($pscmdlet.ShouldProcess($vhdPath, "Create VHD")) {
+            Invoke-Process -FilePath $cmd -ArgumentList $arguments
+        }
     }
     Catch {
         Write-Warning -Message "Error Code: $(Get-LineNumber)"
@@ -196,7 +211,9 @@ ForEach ($User in $groupMembers) {
     }
     Write-Verbose -Message "Applying security permissions for $($User.samAccountName)."
     Try {
-        Add-FslPermissions -User $User.samAccountName -folder $Directory
+        If ($pscmdlet.ShouldProcess($User.samAccountName, "Add permissions")) {
+            Add-FslPermissions -User $User.samAccountName -folder $Directory
+        }
         Write-Verbose -Message "Successfully applied security permissions for $($User.samAccountName)."
     }
     Catch {
@@ -234,13 +251,17 @@ ForEach ($User in $groupMembers) {
     Write-Verbose -Message "Create junction point."
     Try {
         If ($assignDriveLetter) {
-            $MountPath = Add-FslDriveLetter -Path $vhdPath -Passthru
-            Write-Verbose -Message "VHD mounted on: $MountPath"
+            If ($pscmdlet.ShouldProcess($vhdPath, "Mount")) {
+                $MountPath = Add-FslDriveLetter -Path $vhdPath -Passthru
+                Write-Verbose -Message "VHD mounted on: $MountPath"
+            }
         }
         Else {
-            $Mount = Mount-FslDisk -Path $vhdPath -ErrorAction Stop -PassThru
-            $MountPath = $Mount.Path
-            Write-Verbose -Message "Created junction point: $MountPath"
+            If ($pscmdlet.ShouldProcess($vhdPath, "Mount")) {
+                $Mount = Mount-FslDisk -Path $vhdPath -ErrorAction Stop -PassThru
+                $MountPath = $Mount.Path
+                Write-Verbose -Message "Created junction point: $MountPath"
+            }
         }
     }
     Catch {
@@ -252,12 +273,16 @@ ForEach ($User in $groupMembers) {
     Write-Verbose -Message "Copy OST File"
     $dataFileDestination = Join-Path $MountPath $ODFCPath
     If (-not (Test-Path -Path $dataFileDestination)) {
-        New-Item -ItemType Directory -Path $dataFileDestination -Force | Out-Null
+        If ($pscmdlet.ShouldProcess($dataFileDestination, "Create")) {
+            New-Item -ItemType Directory -Path $dataFileDestination -Force | Out-Null
+        }
     }
     ForEach ($dataFile in $dataFiles) {
         Try {
             Write-Verbose -Message "Copy file $($dataFile.FullName) to $ODFCPath."
-            Copy-FslToDisk -VHD $vhdPath -Path $dataFile.FullName -Destination $ODFCPath -ErrorAction Stop
+            If ($pscmdlet.ShouldProcess($dataFile.FullName, "Copy to disk")) {
+                Copy-FslToDisk -VHD $vhdPath -Path $dataFile.FullName -Destination $ODFCPath -ErrorAction Stop
+            }
         }
         Catch {
             Dismount-FslDisk -Path $vhdPath
@@ -270,8 +295,10 @@ ForEach ($User in $groupMembers) {
     If ($renameOldDataFile) {
         ForEach ($dataFile in $dataFiles) {
             Try {
-                Write-Verbose -Message "Rename [$($dataFile.FullName)] to [$($dataFile.BaseName).old]."
-                Rename-Item -Path $dataFile.FullName -NewName "$($dataFile.BaseName).old" -Force -ErrorAction Stop
+                If ($pscmdlet.ShouldProcess($dataFile.FullName, "Rename")) {
+                    Write-Verbose -Message "Rename [$($dataFile.FullName)] to [$($dataFile.BaseName).old]."
+                    Rename-Item -Path $dataFile.FullName -NewName "$($dataFile.BaseName).old" -Force -ErrorAction Stop
+                }
             }
             Catch {
                 Write-Warning -Message "Error Code: $(Get-LineNumber)"
@@ -283,7 +310,9 @@ ForEach ($User in $groupMembers) {
     If ($renameOldDirectory) {
         Try {
             Write-Verbose -Message "Renaming old Outlook data file directory"
-            Rename-Item -Path $userOldOst -NewName "$($userOldOst)_Old" -Force -ErrorAction Stop
+            If ($pscmdlet.ShouldProcess($userOldOst, "Rename")) {
+                Rename-Item -Path $userOldOst -NewName "$($userOldOst)_Old" -Force -ErrorAction Stop
+            }
         }
         Catch {
             Write-Warning -Message "Error Code: $(Get-LineNumber)"
@@ -295,7 +324,9 @@ ForEach ($User in $groupMembers) {
     If ($removeFromAD) {
         Try {
             Write-Verbose -Message "Removing $($User.samAccountName) from AD group: $Group."
-            Remove-ADGroupMember -Identity $Group -Members $User.samAccountName -ErrorAction Stop
+            If ($pscmdlet.ShouldProcess($User.samAccountName, "Remove from group")) {
+                Remove-ADGroupMember -Identity $Group -Members $User.samAccountName -ErrorAction Stop
+            }
         }
         Catch {
             Write-Warning -Message "Error Code: $(Get-LineNumber)"
@@ -307,13 +338,15 @@ ForEach ($User in $groupMembers) {
 
     Write-Verbose -Message "Successfully migrated OST file for $($User.samAccountName). Dismounting VHD."
     Try {
-        Dismount-FslDisk -Path $vhdPath -ErrorAction Stop
-        Write-Verbose -Message "Dismounted VHD."
+        If ($pscmdlet.ShouldProcess($vhdPath, "Dismount")) {
+            Dismount-FslDisk -Path $vhdPath -ErrorAction Stop
+            Write-Verbose -Message "Dismounted VHD."
+        }
     }
     Catch {
         Write-Warning -Message "Error Code: $(Get-LineNumber)"
         Write-Error $Error[0]
         Exit
     }
-} # foreach
+}
 #endregion
