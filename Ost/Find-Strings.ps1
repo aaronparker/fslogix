@@ -10,10 +10,6 @@ Function ConvertFrom-Hex ($String) {
     ($String.Split(",", [System.StringSplitOptions]::RemoveEmptyEntries) | `
             Where-Object { $_ -gt '0' } | ForEach-Object { [char][int]"$($_)" }) -join ''
 }
-
-Function ConvertTo-Hex ($String) {
-    [System.Text.Encoding]::Unicode.GetBytes($String + "`0")
-}
 #endregion
 
 # Get keys

@@ -1,4 +1,4 @@
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess = $True)]
 [OutputType([String])]
 Param (
     [Parameter(Mandatory = $false)]
@@ -15,7 +15,6 @@ Function ConvertFrom-Hex ($String) {
 Function ConvertTo-Hex ($String) {
     $output = [System.Text.Encoding]::Unicode.GetBytes($String + "`0")
     Write-Output $output
-    # Write-Output ($output -split ',')
 }
 
 Function Set-RegValue {
@@ -43,11 +42,11 @@ Function Set-RegValue {
 }
 #endregion
 
-# find key that has the 001f6700 property that holds the OST file path - one key per outlook profile.
-$pstRegValue = '001f6700'
-$keyPath = "HKCU:\Software\Microsoft\Office\16.0\Outlook\Profiles\"
-$keys = @((Get-ChildItem $keyPath -Recurse | `
-            Where-Object { $_.Property -eq $pstRegValue }).Name)
+# find key that has the 001f6700 property that holds the PST file path - one key per outlook profile.
+$pstRegValue = "001f6700"
+$keyPath = "HKCU:\Software\Microsoft\Office\16.0\Outlook\Profiles"
+$keys = (Get-ChildItem $keyPath -Recurse | `
+            Where-Object { $_.Property -eq $pstRegValue }).Name
 
 ForEach ($key in $keys) {
     $key = $key.Replace("HKEY_CURRENT_USER", "HKCU:")
@@ -57,17 +56,14 @@ ForEach ($key in $keys) {
     $pstOldPathHex = (Get-ItemProperty -Path $key | Select-Object -ExpandProperty $pstRegValue) -join ','
     $pstOldPath = ConvertFrom-Hex $pstOldPathHex
     Write-Verbose -Message "Old PST path: $pstOldPath"
-
+    $oldPstFile = Split-Path -Path $pstOldPath -Leaf
+     
     # make sure it is an PST in this field
-    If ($pstOldPath.SubString($pstOldPath.length - 4, 4) -eq ".pst") {
+    If ([IO.Path]::GetExtension($oldPstFile) -match ".pst") {
 
-        $oldPstFileName = $pstOldPath.Split("\")
-        $oldPstFileName = $oldPstFileName[$oldPstFileName.Count - 1]
-
+        $oldPstFileName = Split-Path -Path $pstOldPath -Leaf
         $newPstPath = Join-Path $TargetPath $oldPstFileName
-        # $newPstPathHex = ConvertTo-Hex $newPstPath
         $newPstPathHex = [System.Text.Encoding]::Unicode.GetBytes($newPstPath + "`0")
-        # $newPstPathHex = $newPstPathHex -join ','
         $newPstPathStr = ConvertFrom-Hex ($newPstPathHex -join ',')
         Write-Verbose -Message "New PST path: $newPstPathStr"
 
