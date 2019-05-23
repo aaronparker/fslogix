@@ -150,7 +150,7 @@ Catch {
 }
 
 # Move to the frx install path
-Set-Location -path (Split-Path -Path $FrxPath -Parent)
+Set-Location -Path (Split-Path -Path $FrxPath -Parent)
 
 #region Get group members from target migration AD group
 Try {
@@ -178,7 +178,7 @@ ForEach ($User in $groupMembers) {
             $Directory = New-FslDirectory -SamAccountName $User.SamAccountName -SID $User.SID -Destination $VHDLocation `
                 -Passthru -ErrorAction Stop
         }
-        Write-Verbose -Message "Container Directory: $Directory."
+        Write-Verbose -Message "Container directory: $Directory."
     }
     Catch {
         Write-Warning -Message "Error on line: $(Get-LineNumber)"
