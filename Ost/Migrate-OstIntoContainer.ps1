@@ -6,26 +6,17 @@
         https://github.com/FSLogix/Fslogix.Powershell.Disk/tree/master/Dave%20Young/Ost%20Migration/Release
 #>
 
-[CmdletBinding(SupportsShouldProcess = $True)]
-[OutputType([String])]
+[CmdletBinding(SupportsShouldProcess = $False)]
 Param (
-    [Parameter(Mandatory = $false)]
-    # Maximum VHD size in MB
-    [string] $VHDSize = 30000,
-
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $False)]
     # AD group name for target users for migration
     [string] $Group = "FSLogix Migrate",
 
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $False)]
     # Location of the target OST / PST file
     [string] $DataFilePath = "\\server\users\%username%",
 
-    [Parameter(Mandatory = $false)]
-    # Target location in the new ODFC container
-    [string] $ODFCPath = "ODFC",
-
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $False)]
     # Network location of the FSLogix Containers
     [string] $VHDLocation = "\\server\FSLogixContainers",
 
@@ -33,8 +24,25 @@ Param (
     [string[]] $FileType = ("*.ost", "*.pst"),
 
     [Parameter(Mandatory = $False)]
+    # Target location in the new ODFC container
+    [string] $ODFCPath = "ODFC",
+
+    [Parameter(Mandatory = $False)]
     # Flip flip SID and username in folder name
     [switch] $FlipFlop,
+
+    [Parameter(Mandatory = $False)]
+    # Maximum VHD size in MB
+    [string] $VHDSize = 30000,
+
+    [Parameter(Mandatory = $False)]
+    # Maximum VHD size in MB
+    [ValidateSet('0', '1')]
+    [int] $VhdIsDynamic = 1,
+
+    [Parameter(Mandatory = $False)]
+    # True to initialize driveletter, false to mount to path
+    [switch] $AssignDriveLetter,
 
     [Parameter(Mandatory = $False)]
     # Remove user account from target AD group after migration
@@ -54,10 +62,6 @@ Set-StrictMode -Version Latest
 #Requires -Modules "ActiveDirectory"
 #Requires -Modules "Hyper-V"
 #Requires -Modules "FsLogix.PowerShell.Disk"
-
-# Variables
-$vhdIsDynamic = 1                   # 1 = dynamic, 0 = fixed
-$assignDriveLetter = $False         # true to initialize driveletter, false to mount to path
 
 #region Functions
 Function Get-LineNumber() {
@@ -170,7 +174,7 @@ ForEach ($User in $groupMembers) {
 
     #region Determine target container folder for the user's container
     Try {
-        If ($flipFlop) {
+        If ($FlipFlop) {
             $Directory = New-FslDirectory -SamAccountName $User.SamAccountName -SID $User.SID -Destination $VHDLocation `
                 -FlipFlop -Passthru -ErrorAction Stop
         }
@@ -218,7 +222,7 @@ ForEach ($User in $groupMembers) {
     #region Confirm the container is good
     Write-Verbose -Message "Validating Outlook container."
     $FslPath = $VHDLocation.TrimEnd('\%username%')
-    If ($flipFlop) {
+    If ($FlipFlop) {
         $IsFslProfile = Confirm-FslProfile -Path $FslPath -SamAccountName $User.samAccountName -SID $User.SID -FlipFlop
     }
     Else {
@@ -278,7 +282,7 @@ ForEach ($User in $groupMembers) {
     #region Mount the container
     Write-Verbose -Message "Mounting FSLogix Container."
     Try {
-        If ($assignDriveLetter) {
+        If ($AssignDriveLetter) {
             If ($pscmdlet.ShouldProcess($vhdPath, "Mount")) {
                 $MountPath = Add-FslDriveLetter -Path $vhdPath -Passthru
                 Write-Verbose -Message "Container mounted at: $MountPath"
@@ -324,7 +328,7 @@ ForEach ($User in $groupMembers) {
     #endregion
 
     #region Rename the old Outlook data file/s; rename folders; remove user from group
-    If ($renameOldDataFile) {
+    If ($RenameOldDataFile) {
         ForEach ($dataFile in $dataFiles) {
             Try {
                 If ($pscmdlet.ShouldProcess($dataFile.FullName, "Rename")) {
@@ -339,7 +343,7 @@ ForEach ($User in $groupMembers) {
             }
         }
     }
-    If ($renameOldDirectory) {
+    If ($RenameOldDirectory) {
         Try {
             Write-Verbose -Message "Renaming old Outlook data file directory"
             If ($pscmdlet.ShouldProcess($userOldOst, "Rename")) {
@@ -353,7 +357,7 @@ ForEach ($User in $groupMembers) {
         }
         Write-Verbose -Message "Successfully renamed old Outlook data file directory"
     }
-    If ($removeFromGroup) {
+    If ($RemoveFromGroup) {
         Try {
             Write-Verbose -Message "Removing $($User.samAccountName) from AD group: $Group."
             If ($pscmdlet.ShouldProcess($User.samAccountName, "Remove from group")) {
