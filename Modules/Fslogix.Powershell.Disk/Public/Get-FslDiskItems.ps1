@@ -30,15 +30,16 @@ function Get-FslDiskItems {
     
     process {
      
-        if(-not(test-path -path $Path)){
+        if (-not(test-path -path $Path)) {
             Write-Error "Could not find path: $Path"
             exit
         }
         
-        Try{
+        Try {
             $Disk = Mount-FslDisk -Path $Path -PassThru -ErrorAction Stop
             $MountPath = $Disk.path
-        }Catch{
+        }
+        Catch {
             Write-Warning "Could not mount VHD"
             Write-Error $Error[0]
         }
@@ -49,26 +50,26 @@ function Get-FslDiskItems {
         ## Hidden files/Dir are only found using -force parameter
         ##
         $Command = "Get-Childitem -Path $MountPath"
-        switch($PSBoundParameters.Keys){
-            Recurse{
+        switch ($PSBoundParameters.Keys) {
+            Recurse {
                 $Command += " -recurse"
             }
-            Force{
+            Force {
                 $Command += " -force"
             }
-            Filter{
+            Filter {
                 $Command += " -Filter $Filter"
             }
-            Incldue{
+            Incldue {
                 $Command += " -Include"
-                foreach($IncludeType in $Include){
+                foreach ($IncludeType in $Include) {
                     $Command += " $IncludeType,"
                 }
                 $Command = $Command.TrimEnd(',')
             }
-            Exclude{
+            Exclude {
                 $Command += " -Exclude"
-                foreach($ExcludeType in $Exclude){
+                foreach ($ExcludeType in $Exclude) {
                     $Command += " $ExcludeType,"
                 }
                 $Command = $Command.TrimEnd(',')
@@ -76,9 +77,10 @@ function Get-FslDiskItems {
         }
         #$Command += " | where-object {$" + "_.basename -ne 'System Volume Information'}"
         #$Command
-        Try{
+        Try {
             Invoke-Expression $Command
-        }catch{
+        }
+        catch {
             Write-Warning "Could not retrieve items. Either the parameters were incorrect or force parameter was used
             for hidden files."
             Write-Error $Error[0]

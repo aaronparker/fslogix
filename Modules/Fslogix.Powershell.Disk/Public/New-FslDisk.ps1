@@ -5,28 +5,28 @@ function New-FslDisk {
     [CmdletBinding()]
     param (
         [Parameter( Position = 0, 
-                    Mandatory = $true,
-                    ValueFromPipeline = $true,
-                    ValueFromPipelineByPropertyName = $true)]
+            Mandatory = $true,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true)]
         [System.String]
         $User,
 
         [Parameter( Position = 1,
-                    Mandatory = $true,
-                    ValueFromPipeline = $true,
-                    ValueFromPipelineByPropertyName = $true)]
+            Mandatory = $true,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true)]
         [System.String]
         $Destination,
 
         [Parameter( Position = 2,
-                    ValueFromPipeline = $true,
-                    ValueFromPipelineByPropertyName = $true)]
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true)]
         [Alias("Size")]
         [System.int64]
         $SizeInMB,
 
         [Parameter( Position = 3)]
-        [ValidateRange(0,1)]
+        [ValidateRange(0, 1)]
         [int]$Type,
 
         [Parameter( Position = 4)]
@@ -39,11 +39,11 @@ function New-FslDisk {
         [Switch]$vhd,
 
         [Parameter (Position = 7,
-                    ParameterSetName = "DriveLetter")]
+            ParameterSetName = "DriveLetter")]
         [Switch]$AssignDriveLetter,
 
         [Parameter (Position = 8,
-                    ParameterSetName = "DriveLetter")]
+            ParameterSetName = "DriveLetter")]
         [Char]$Letter
     )
     
@@ -70,31 +70,33 @@ function New-FslDisk {
         }
         
        
-        Try{
+        Try {
             $AdUser = Get-Aduser $User -ErrorAction Stop
             $SID = $AdUser.SID
             $SamAccountName = $AdUser.samaccountname
 
-        }catch{
+        }
+        catch {
             Pop-Location
             Write-Error $Error[0]
         }
 
-        if(!$PSBoundParameters.ContainsKey("Type")){
+        if (!$PSBoundParameters.ContainsKey("Type")) {
             $Type = 1
         }
 
-        if(!$PSBoundParameters.ContainsKey("SizeInMb")){
+        if (!$PSBoundParameters.ContainsKey("SizeInMb")) {
             $SizeInMB = 30000
         }
 
-        if(!$PSBoundParameters.ContainsKey("Label")){
+        if (!$PSBoundParameters.ContainsKey("Label")) {
             $Label = $SamAccountName
         }
 
-        if($PSBoundParameters.ContainsKey("vhd")){
+        if ($PSBoundParameters.ContainsKey("vhd")) {
             $VHD_name = "ODFC_$($SamAccountName).vhd"
-        }else{
+        }
+        else {
             $VHD_name = "ODFC_$($SamAccountName).vhdx"
         }
 
@@ -106,32 +108,36 @@ function New-FslDisk {
         $FrxCommand = " .\frx.exe create-vhd -filename $VHD_Path -size-mbs=$SizeInMB -dynamic=$type -label $Label"
         Invoke-expression -command $FrxCommand
 
-        Try{
+        Try {
             Add-FslPermissions -User $User -Folder $VHD_FolderPath -Recurse -ErrorAction Stop
-        }catch{
+        }
+        catch {
             Pop-Location
             Write-Error $Error[0]
         }
 
-        if($PSBoundParameters.ContainsKey("AssignDriveLetter")){
-            if($PSBoundParameters.ContainsKey("Letter")){
-                Try{
+        if ($PSBoundParameters.ContainsKey("AssignDriveLetter")) {
+            if ($PSBoundParameters.ContainsKey("Letter")) {
+                Try {
                     Set-FslDriveletter -Path $VHD_Path -Letter $Letter -ErrorAction Stop
-                }catch{
+                }
+                catch {
                     Pop-Location
                     Write-Error $Error[0]
                 }
-            }else{
-                Try{
+            }
+            else {
+                Try {
                     Add-FslDriveLetter -Path $VHD_Path -ErrorAction Stop
-                }catch{
+                }
+                catch {
                     Pop-Location
                     Write-Error $Error[0]
                 }
             }
         }
 
-        if($Passthru){
+        if ($Passthru) {
             $output = Get-FslDisk -path $VHD_Path
             $output
         }

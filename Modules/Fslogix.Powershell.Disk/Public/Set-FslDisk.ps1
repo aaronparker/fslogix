@@ -71,12 +71,12 @@ function Set-FslDisk {
                 # Using .NET to handle illegal characters, and for multiple dots.
                 # Similar PowerShell code would be $Name.Split('.')[1]
                 $NewNameExtension = [IO.path]::GetExtension($Name) 
-                if([String]::IsNullOrEmpty($NewNameExtension)){
+                if ([String]::IsNullOrEmpty($NewNameExtension)) {
                     $Name = $Name + $Extension
                 }
                 $NewNameExtension = [IO.path]::GetExtension($Name) 
 
-                if($NewNameExtension -ne $Extension){
+                if ($NewNameExtension -ne $Extension) {
                     Write-Error "Extensions must be the same." -ErrorAction Stop
                 }
                 
@@ -103,7 +103,7 @@ function Set-FslDisk {
                 }
 
                 if ($VHDinfo.attached) {
-                    $Disk = Get-Disk | Where-Object {$_.Location -eq $Path}
+                    $Disk = Get-Disk | Where-Object { $_.Location -eq $Path }
                     $DiskNumber = $Disk.number
                 }
                 else {
@@ -142,10 +142,11 @@ function Set-FslDisk {
             }
         }
 
-        if ($PSBoundParameters.ContainsKey("Dismount")){
-            Try{
+        if ($PSBoundParameters.ContainsKey("Dismount")) {
+            Try {
                 Dismount-FslDisk -Path $Path -ErrorAction Stop
-            }catch{
+            }
+            catch {
                 Write-Warning "Could not dismount VHD."
                 Write-Error $Error[0]
             }

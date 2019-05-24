@@ -24,17 +24,17 @@ function Get-FslDisk {
     [CmdletBinding(DefaultParameterSetName = "Path")]
     param (
         [Parameter( Position = 0,
-                    Mandatory = $true,
-                    ValueFromPipeline = $true,
-                    ValueFromPipelineByPropertyName = $true,
-                    ParameterSetName = "Path")]
+            Mandatory = $true,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = "Path")]
         [System.String]$Path,
 
         [Parameter( Position = 1,
-                    Mandatory = $true,
-                    ValueFromPipeline = $true,
-                    ValueFromPipelineByPropertyName = $true,
-                    ParameterSetName = "Folder")]
+            Mandatory = $true,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = "Folder")]
         [System.String]$Folder
     )
     
@@ -44,20 +44,20 @@ function Get-FslDisk {
     }
     
     Process {
-        Switch ($PSCmdlet.ParameterSetName){
+        Switch ($PSCmdlet.ParameterSetName) {
             Path {
-                if(-not(test-path -path $Path)){
+                if (-not(test-path -path $Path)) {
                     Write-Error "Could not find path: $Path" -ErrorAction Stop
                 }
                 $VHD_Info = Get-DiskInformation -Path $Path
             }
             Folder {
-                if( -not (test-path -path $Folder)){
+                if ( -not (test-path -path $Folder)) {
                     Write-Error "Could not find directory: $Folder" -ErrorAction Stop
                 }
 
                 $VHDs_Info = Get-Childitem -path $Folder -Recurse -Filter "*.vhd*"
-                $VHD_Info = foreach($Vhd in $VHDs_Info){
+                $VHD_Info = foreach ($Vhd in $VHDs_Info) {
                     $VHD.FullName | Get-DiskInformation
                 }
             }

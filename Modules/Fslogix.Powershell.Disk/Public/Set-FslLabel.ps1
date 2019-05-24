@@ -37,40 +37,45 @@ function Set-FslLabel {
     }
     process {
         
-        if($PSBoundParameters.ContainsKey("Path")){
-            Try{
-                $Mount              = Mount-fsldisk -Path $Path -PassThru -ErrorAction Stop
-                $DiskNumber         = $Mount.DiskNumber
-                $PartitionNumber    = $Mount.PartitionNumber
-            }catch{
+        if ($PSBoundParameters.ContainsKey("Path")) {
+            Try {
+                $Mount = Mount-fsldisk -Path $Path -PassThru -ErrorAction Stop
+                $DiskNumber = $Mount.DiskNumber
+                $PartitionNumber = $Mount.PartitionNumber
+            }
+            catch {
                 Write-Error $Error[0]
             }
         }
-        Try{
+        Try {
             $Partition = Get-Partition -DiskNumber $DiskNumber -PartitionNumber $PartitionNumber -ErrorAction Stop
-        }catch{
+        }
+        catch {
             Write-Error $Error[0]
         }
-        Try{
+        Try {
             $Volume = Get-Volume -Partition $Partition -ErrorAction Stop
             set-Volume -InputObject $Volume -NewFileSystemLabel $Label
             Write-Verbose "Successfully set disk Label: $Label."
-        }catch{
+        }
+        catch {
             Write-Error $Error[0]
         }
-        if($PSBoundParameters.ContainsKey("Dismount")){
-            Switch($PSCmdlet.ParameterSetName){
-                Path{
-                    Try{
+        if ($PSBoundParameters.ContainsKey("Dismount")) {
+            Switch ($PSCmdlet.ParameterSetName) {
+                Path {
+                    Try {
                         Dismount-fsldisk -Path $Path -ErrorAction Stop
-                    }catch{
+                    }
+                    catch {
                         Write-Error $Error[0]
                     }
                 }
-                Number{
-                    Try{
+                Number {
+                    Try {
                         Dismount-fsldisk -DiskNumber $DiskNumber -PartitionNumber $PartitionNumber -ErrorAction Stop
-                    }catch{
+                    }
+                    catch {
                         Write-Error $Error[0]
                     }
                 }

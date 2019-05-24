@@ -39,14 +39,14 @@ function Add-FslDriveLetter {
     [CmdletBinding()]
     param (
         [Parameter( Position = 0,
-                    Mandatory = $true,
-                    ValueFromPipeline = $true,
-                    ValueFromPipelineByPropertyName = $true)]
+            Mandatory = $true,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true)]
         [System.String]
         $Path,
 
         [Parameter (Position = 1,
-                    ValueFromPipelineByPropertyName = $true)]
+            ValueFromPipelineByPropertyName = $true)]
         [int]
         $PartitionNumber,
 
@@ -65,7 +65,7 @@ function Add-FslDriveLetter {
     process {
 
         ## FsLogix VHD's default partition number is 1
-        if(!$PSBoundParameters.ContainsKey("PartitionNumber")){
+        if (!$PSBoundParameters.ContainsKey("PartitionNumber")) {
             $PartitionNumber = 1
         }
 
@@ -82,11 +82,12 @@ function Add-FslDriveLetter {
 
         $DiskNumber = $Disk.Number
         
-        while(!$Driveletterassigned){
-            Try{
+        while (!$Driveletterassigned) {
+            Try {
                 set-partition -DiskNumber $DiskNumber -PartitionNumber $PartitionNumber -NewDriveLetter $([char]$Letter) -ErrorAction Stop
                 $Driveletterassigned = $true
-            }catch{
+            }
+            catch {
                 ## For some reason
                 ## $Letter-- won't work.
                 $letter = $letter - 1
@@ -100,15 +101,16 @@ function Add-FslDriveLetter {
             Write-Verbose "Assigned DriveLetter: $([char]$Letter):\."
         }
 
-        if($Dismount){
-            Try{
+        if ($Dismount) {
+            Try {
                 Dismount-DiskImage -ImagePath $Path -ErrorAction Stop
-            }catch{
+            }
+            catch {
                 Write-Error $Error[0]
             }
         }
 
-        if($Passthru){
+        if ($Passthru) {
             "$([char]$Letter):\"
         }
     }

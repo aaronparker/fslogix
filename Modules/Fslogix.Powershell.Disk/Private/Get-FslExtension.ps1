@@ -21,7 +21,7 @@ function Get-FslExtension {
         
         while ($CurIndex -ge 0) {
 
-            if($charArray[$CurIndex] -eq '\'){
+            if ($charArray[$CurIndex] -eq '\') {
                 break
             }
 

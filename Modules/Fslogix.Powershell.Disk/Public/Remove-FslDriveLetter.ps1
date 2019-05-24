@@ -24,7 +24,7 @@ function Remove-FslDriveLetter {
         if (-not(test-path -path $path)) {
             Write-Error "Could not find path: $path" -ErrorAction Stop
         }
-        if(!$PSBoundParameters.ContainsKey("PartitionNumber")){
+        if (!$PSBoundParameters.ContainsKey("PartitionNumber")) {
             # FsLogix's VHD partition Number defaulted to 1.
             $PartitionNumber = 1
         }
@@ -33,7 +33,7 @@ function Remove-FslDriveLetter {
     
         ## Need to mount ##
         if ($vhd.attached) {
-            $mount = get-disk | Where-Object {$_.Location -eq $Path}
+            $mount = get-disk | Where-Object { $_.Location -eq $Path }
         }
         else {
             Try {
@@ -60,7 +60,7 @@ function Remove-FslDriveLetter {
         $DL = $Driveletter.substring(0, 1)
 
         try {
-            $Volume = Get-Volume | where-Object {$_.DriveLetter -eq $DL}
+            $Volume = Get-Volume | where-Object { $_.DriveLetter -eq $DL }
         }
         catch {
             Write-Error $Error[0]

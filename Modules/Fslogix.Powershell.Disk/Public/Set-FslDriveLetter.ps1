@@ -2,15 +2,15 @@ function Set-FslDriveLetter {
     [CmdletBinding()]
     param (
         [Parameter( Position = 0, 
-                    Mandatory = $true, 
-                    ValueFromPipeline = $true,
-                    ValueFromPipelineByPropertyName = $true)]
+            Mandatory = $true, 
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true)]
         [System.String]$Path,
 
         [Parameter( Position = 1, 
-                    Mandatory = $true, 
-                    ValueFromPipeline = $true,
-                    ValueFromPipelineByPropertyName = $true)]
+            Mandatory = $true, 
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true)]
         [ValidatePattern('^[a-zA-Z]')]
         [System.Char]$Letter,
 
@@ -28,7 +28,7 @@ function Set-FslDriveLetter {
 
     process {
 
-        if(!$PSBoundParameters.ContainsKey("PartitionNumber")){
+        if (!$PSBoundParameters.ContainsKey("PartitionNumber")) {
             $PartitionNumber = 1
         }
 
@@ -54,7 +54,7 @@ function Set-FslDriveLetter {
         }
         $name = $vhds.name
         if ($vhds.attached) {
-            $Disk = get-disk | where-object {$_.Location -eq $Path}
+            $Disk = get-disk | where-object { $_.Location -eq $Path }
         }
         else {
             $mount = Mount-DiskImage -ImagePath $path -NoDriveLetter -PassThru -ErrorAction Stop | get-diskimage
@@ -63,9 +63,10 @@ function Set-FslDriveLetter {
 
         $DiskNumber = $disk.Number
 
-        Try{
+        Try {
             $Partition = get-partition -DiskNumber $DiskNumber -PartitionNumber $PartitionNumber
-        }catch{
+        }
+        catch {
             Write-Error $Error[0]
         }
         $Partition | set-partition -NewDriveLetter $letter -ErrorAction Stop 

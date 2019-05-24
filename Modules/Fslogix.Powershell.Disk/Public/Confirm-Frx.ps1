@@ -14,7 +14,7 @@ function Confirm-Frx {
     
     process {
 
-        if(!$PSBoundParameters.ContainsKey("$Path")){
+        if (!$PSBoundParameters.ContainsKey("$Path")) {
             $Path = "HKLM:\SOFTWARE\FSLogix\Apps"
         }
 
@@ -36,7 +36,7 @@ function Confirm-Frx {
         }
         Pop-Location
         
-        if($Passthru){
+        if ($Passthru) {
             $frxPath
         }
     }

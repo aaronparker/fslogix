@@ -49,7 +49,7 @@ function Mount-FslDisk {
         $DiskNumber = $mount.Number
         $GuidPath = "C:\programdata\fslogix\Guid"
 
-        if(!$PSBoundParameters.ContainsKey("PartitionNumber")){
+        if (!$PSBoundParameters.ContainsKey("PartitionNumber")) {
             $PartitionNumber = 1
         }
 
@@ -73,7 +73,7 @@ function Mount-FslDisk {
             }
 
             Try {
-                New-Item -Path $JunctionPath -ItemType Directory -ErrorAction Stop| Out-Null
+                New-Item -Path $JunctionPath -ItemType Directory -ErrorAction Stop | Out-Null
             }
             catch {
                 Write-Warning "Could not create junction path."
@@ -107,7 +107,7 @@ function Mount-FslDisk {
 
         if ($PSBoundParameters.ContainsKey("Passthru")) {
             
-            if($PSBoundParameters.ContainsKey("AsString")){
+            if ($PSBoundParameters.ContainsKey("AsString")) {
                 [System.String]$DiskNumber = $DiskNumber
                 [System.String]$DriveLetter = $DriveLetter
                 [System.String]$PartitionNumber = $PartitionNumber

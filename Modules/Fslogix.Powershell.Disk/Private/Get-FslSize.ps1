@@ -2,9 +2,9 @@ function Get-FslSize {
     [CmdletBinding(DefaultParameterSetName = "None")]
     param (
         [Parameter( Position = 0,
-                    Mandatory = $true,
-                    ValueFromPipeline = $true,
-                    ValueFromPipelineByPropertyName = $true)]
+            Mandatory = $true,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true)]
         [String[]]$path,
 
         [Parameter(ParameterSetName = "MB")]
@@ -21,19 +21,19 @@ function Get-FslSize {
     
     process {
     
-        foreach($file in $Path){
+        foreach ($file in $Path) {
             $Size += (Get-ChildItem -Path $file -Recurse | Measure-Object -Property Length -Sum -ErrorAction Stop).Sum
         }
        
-        switch($PSCmdlet.ParameterSetName){
+        switch ($PSCmdlet.ParameterSetName) {
             'MB' {
-                [Math]::round($Size/1mb,2)
+                [Math]::round($Size / 1mb, 2)
             }
             'GB' {
-                [Math]::round($Size/1gb,2)
+                [Math]::round($Size / 1gb, 2)
             }
             Default {
-                [Math]::round($Size,2)
+                [Math]::round($Size, 2)
             }
             
         }

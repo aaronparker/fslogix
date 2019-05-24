@@ -16,9 +16,9 @@ function Get-FslAvailableDriveLetter {
             $null = $AvailableLetters.add($letter)
         }
     }#>
-    $AvailableLetters = $Letters | Where-Object {!(test-path -Path "$($_):")}
+    $AvailableLetters = $Letters | Where-Object { !(test-path -Path "$($_):") }
 
-    if($null -eq $AvailableLetters){
+    if ($null -eq $AvailableLetters) {
         Write-Error "Could not find available driveletter."
         exit
     }
@@ -26,9 +26,10 @@ function Get-FslAvailableDriveLetter {
     if ($PSBoundParameters.ContainsKey("Next")) {
         Write-Output $AvailableLetters | select-object -first 1
     }
-    elseif($PSBoundParameters.ContainsKey("Random")) {
+    elseif ($PSBoundParameters.ContainsKey("Random")) {
         Write-Output $AvailableLetters | get-random
-    }else{
+    }
+    else {
         Write-Output $AvailableLetters
     }
  

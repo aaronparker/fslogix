@@ -2,9 +2,9 @@ function Get-FslDriveLetter {
     [CmdletBinding()]
     param (
         [Parameter (Position = 0,
-                    Mandatory = $true,
-                    ValueFromPipeline = $true,
-                    ValueFromPipelineByPropertyName = $true)]
+            Mandatory = $true,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true)]
         [System.String]$Path,
 
         [Parameter (Position = 1)]
@@ -18,17 +18,19 @@ function Get-FslDriveLetter {
     
     process {
 
-        if(-not(test-path -path $Path)){
+        if (-not(test-path -path $Path)) {
             Write-Error "Could not find path: $Path." -ErrorAction Stop
         }
 
         $VHD = Get-FslDisk -path $Path
-        if($VHD.Attached){
-            $mount = Get-Disk | Where-Object {$_.Location -eq $Path}
-        }else{
-            Try{
+        if ($VHD.Attached) {
+            $mount = Get-Disk | Where-Object { $_.Location -eq $Path }
+        }
+        else {
+            Try {
                 $Mount = Mount-DiskImage -ImagePath $Path -PassThru -ErrorAction Stop | Get-DiskImage -ErrorAction Stop
-            }catch{
+            }
+            catch {
                 Write-Error $Error[0]
             }
         }
@@ -40,10 +42,11 @@ function Get-FslDriveLetter {
             Write-Warning "No valid driveletter found for $($VHD.name)."
         }
 
-        if($Dismount){
-            try{
+        if ($Dismount) {
+            try {
                 Dismount-DiskImage -ImagePath $Path
-            }catch{
+            }
+            catch {
                 Write-Error $Error[0]
             }
         }
