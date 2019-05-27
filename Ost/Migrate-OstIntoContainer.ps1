@@ -10,15 +10,15 @@
 Param (
     [Parameter(Mandatory = $False)]
     # AD group name for target users for migration
-    [string] $Group = "FSLogix Migrate",
+    [string] $Group = "FSLogix-Office365Container-Migrate",
 
     [Parameter(Mandatory = $False)]
     # Location of the target OST / PST file
-    [string] $DataFilePath = "\\server\users\%username%",
+    [string] $DataFilePath = "\\ad1\Home\%username%",
 
     [Parameter(Mandatory = $False)]
     # Network location of the FSLogix Containers
-    [string] $VHDLocation = "\\server\FSLogixContainers",
+    [string] $VHDLocation = "\\ad1\FSLogixContainers\RDS",
 
     [Parameter(Mandatory = $False)]
     [string[]] $FileType = ("*.ost", "*.pst"),
@@ -157,6 +157,7 @@ Catch {
 Set-Location -Path (Split-Path -Path $FrxPath -Parent)
 
 #region Get group members from target migration AD group
+# Modify to open a CSV list of usernames + OST/PST paths
 Try {
     If ($pscmdlet.ShouldProcess($Group, "Get member")) {
         $groupMembers = Get-AdGroupMember -Identity $Group -Recursive -ErrorAction Stop
@@ -195,7 +196,8 @@ ForEach ($User in $groupMembers) {
     Write-Verbose -Message "VHDLocation: $vhdPath."
     #endregion
 
-    #region Remove the VHD if it exists (should modify this to open an existing container)
+    #region Remove the VHD if it exists
+    # Modify this to open an existing container
     If (Test-Path -Path $vhdPath) {
         If ($pscmdlet.ShouldProcess($vhdPath, "Remove")) {
             Remove-Item -Path $vhdPath -Force -ErrorAction SilentlyContinue
