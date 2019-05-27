@@ -61,7 +61,9 @@ function Copy-FslToDisk {
         Try {
             foreach ($file in $Path) {
                 ## Using Robocopy to copy permissions.
-                $Command = "robocopy $file $Copy_Destination /s /nfl /nc /ns /ndl /w:0 /r:0 /xj /sec /copyall"
+                $fileName = Split-Path -Path $file -Leaf
+                $filePath = Split-Path -Path $file -Parent
+                $Command = "robocopy $filePath $Copy_Destination $fileName /s /njh /njs /nfl /nc /ns /ndl /w:0 /r:0 /xj /sec /copyall"
                 Invoke-Expression $Command 
             }
             Write-Verbose "Successfully copied contents to VHD."

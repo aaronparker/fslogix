@@ -153,15 +153,23 @@ Catch {
     Exit
 }
 
-# Move to the frx install path
-Set-Location -Path (Split-Path -Path $FrxPath -Parent)
+# Move to the frx install path and grab the path to frx.exe
+Try {
+    Push-Location -Path (Split-Path -Path $FrxPath -Parent)
+    $cmd = Resolve-Path -Path ".\frx.exe"
+    Pop-Location
+}
+Catch {
+    Write-Warning -Message "Error on line: $(Get-LineNumber)"
+    Write-Error $Error[0]
+    Exit
+}
+Write-Verbose -Message "Frx.exe path is: $cmd."
 
 #region Get group members from target migration AD group
 # Modify to open a CSV list of usernames + OST/PST paths
 Try {
-    If ($pscmdlet.ShouldProcess($Group, "Get member")) {
-        $groupMembers = Get-AdGroupMember -Identity $Group -Recursive -ErrorAction Stop
-    }
+    $groupMembers = Get-AdGroupMember -Identity $Group -Recursive -ErrorAction Stop
 }
 Catch {
     Write-Warning -Message "Error on line: $(Get-LineNumber)"
@@ -175,11 +183,13 @@ ForEach ($User in $groupMembers) {
 
     #region Determine target container folder for the user's container
     Try {
-        If ($FlipFlop) {
+        If ($FlipFlop.IsPresent) {
+            Write-Verbose -Message "FlipFlip is present."
             $Directory = New-FslDirectory -SamAccountName $User.SamAccountName -SID $User.SID -Destination $VHDLocation `
                 -FlipFlop -Passthru -ErrorAction Stop
         }
         Else {
+            Write-Verbose -Message "FlipFlip is not present."
             $Directory = New-FslDirectory -SamAccountName $User.SamAccountName -SID $User.SID -Destination $VHDLocation `
                 -Passthru -ErrorAction Stop
         }
@@ -207,7 +217,6 @@ ForEach ($User in $groupMembers) {
 
     #region Generate the container
     Try {
-        $cmd = Resolve-Path -Path ".\frx.exe"
         $arguments = "create-vhd -filename $vhdPath -size-mbs=$VHDSize -dynamic=$vhdIsDynamic -label $($User.SamAccountName)"
         If ($pscmdlet.ShouldProcess($vhdPath, "Create VHD")) {
             Invoke-Process -FilePath $cmd -ArgumentList $arguments
@@ -224,7 +233,8 @@ ForEach ($User in $groupMembers) {
     #region Confirm the container is good
     Write-Verbose -Message "Validating Outlook container."
     $FslPath = $VHDLocation.TrimEnd('\%username%')
-    If ($FlipFlop) {
+    Write-Verbose -Message "FslPath is $FslPath."
+    If ($FlipFlop.IsPresent) {
         $IsFslProfile = Confirm-FslProfile -Path $FslPath -SamAccountName $User.samAccountName -SID $User.SID -FlipFlop
     }
     Else {
@@ -253,38 +263,39 @@ ForEach ($User in $groupMembers) {
     }
     #endregion
 
-    #region Get the OST/PST file
+    #region Get the OST/PST file path
     Write-Verbose -Message "Gather Outlook data file path."
     If ($DataFilePath.ToLower().Contains("%username%")) {
-        $userOldOst = $DataFilePath -replace "%username%", $User.samAccountName
+        $userDataFilePath = $DataFilePath -replace "%username%", $User.samAccountName
     }
     Else {
-        $userOldOst = Join-Path $DataFilePath $User.samAccountName
+        $userDataFilePath = Join-Path $DataFilePath $User.samAccountName
     }
-    If (-not(Test-Path -Path $userOldOst)) {
-        Write-Warning -Message "Invalid Outlook data file path: $userOldOst"
+    If (-not(Test-Path -Path $userDataFilePath)) {
+        Write-Warning -Message "Invalid Outlook data file path: $userDataFilePath"
         Write-Warning -Message "Error on line: $(Get-LineNumber)"
-        Write-Error "Could not locate Outlook data file for $($User.samAccountName)."
-        Exit
+        Write-Warning "Could not locate Outlook data file path for $($User.samAccountName)."
     }
     Else {
-        $dataFiles = Get-ChildItem -Path $userOldOst -Include $FileType -Recurse
+        $dataFiles = Get-ChildItem -Path $userDataFilePath -Include $FileType -Recurse
     }
     If ($Null -eq $dataFiles) {
-        Write-Warning -Message "No Outlook data files returned in $userOldOst"
+        Write-Warning -Message "No Outlook data files returned in $userDataFilePath"
         Write-Warning -Message "Error on line: $(Get-LineNumber)"
-        Write-Error "Could not locate Outlook data files for $($User.samAccountName)."
-        Exit
+        Write-Warning "Could not locate Outlook data files for $($User.samAccountName)."
     }
     Else {
         Write-Verbose -Message "Successfully obtained Outlook data file/s."
+    }
+    ForEach ($dataFile in $dataFiles) {
+        Write-Verbose -Message "Data file: $dataFile."
     }
     #endregion
 
     #region Mount the container
     Write-Verbose -Message "Mounting FSLogix Container."
     Try {
-        If ($AssignDriveLetter) {
+        If ($AssignDriveLetter.IsPresent) {
             If ($pscmdlet.ShouldProcess($vhdPath, "Mount")) {
                 $MountPath = Add-FslDriveLetter -Path $vhdPath -Passthru
                 Write-Verbose -Message "Container mounted at: $MountPath"
@@ -305,7 +316,7 @@ ForEach ($User in $groupMembers) {
     }
     #endregion
 
-    #region
+    #region Copy the data files
     Write-Verbose -Message "Copy Outlook data file/s"
     $dataFileDestination = Join-Path $MountPath $ODFCPath
     If (-not (Test-Path -Path $dataFileDestination)) {
@@ -330,7 +341,7 @@ ForEach ($User in $groupMembers) {
     #endregion
 
     #region Rename the old Outlook data file/s; rename folders; remove user from group
-    If ($RenameOldDataFile) {
+    If ($RenameOldDataFile.IsPresent) {
         ForEach ($dataFile in $dataFiles) {
             Try {
                 If ($pscmdlet.ShouldProcess($dataFile.FullName, "Rename")) {
@@ -341,25 +352,28 @@ ForEach ($User in $groupMembers) {
             Catch {
                 Write-Warning -Message "Error on line: $(Get-LineNumber)"
                 Write-Error $Error[0]
-                Exit
             }
         }
     }
-    If ($RenameOldDirectory) {
-        Try {
-            Write-Verbose -Message "Renaming old Outlook data file directory"
-            If ($pscmdlet.ShouldProcess($userOldOst, "Rename")) {
-                Rename-Item -Path $userOldOst -NewName "$($userOldOst)_Old" -Force -ErrorAction Stop
+    If ($RenameOldDirectory.IsPresent) {
+        If ($Null -ne $userDataFilePath) {
+            Try {
+                Write-Verbose -Message "Renaming old Outlook data file directory"
+                If ($pscmdlet.ShouldProcess($userDataFilePath, "Rename")) {
+                    Rename-Item -Path $userDataFilePath -NewName "$($userDataFilePath)_Old" -Force -ErrorAction Stop
+                }
             }
+            Catch {
+                Write-Warning -Message "Error on line: $(Get-LineNumber)"
+                Write-Error $Error[0]
+            }
+            Write-Verbose -Message "Successfully renamed old Outlook data file directory"
         }
-        Catch {
-            Write-Warning -Message "Error on line: $(Get-LineNumber)"
-            Write-Error $Error[0]
-            Exit
+        Else {
+            Write-Verbose "Skipping rename directory for user: $User."
         }
-        Write-Verbose -Message "Successfully renamed old Outlook data file directory"
     }
-    If ($RemoveFromGroup) {
+    If ($RemoveFromGroup.IsPresent) {
         Try {
             Write-Verbose -Message "Removing $($User.samAccountName) from AD group: $Group."
             If ($pscmdlet.ShouldProcess($User.samAccountName, "Remove from group")) {
@@ -369,7 +383,6 @@ ForEach ($User in $groupMembers) {
         Catch {
             Write-Warning -Message "Error on line: $(Get-LineNumber)"
             Write-Error $Error[0]
-            Exit
         }
         Write-Verbose -Message "Successfully removed $($User.samAccountName) from AdGroup: $Group."
     }
