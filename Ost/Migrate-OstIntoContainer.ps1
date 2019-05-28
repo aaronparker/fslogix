@@ -6,7 +6,7 @@
         https://github.com/FSLogix/Fslogix.Powershell.Disk/tree/master/Dave%20Young/Ost%20Migration/Release
 #>
 
-[CmdletBinding(SupportsShouldProcess = $False)]
+[CmdletBinding(SupportsShouldProcess = $True)]
 Param (
     [Parameter(Mandatory = $False)]
     # AD group name for target users for migration
@@ -184,23 +184,18 @@ Function Write-Log {
         Write-Verbose -Message "Starting: $($MyInvocation.MyCommand.Name)$expandedParams"
     }
     PROCESS {
-        Wwitch ($PSCmdlet.ParameterSetName) {
+        Switch ($PSCmdlet.ParameterSetName) {
             EXCEPTION {
                 Write-Log -Level Error -Message $Exception.Exception.Message -Path $Path
                 break
             }
             STARTNEW {
-                Write-Verbose -Message "Deleting log file $Path if it exists"
                 Remove-Item $Path -Force -ErrorAction SilentlyContinue
-                Write-Verbose -Message 'Deleted log file if it exists'
                 Write-Log 'Starting Logfile' -Path $Path
                 break
             }
             LOG {
-                Write-Verbose 'Getting Date for our Log File'
                 $FormattedDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-                Write-Verbose 'Date is $FormattedDate'
-
                 switch ( $Level ) {
                     'Error' { $LevelText = 'ERROR:  '; break }
                     'Warn' { $LevelText = 'WARNING:'; break }
@@ -208,30 +203,33 @@ Function Write-Log {
                 }
 
                 $logmessage = "$FormattedDate $LevelText $Message"
-                Write-Verbose $logmessage
-
                 $logmessage | Add-Content -Path $Path
             }
         }
     }
     END {
-        Write-Verbose -Message "Finished: $($MyInvocation.Mycommand)"
+        # Write-Verbose -Message "Finished: $($MyInvocation.Mycommand)"
     }
 } # Write-Log
 #endregion
 
 # Script
 # Build log file path
-If ($Null -eq $LogFile) {
+If ($PSBoundParameters.ContainsKey('$LogFile')) {
+    Write-Verbose -Message "Log file at: $LogFile."
+}
+Else {
     $stampDate = Get-Date
     $scriptName = ([System.IO.Path]::GetFileNameWithoutExtension($(Split-Path $script:MyInvocation.MyCommand.Path -Leaf)))
     $LogFile = Join-Path $PWD ($scriptName + "-" + $stampDate.ToFileTimeUtc() + ".log")
+    Write-Verbose -Message "Log file at: $LogFile."
 }
-$PSDefaultParameterValues = @{
-    "Write-Log:Path" = "$LogFile"
-    "Write-Log:Verbose" = $False
+$PSDefaultParameterValues += @{
+    'Write-Log:Path'    = $LogFile
+    'Write-Log:Verbose' = $False
+    'Write-Log:WhatIf'  = $False
 }
-Write-Log -Message "Start FSLogix Container / Outlook data file migration"
+Write-Log -Message "Start FSLogix Container / Outlook data file migration."
 
 # Validate Frx.exe is installed.
 Try {
@@ -239,8 +237,8 @@ Try {
     Write-Log -Message "Frx path: $FrxPath."
 }
 Catch {
-    Write-Warning -Message "Error on line: $(Get-LineNumber)"
-    Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+    Write-Warning -Message "Error on line: $(Get-LineNumber)."
+    Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
     Write-Error $Error[0]
     Write-Log -Level Error -Message $Error[0]
     Exit
@@ -253,8 +251,8 @@ Try {
     Pop-Location
 }
 Catch {
-    Write-Warning -Message "Error on line: $(Get-LineNumber)"
-    Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+    Write-Warning -Message "Error on line: $(Get-LineNumber)."
+    Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
     Write-Error $Error[0]
     Write-Log -Level Error -Message $Error[0]
     Exit
@@ -267,8 +265,8 @@ Try {
     $groupMembers = Get-AdGroupMember -Identity $Group -Recursive -ErrorAction Stop
 }
 Catch {
-    Write-Warning -Message "Error on line: $(Get-LineNumber)"
-    Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+    Write-Warning -Message "Error on line: $(Get-LineNumber)."
+    Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
     Write-Error $Error[0]
     Write-Log -Level Error -Message $Error[0]
 }
@@ -297,8 +295,8 @@ ForEach ($User in $groupMembers) {
         Write-Log -Message "Container directory: $Directory."
     }
     Catch {
-        Write-Warning -Message "Error on line: $(Get-LineNumber)"
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+        Write-Warning -Message "Error on line: $(Get-LineNumber)."
+        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
         Write-Error $Error[0]
         Write-Log -Level Error -Message $Error[0]
         Exit
@@ -329,8 +327,8 @@ ForEach ($User in $groupMembers) {
         }
     }
     Catch {
-        Write-Warning -Message "Error on line: $(Get-LineNumber)"
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+        Write-Warning -Message "Error on line: $(Get-LineNumber)."
+        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
         Write-Error $Error[0]
         Write-Log -Level Error -Message $Error[0]
         Exit
@@ -372,8 +370,8 @@ ForEach ($User in $groupMembers) {
         Write-Log -Message "Successfully applied security permissions for $($User.samAccountName)."
     }
     Catch {
-        Write-Warning -Message "Error on line: $(Get-LineNumber)"
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+        Write-Warning -Message "Error on line: $(Get-LineNumber)."
+        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
         Write-Error $Error[0]
         Write-Log -Level Error -Message $Error[0]
         Exit
@@ -390,10 +388,10 @@ ForEach ($User in $groupMembers) {
     If (-not(Test-Path -Path $userDataFilePath)) {
         Write-Warning -Message "Invalid Outlook data file path: $userDataFilePath."
         Write-Log -Message "Invalid Outlook data file path: $userDataFilePath."
-        Write-Warning -Message "Error on line: $(Get-LineNumber)"
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+        Write-Warning -Message "Error on line: $(Get-LineNumber)."
+        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
         Write-Warning -Message "Could not locate Outlook data file path for $($User.samAccountName)."
-        Write-Log -Message "Could not locate Outlook data file path for $($User.samAccountName)."
+        Write-Log -Level Warn -Message "Could not locate Outlook data file path for $($User.samAccountName)."
     }
     Else {
         Write-Verbose -Message "Gather Outlook data file path from: $userDataFilePath."
@@ -403,10 +401,10 @@ ForEach ($User in $groupMembers) {
     If ($Null -eq $dataFiles) {
         Write-Warning -Message "No Outlook data files returned in: $userDataFilePath."
         Write-Log -Message "No Outlook data files returned in: $userDataFilePath."
-        Write-Warning -Message "Error on line: $(Get-LineNumber)"
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+        Write-Warning -Message "Error on line: $(Get-LineNumber)."
+        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
         Write-Warning "Could not locate Outlook data files for: $($User.samAccountName)."
-        Write-Log "Could not locate Outlook data files for: $($User.samAccountName)."
+        Write-Log -Level Warn -Message "Could not locate Outlook data files for: $($User.samAccountName)."
     }
     Else {
         Write-Verbose -Message "Successfully obtained Outlook data file/s for: $($User.samAccountName)."
@@ -414,7 +412,7 @@ ForEach ($User in $groupMembers) {
     }
     ForEach ($dataFile in $dataFiles) {
         Write-Verbose -Message "Data file for $($User.samAccountName): $dataFile."
-        Write-Verbose -Log "Data file for $($User.samAccountName): $dataFile."
+        Write-Log -Message "Data file for $($User.samAccountName): $dataFile."
     }
     #endregion
 
@@ -439,8 +437,8 @@ ForEach ($User in $groupMembers) {
         }
     }
     Catch {
-        Write-Warning -Message "Error on line: $(Get-LineNumber)"
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+        Write-Warning -Message "Error on line: $(Get-LineNumber)."
+        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
         Write-Error $Error[0]
         Write-Log -Level Error -Message $Error[0]
         Exit
@@ -468,8 +466,8 @@ ForEach ($User in $groupMembers) {
         }
         Catch {
             Dismount-FslDisk -Path $vhdPath
-            Write-Warning -Message "Error on line: $(Get-LineNumber)"
-            Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+            Write-Warning -Message "Error on line: $(Get-LineNumber)."
+            Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
             Write-Error $Error[0]
             Write-Log -Level Error -Message $Error[0]
             Exit
@@ -487,8 +485,8 @@ ForEach ($User in $groupMembers) {
                 }
             }
             Catch {
-                Write-Warning -Message "Error on line: $(Get-LineNumber)"
-                Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+                Write-Warning -Message "Error on line: $(Get-LineNumber)."
+                Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
                 Write-Error $Error[0]
                 Write-Log -Level Error -Message $Error[0]
             }
@@ -503,8 +501,8 @@ ForEach ($User in $groupMembers) {
                 }
             }
             Catch {
-                Write-Warning -Message "Error on line: $(Get-LineNumber)"
-                Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+                Write-Warning -Message "Error on line: $(Get-LineNumber)."
+                Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
                 Write-Error $Error[0]
                 Write-Log -Level Error -Message $Error[0]
             }
@@ -525,8 +523,8 @@ ForEach ($User in $groupMembers) {
             }
         }
         Catch {
-            Write-Warning -Message "Error on line: $(Get-LineNumber)"
-            Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+            Write-Warning -Message "Error on line: $(Get-LineNumber)."
+            Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
             Write-Error $Error[0]
             Write-Log -Level Error -Message $Error[0]
         }
@@ -546,8 +544,8 @@ ForEach ($User in $groupMembers) {
         }
     }
     Catch {
-        Write-Warning -Message "Error on line: $(Get-LineNumber)"
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)"
+        Write-Warning -Message "Error on line: $(Get-LineNumber)."
+        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
         Write-Error $Error[0]
         Write-Log -Level Error -Message $Error[0]
         Exit
