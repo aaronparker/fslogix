@@ -274,109 +274,6 @@ Catch {
 
 #region Step through each group member to create the container
 ForEach ($User in $groupMembers) {
-    Write-Verbose -Message "Generate container for: $($User.SamAccountName)."
-    Write-Log -Message "Generate container for: $($User.SamAccountName)."
-
-    #region Determine target container folder for the user's container
-    Try {
-        If ($FlipFlop.IsPresent) {
-            Write-Verbose -Message "FlipFlip is present."
-            Write-Log -Message "FlipFlip is present."
-            $Directory = New-FslDirectory -SamAccountName $User.SamAccountName -SID $User.SID -Destination $VHDLocation `
-                -FlipFlop -Passthru -ErrorAction Stop
-        }
-        Else {
-            Write-Verbose -Message "FlipFlip is not present."
-            Write-Log -Message "FlipFlip is not present."
-            $Directory = New-FslDirectory -SamAccountName $User.SamAccountName -SID $User.SID -Destination $VHDLocation `
-                -Passthru -ErrorAction Stop
-        }
-        Write-Verbose -Message "Container directory: $Directory."
-        Write-Log -Message "Container directory: $Directory."
-    }
-    Catch {
-        Write-Warning -Message "Error on line: $(Get-LineNumber)."
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
-        Write-Error $Error[0]
-        Write-Log -Level Error -Message $Error[0]
-        Exit
-    }
-    # Construct full VHD path 
-    $vhdName = "ODFC_" + $User.SamAccountName + ".vhdx"
-    $vhdPath = Join-Path $Directory $vhdName
-    Write-Verbose -Message "VHDLocation: $vhdPath."
-    Write-Log -Message "VHDLocation: $vhdPath."
-    #endregion
-
-    #region Remove the VHD if it exists
-    # Modify this to open an existing container
-    If (Test-Path -Path $vhdPath) {
-        Write-Log -Message "Removing: $vhdPath."
-        If ($pscmdlet.ShouldProcess($vhdPath, "Remove")) {
-            Remove-Item -Path $vhdPath -Force -ErrorAction SilentlyContinue
-        }
-    }
-    #endregion
-
-    #region Generate the container
-    Try {
-        $arguments = "create-vhd -filename $vhdPath -size-mbs=$VHDSize -dynamic=$vhdIsDynamic -label $($User.SamAccountName)"
-        Write-Log -Message "Invoke: $cmd $arguments"
-        If ($pscmdlet.ShouldProcess($vhdPath, "Create VHD")) {
-            Invoke-Process -FilePath $cmd -ArgumentList $arguments
-        }
-    }
-    Catch {
-        Write-Warning -Message "Error on line: $(Get-LineNumber)."
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
-        Write-Error $Error[0]
-        Write-Log -Level Error -Message $Error[0]
-        Exit
-    }
-    Write-Verbose -Message "Generated new VHD at: $vhdPath"
-    #endregion
-
-    #region Confirm the container is good
-    Write-Verbose -Message "Validating Outlook container."
-    Write-Log -Message "Validating Outlook container."
-    
-    $FslPath = $VHDLocation.TrimEnd('\%username%')
-    Write-Verbose -Message "FslPath is $FslPath."
-    Write-Log -Message "FslPath is $FslPath."
-
-    If ($FlipFlop.IsPresent) {
-        $IsFslProfile = Confirm-FslProfile -Path $FslPath -SamAccountName $User.samAccountName -SID $User.SID -FlipFlop
-    }
-    Else {
-        $IsFslProfile = Confirm-FslProfile -Path $FslPath -SamAccountName $User.samAccountName -SID $User.SID
-    }
-    If ($IsFslProfile) {
-        Write-Verbose -Message "Validated Outlook container: $FslPath."
-        Write-Log -Message "Validated Outlook container: $FslPath."
-    }
-    Else {
-        Write-Error $Error "Could not validate Outlook container: $FslPath."
-        Write-Log -Level Error -Message "Could not validate Outlook container: $FslPath."
-    }
-    #endregion
-
-    #region Apply permissions to the container
-    Write-Verbose -Message "Applying security permissions for $($User.samAccountName)."
-    Try {
-        If ($pscmdlet.ShouldProcess($User.samAccountName, "Add permissions")) {
-            Add-FslPermissions -User $User.samAccountName -folder $Directory
-        }
-        Write-Verbose -Message "Successfully applied security permissions for $($User.samAccountName)."
-        Write-Log -Message "Successfully applied security permissions for $($User.samAccountName)."
-    }
-    Catch {
-        Write-Warning -Message "Error on line: $(Get-LineNumber)."
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
-        Write-Error $Error[0]
-        Write-Log -Level Error -Message $Error[0]
-        Exit
-    }
-    #endregion
 
     #region Get the OST/PST file path
     If ($DataFilePath.ToLower().Contains("%username%")) {
@@ -398,7 +295,7 @@ ForEach ($User in $groupMembers) {
         Write-Log -Message "Gather Outlook data file path from: $userDataFilePath."
         $dataFiles = Get-ChildItem -Path $userDataFilePath -Include $FileType -Recurse
     }
-    If ($Null -eq $dataFiles) {
+    If (!(Test-Path -Path Variable:\dataFiles)) {
         Write-Warning -Message "No Outlook data files returned in: $userDataFilePath."
         Write-Log -Message "No Outlook data files returned in: $userDataFilePath."
         Write-Warning -Message "Error on line: $(Get-LineNumber)."
@@ -410,116 +307,69 @@ ForEach ($User in $groupMembers) {
         Write-Verbose -Message "Successfully obtained Outlook data file/s for: $($User.samAccountName)."
         Write-Log -Message "Successfully obtained Outlook data file/s for: $($User.samAccountName)."
     }
-    ForEach ($dataFile in $dataFiles) {
-        Write-Verbose -Message "Data file for $($User.samAccountName): $dataFile."
-        Write-Log -Message "Data file for $($User.samAccountName): $dataFile."
-    }
     #endregion
 
-    #region Mount the container
-    Write-Verbose -Message "Mounting FSLogix Container."
-    Write-Log -Message "Mounting FSLogix Container."
-    Try {
-        If ($AssignDriveLetter.IsPresent) {
-            If ($pscmdlet.ShouldProcess($vhdPath, "Mount")) {
-                $MountPath = Add-FslDriveLetter -Path $vhdPath -Passthru
-                Write-Verbose -Message "Container mounted at: $MountPath."
-                Write-Log -Message "Container mounted at: $MountPath."
-            }
-        }
-        Else {
-            If ($pscmdlet.ShouldProcess($vhdPath, "Mount")) {
-                $Mount = Mount-FslDisk -Path $vhdPath -ErrorAction Stop -PassThru
-                $MountPath = $Mount.Path
-                Write-Verbose -Message "Container mounted at: $MountPath."
-                Write-Log -Message "Container mounted at: $MountPath."
-            }
-        }
+    # Check that data files are returned. Continue with container create/copy if they do
+    If (!(Test-Path -Path Variable:\dataFiles)) {
+        Write-Verbose -Message "No Outlook data files for user: $($User.samAccountName)."
+        Write-Log -Message "No Outlook data files for user: $($User.samAccountName)."
     }
-    Catch {
-        Write-Warning -Message "Error on line: $(Get-LineNumber)."
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
-        Write-Error $Error[0]
-        Write-Log -Level Error -Message $Error[0]
-        Exit
-    }
-    #endregion
+    Else {
+        ForEach ($dataFile in $dataFiles) {
+            Write-Verbose -Message "Data file for $($User.samAccountName): $dataFile."
+            Write-Log -Message "Data file for $($User.samAccountName): $dataFile."
+        }
 
-    #region Copy the data files
-    Write-Verbose -Message "Copy Outlook data file/s for $($User.samAccountName)."
-    Write-Log -Message "Copy Outlook data file/s for $($User.samAccountName)."
-    $dataFileDestination = Join-Path $MountPath $ODFCPath
-    If (-not (Test-Path -Path $dataFileDestination)) {
-        If ($pscmdlet.ShouldProcess($dataFileDestination, "Create")) {
-            New-Item -ItemType Directory -Path $dataFileDestination -Force | Out-Null
-            Write-Verbose -Message "Created path: $dataFileDestination."
-            Write-Log -Message "Created path: $dataFileDestination."
-        }
-    }
-    ForEach ($dataFile in $dataFiles) {
+        Write-Verbose -Message "Generate container for: $($User.SamAccountName)."
+        Write-Log -Message "Generate container for: $($User.SamAccountName)."
+
+        #region Determine target container folder for the user's container
         Try {
-            Write-Verbose -Message "Copy file $($dataFile.FullName) to $ODFCPath."
-            Write-Log -Message "Copy file $($dataFile.FullName) to $ODFCPath."
-            If ($pscmdlet.ShouldProcess($dataFile.FullName, "Copy to disk")) {
-                Copy-FslToDisk -VHD $vhdPath -Path $dataFile.FullName -Destination $ODFCPath -ErrorAction Stop
+            If ($FlipFlop.IsPresent) {
+                Write-Verbose -Message "FlipFlip is present."
+                Write-Log -Message "FlipFlip is present."
+                $Directory = New-FslDirectory -SamAccountName $User.SamAccountName -SID $User.SID -Destination $VHDLocation `
+                    -FlipFlop -Passthru -ErrorAction Stop
             }
+            Else {
+                Write-Verbose -Message "FlipFlip is not present."
+                Write-Log -Message "FlipFlip is not present."
+                $Directory = New-FslDirectory -SamAccountName $User.SamAccountName -SID $User.SID -Destination $VHDLocation `
+                    -Passthru -ErrorAction Stop
+            }
+            Write-Verbose -Message "Container directory: $Directory."
+            Write-Log -Message "Container directory: $Directory."
         }
         Catch {
-            Dismount-FslDisk -Path $vhdPath
             Write-Warning -Message "Error on line: $(Get-LineNumber)."
             Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
             Write-Error $Error[0]
             Write-Log -Level Error -Message $Error[0]
             Exit
         }
-    }
-    #endregion
+        # Construct full VHD path 
+        $vhdName = "ODFC_" + $User.SamAccountName + ".vhdx"
+        $vhdPath = Join-Path $Directory $vhdName
+        Write-Verbose -Message "VHDLocation: $vhdPath."
+        Write-Log -Message "VHDLocation: $vhdPath."
+        #endregion
 
-    #region Rename the old Outlook data file/s; rename folders; remove user from group
-    If ($RenameOldDataFile.IsPresent) {
-        ForEach ($dataFile in $dataFiles) {
-            Try {
-                If ($pscmdlet.ShouldProcess($dataFile.FullName, "Rename")) {
-                    Write-Verbose -Message "Rename [$($dataFile.FullName)] to [$($dataFile.BaseName).old]."
-                    Rename-Item -Path $dataFile.FullName -NewName "$($dataFile.BaseName).old" -Force -ErrorAction Stop
-                }
-            }
-            Catch {
-                Write-Warning -Message "Error on line: $(Get-LineNumber)."
-                Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
-                Write-Error $Error[0]
-                Write-Log -Level Error -Message $Error[0]
+        #region Remove the VHD if it exists
+        # Modify this to open an existing container
+        If (Test-Path -Path $vhdPath) {
+            Write-Log -Message "Removing: $vhdPath."
+            If ($pscmdlet.ShouldProcess($vhdPath, "Remove")) {
+                Remove-Item -Path $vhdPath -Force -ErrorAction SilentlyContinue
             }
         }
-    }
-    If ($RenameOldDirectory.IsPresent) {
-        If ($Null -ne $userDataFilePath) {
-            Try {
-                Write-Verbose -Message "Renaming old Outlook data file directory"
-                If ($pscmdlet.ShouldProcess($userDataFilePath, "Rename")) {
-                    Rename-Item -Path $userDataFilePath -NewName "$($userDataFilePath)_Old" -Force -ErrorAction Stop
-                }
-            }
-            Catch {
-                Write-Warning -Message "Error on line: $(Get-LineNumber)."
-                Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
-                Write-Error $Error[0]
-                Write-Log -Level Error -Message $Error[0]
-            }
-            Write-Verbose -Message "Successfully renamed old Outlook data file directory: $userDataFilePath."
-            Write-Log -Message "Successfully renamed old Outlook data file directory: $userDataFilePath."
-        }
-        Else {
-            Write-Verbose -Message "Skipping rename directory for user: $User."
-            Write-Log -Message "Skipping rename directory for user: $User."
-        }
-    }
-    If ($RemoveFromGroup.IsPresent) {
+        #endregion
+
+        #region Generate the container
         Try {
-            Write-Verbose -Message "Removing $($User.samAccountName) from AD group: $Group."
-            Write-Log -Message "Removing $($User.samAccountName) from AD group: $Group."
-            If ($pscmdlet.ShouldProcess($User.samAccountName, "Remove from group")) {
-                Remove-ADGroupMember -Identity $Group -Members $User.samAccountName -ErrorAction Stop
+            $arguments = "create-vhd -filename $vhdPath -size-mbs=$VHDSize -dynamic=$vhdIsDynamic -label $($User.SamAccountName)"
+            Write-Log -Message "Invoke: $cmd $arguments"
+            If ($pscmdlet.ShouldProcess($vhdPath, "Create VHD")) {
+                Invoke-Process -FilePath $cmd -ArgumentList $arguments
             }
         }
         Catch {
@@ -527,28 +377,190 @@ ForEach ($User in $groupMembers) {
             Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
             Write-Error $Error[0]
             Write-Log -Level Error -Message $Error[0]
+            Exit
         }
-        Write-Verbose -Message "Successfully removed $($User.samAccountName) from AdGroup: $Group."
-        Write-Log -Message "Successfully removed $($User.samAccountName) from AdGroup: $Group."
-    }
-    #endregion
+        Write-Verbose -Message "Generated new VHD at: $vhdPath"
+        #endregion
 
-    Write-Verbose -Message "Successfully migrated Outlook data file for $($User.samAccountName)."
-    Write-Log -Message "Successfully migrated Outlook data file for $($User.samAccountName)."
-    Write-Verbose -Message "Dismounting container."
-    Write-Log -Message "Dismounting container."
-    Try {
-        If ($pscmdlet.ShouldProcess($vhdPath, "Dismount")) {
-            Dismount-FslDisk -Path $vhdPath -ErrorAction Stop
-            Write-Verbose -Message "Dismounted container."
+        #region Confirm the container is good
+        Write-Verbose -Message "Validating Outlook container."
+        Write-Log -Message "Validating Outlook container."
+    
+        $FslPath = $VHDLocation.TrimEnd('\%username%')
+        Write-Verbose -Message "FslPath is $FslPath."
+        Write-Log -Message "FslPath is $FslPath."
+
+        If ($FlipFlop.IsPresent) {
+            $IsFslProfile = Confirm-FslProfile -Path $FslPath -SamAccountName $User.samAccountName -SID $User.SID -FlipFlop
         }
-    }
-    Catch {
-        Write-Warning -Message "Error on line: $(Get-LineNumber)."
-        Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
-        Write-Error $Error[0]
-        Write-Log -Level Error -Message $Error[0]
-        Exit
+        Else {
+            $IsFslProfile = Confirm-FslProfile -Path $FslPath -SamAccountName $User.samAccountName -SID $User.SID
+        }
+        If ($IsFslProfile) {
+            Write-Verbose -Message "Validated Outlook container: $FslPath."
+            Write-Log -Message "Validated Outlook container: $FslPath."
+        }
+        Else {
+            Write-Error $Error "Could not validate Outlook container: $FslPath."
+            Write-Log -Level Error -Message "Could not validate Outlook container: $FslPath."
+        }
+        #endregion
+
+        #region Apply permissions to the container
+        Write-Verbose -Message "Applying security permissions for $($User.samAccountName)."
+        Try {
+            If ($pscmdlet.ShouldProcess($User.samAccountName, "Add permissions")) {
+                Add-FslPermissions -User $User.samAccountName -folder $Directory
+            }
+            Write-Verbose -Message "Successfully applied security permissions for $($User.samAccountName)."
+            Write-Log -Message "Successfully applied security permissions for $($User.samAccountName)."
+        }
+        Catch {
+            Write-Warning -Message "Error on line: $(Get-LineNumber)."
+            Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
+            Write-Error $Error[0]
+            Write-Log -Level Error -Message $Error[0]
+            Exit
+        }
+        #endregion
+
+        #region Mount the container
+        Write-Verbose -Message "Mounting FSLogix Container."
+        Write-Log -Message "Mounting FSLogix Container."
+        Try {
+            If ($AssignDriveLetter.IsPresent) {
+                If ($pscmdlet.ShouldProcess($vhdPath, "Mount")) {
+                    $MountPath = Add-FslDriveLetter -Path $vhdPath -Passthru
+                    Write-Verbose -Message "Container mounted at: $MountPath."
+                    Write-Log -Message "Container mounted at: $MountPath."
+                }
+            }
+            Else {
+                If ($pscmdlet.ShouldProcess($vhdPath, "Mount")) {
+                    $Mount = Mount-FslDisk -Path $vhdPath -ErrorAction Stop -PassThru
+                    $MountPath = $Mount.Path
+                    Write-Verbose -Message "Container mounted at: $MountPath."
+                    Write-Log -Message "Container mounted at: $MountPath."
+                }
+            }
+        }
+        Catch {
+            Write-Warning -Message "Error on line: $(Get-LineNumber)."
+            Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
+            Write-Error $Error[0]
+            Write-Log -Level Error -Message $Error[0]
+            Exit
+        }
+        #endregion
+
+        #region Copy the data files
+        Write-Verbose -Message "Copy Outlook data file/s for $($User.samAccountName)."
+        Write-Log -Message "Copy Outlook data file/s for $($User.samAccountName)."
+        $dataFileDestination = Join-Path $MountPath $ODFCPath
+        If (-not (Test-Path -Path $dataFileDestination)) {
+            If ($pscmdlet.ShouldProcess($dataFileDestination, "Create")) {
+                New-Item -ItemType Directory -Path $dataFileDestination -Force | Out-Null
+                Write-Verbose -Message "Created path: $dataFileDestination."
+                Write-Log -Message "Created path: $dataFileDestination."
+            }
+        }
+        ForEach ($dataFile in $dataFiles) {
+            Try {
+                Write-Verbose -Message "Copy file $($dataFile.FullName) to $ODFCPath."
+                Write-Log -Message "Copy file $($dataFile.FullName) to $ODFCPath."
+                If ($pscmdlet.ShouldProcess($dataFile.FullName, "Copy to disk")) {
+                    Copy-FslToDisk -VHD $vhdPath -Path $dataFile.FullName -Destination $ODFCPath -ErrorAction Stop
+                }
+            }
+            Catch {
+                Dismount-FslDisk -Path $vhdPath
+                Write-Warning -Message "Error on line: $(Get-LineNumber)."
+                Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
+                Write-Error $Error[0]
+                Write-Log -Level Error -Message $Error[0]
+                Exit
+            }
+        }
+        #endregion
+
+        #region Rename the old Outlook data file/s; rename folders; remove user from group
+        If ($RenameOldDataFile.IsPresent) {
+            ForEach ($dataFile in $dataFiles) {
+                Try {
+                    If ($pscmdlet.ShouldProcess($dataFile.FullName, "Rename")) {
+                        Write-Verbose -Message "Rename [$($dataFile.FullName)] to [$($dataFile.BaseName).old]."
+                        Rename-Item -Path $dataFile.FullName -NewName "$($dataFile.BaseName).old" -Force -ErrorAction Stop
+                    }
+                }
+                Catch {
+                    Write-Warning -Message "Error on line: $(Get-LineNumber)."
+                    Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
+                    Write-Error $Error[0]
+                    Write-Log -Level Error -Message $Error[0]
+                }
+            }
+        }
+        If ($RenameOldDirectory.IsPresent) {
+            If ($Null -ne $userDataFilePath) {
+                Try {
+                    Write-Verbose -Message "Renaming old Outlook data file directory"
+                    If ($pscmdlet.ShouldProcess($userDataFilePath, "Rename")) {
+                        Rename-Item -Path $userDataFilePath -NewName "$($userDataFilePath)_Old" -Force -ErrorAction Stop
+                    }
+                }
+                Catch {
+                    Write-Warning -Message "Error on line: $(Get-LineNumber)."
+                    Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
+                    Write-Error $Error[0]
+                    Write-Log -Level Error -Message $Error[0]
+                }
+                Write-Verbose -Message "Successfully renamed old Outlook data file directory: $userDataFilePath."
+                Write-Log -Message "Successfully renamed old Outlook data file directory: $userDataFilePath."
+            }
+            Else {
+                Write-Verbose -Message "Skipping rename directory for user: $User."
+                Write-Log -Message "Skipping rename directory for user: $User."
+            }
+        }
+        If ($RemoveFromGroup.IsPresent) {
+            Try {
+                Write-Verbose -Message "Removing $($User.samAccountName) from AD group: $Group."
+                Write-Log -Message "Removing $($User.samAccountName) from AD group: $Group."
+                If ($pscmdlet.ShouldProcess($User.samAccountName, "Remove from group")) {
+                    Remove-ADGroupMember -Identity $Group -Members $User.samAccountName -ErrorAction Stop
+                }
+            }
+            Catch {
+                Write-Warning -Message "Error on line: $(Get-LineNumber)."
+                Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
+                Write-Error $Error[0]
+                Write-Log -Level Error -Message $Error[0]
+            }
+            Write-Verbose -Message "Successfully removed $($User.samAccountName) from AdGroup: $Group."
+            Write-Log -Message "Successfully removed $($User.samAccountName) from AdGroup: $Group."
+        }
+        #endregion
+
+        Write-Verbose -Message "Successfully migrated Outlook data file for $($User.samAccountName)."
+        Write-Log -Message "Successfully migrated Outlook data file for $($User.samAccountName)."
+        Write-Verbose -Message "Dismounting container."
+        Write-Log -Message "Dismounting container."
+        Try {
+            If ($pscmdlet.ShouldProcess($vhdPath, "Dismount")) {
+                Dismount-FslDisk -Path $vhdPath -ErrorAction Stop
+                Write-Verbose -Message "Dismounted container."
+            }
+        }
+        Catch {
+            Write-Warning -Message "Error on line: $(Get-LineNumber)."
+            Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
+            Write-Error $Error[0]
+            Write-Log -Level Error -Message $Error[0]
+            Exit
+        }
+
+        # Remove variables to ensure clean environment for next user account
+        Remove-Variable dataFiles
     }
 }
 
