@@ -44,20 +44,20 @@
 #>
 [CmdletBinding(SupportsShouldProcess = $true, PositionalBinding = $false, `
         HelpUri = 'https://github.com/aaronparker/FSLogix/blob/master/Profile-Cleanup/README.MD', ConfirmImpact = 'High')]
-[OutputType([String])]
+[OutputType([System.Management.Automation.PSObject])]
 Param (
-    [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0)]
+    [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find file $_" } })]
     [Alias("Path", "Xml")]
-    [string] $Targets,
+    [System.String] $Targets,
 
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $False)]
     [ValidateScript( { If (Test-Path (Split-Path $LogFile -Parent) -PathType 'Container') { $True } Else { Throw "Cannot find log file directory." } })]
-    [string] $LogFile = $(Join-Path (Resolve-Path $PWD) $("Remove-ProfileData-" + $((Get-Date).ToFileTimeUtc()) + ".log")),
+    [System.String] $LogFile = $(Join-Path (Resolve-Path $PWD) $("Remove-ProfileData-" + $((Get-Date).ToFileTimeUtc()) + ".log")),
 
     [Parameter(Mandatory = $false)]
-    [switch] $Override
+    [System.Management.Automation.SwitchParameter] $Override
 )
 
 Begin {
@@ -69,7 +69,7 @@ Begin {
         #>
         Param (
             [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True)]
-            [string]$Path
+            [System.String] $Path
         )
         Switch ($Path) {
             { $_ -match "%USERPROFILE%" } { $Path = $Path -replace "%USERPROFILE%", $env:USERPROFILE }
@@ -77,7 +77,7 @@ Begin {
             { $_ -match "%AppData%" } { $Path = $Path -replace "%AppData%", $env:AppData }
             { $_ -match "%TEMP%" } { $Path = $Path -replace "%TEMP%", $env:Temp }
         }
-        $Path
+        Write-Output -InputObject $Path
     }
 
     Function Convert-Size {
@@ -113,20 +113,20 @@ Begin {
         
                 Convert from Terabyte (Base 10) to Tebibyte (Base 2) with only 2 digits after the decimal
         #>
-        [cmdletbinding()]
-        param(
+        [OutputType([System.Double])]
+        Param(
             [ValidateSet("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
             [Parameter(Mandatory = $true)]
-            [string] $From,
+            [System.String] $From,
             
             [ValidateSet("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
             [Parameter(Mandatory = $true)]
-            [string] $To,
+            [System.String] $To,
             
             [Parameter(Mandatory = $true)]
-            [double] $Value,
+            [System.Double] $Value,
 
-            [int]$Precision = 2
+            [System.Int32] $Precision = 2
         )
         # Convert the supplied value to Bytes
         switch -casesensitive ($From) {
@@ -181,7 +181,7 @@ Begin {
         Param (
             [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True)]
             [Alias("PSPath")]
-            [string] $Path
+            [System.String] $Path
         )
         $folders = Get-ChildItem -Path $Path -Directory
         If ($folders.Count -gt 1) {
@@ -198,7 +198,7 @@ Begin {
         #>
         Param (
             [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True)]
-            [string] $Path
+            [System.String] $Path
         )
         If ((Split-Path -Path $Path -Leaf) -match "[*?]") {
             $fileList = Split-Path -Path $Path -Parent
@@ -211,10 +211,10 @@ Begin {
     #endregion
 
     # Output array, will contain the list of files/folders removed
-    $fileList = @()
+    $fileList = New-Object -TypeName System.Collections.ArrayList
 
     # Measure time taken to gather data
-    $stopWatch = [system.diagnostics.stopwatch]::StartNew()
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
     If ($WhatIfPreference -eq $True) {
         $WhatIfPreference = $False
         "[Remove-ProfileData] WhatIf mode" | Out-File -FilePath $LogFile -Append
@@ -231,9 +231,9 @@ Process {
     Try {
         [xml] $xmlDocument = Get-Content -Path $Targets -ErrorVariable xmlReadError -ErrorAction SilentlyContinue
     }
-    Catch {
-        Throw "Unable to read: $Xml. $xmlReadError"
-        Break
+    Catch [System.Exception] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): failed to read: $Xml."
+        Throw $_.Exception.Message
     }
 
     If ($xmlDocument -is [xml]) {
@@ -263,7 +263,7 @@ Process {
 
                             # Construct the file list for this folder and add to the full list for logging
                             $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -le $dateFilter }
-                            $fileList += $files
+                            $fileList.Add($files) | Out-Null
 
                             # Delete files with support for -WhatIf
                             ForEach ($file in $files) {
@@ -281,7 +281,7 @@ Process {
                         "Delete" {
                             # Construct the file list for this folder and add to the full list for logging
                             $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue
-                            $fileList += $files
+                            $fileList.Add($files) | Out-Null
 
                             # Delete the target folder
                             If ($pscmdlet.ShouldProcess($thisPath, "Delete")) {
@@ -300,7 +300,7 @@ Process {
 
                                 # Construct the file list for this folder and add to the full list for logging
                                 $files = Get-ChildItem -Path $folder -Recurse -Force -ErrorAction SilentlyContinue
-                                $fileList += $files
+                                $fileList.Add($files) | Out-Null
 
                                 If ($pscmdlet.ShouldProcess($thisPath, "Trim")) {
                                     Remove-Item -Path $folder -Force -Recurse -ErrorAction SilentlyContinue

@@ -1,4 +1,4 @@
-# Requires -Version 2
+#Requires -Version 2
 <#
     .SYNOPSIS
         Gets file stats and owner from a specified path.
@@ -7,7 +7,6 @@
         Retrieves the file stats (with Size, Last Write Time, Last Modified Time) and Owner from files in a specified path. Outputs sizes in MiB, by default.
 
     .NOTES
-        Name: Get-FileStats.ps1
         Author: Aaron Parker
         Twitter: @stealthpuppy
         
@@ -39,23 +38,24 @@
         Description:
         Scans the specified path returns the age and owner for each .vhdx file.
 #>
-[CmdletBinding(SupportsShouldProcess = $False, HelpUri = 'https://github.com/aaronparker/FSLogix/Stats/README.MD')]
-[OutputType([System.Array])]
+[CmdletBinding(HelpUri = 'https://github.com/aaronparker/FSLogix/Stats/README.MD')]
+[OutputType([System.Management.Automation.PSObject])]
 Param (
-    [Parameter(Mandatory = $True, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
+    [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
             HelpMessage = 'Specify a target path, paths or a list of files to scan for stats.')]
     [Alias('FullName', 'PSPath')]
-    [string[]]$Path, 
+    [System.String[]] $Path, 
 
-    [Parameter(Mandatory = $False, ValueFromPipeline = $False, `
+    [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
             HelpMessage = 'Gets only the specified items.')]
     [Alias('Filter')]
-    [string[]]$Include = "*.*"
+    [System.String[]] $Include = "*.*"
 )
 Begin {
     # Measure time taken to gather data
     $StopWatch = [system.diagnostics.stopwatch]::StartNew()
 
+    #region Functions
     Function Convert-Size {
         <#
             .SYNOPSIS
@@ -72,7 +72,7 @@ Begin {
                 Author: Techibee posted on July 7, 2014
                 Modified By: Void, modified on December 9, 2016
             .LINK
-                http://techibee.com/powershell/convert-from-any-to-any-bytes-kb-mb-gb-tb-using-powershell/2376
+                https://techibee.com/powershell/convert-from-any-to-any-bytes-kb-mb-gb-tb-using-powershell/2376
             .EXAMPLE
                 Convert-Size -From KB -To GB -Value 1024
                 0.001
@@ -89,17 +89,20 @@ Begin {
         
                 Convert from Terabyte (Base 10) to Tebibyte (Base 2) with only 2 digits after the decimal
         #>
-        [cmdletbinding()]
-        param(
-            [validateset("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
+        [OutputType([System.Double])]
+        Param(
+            [ValidateSet("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
             [Parameter(Mandatory = $true)]
-            [string]$From,
-            [validateset("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
+            [System.String] $From,
+            
+            [ValidateSet("b", "B", "KB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", "EiB", "ZB", "ZiB", "YB", "YiB")]
             [Parameter(Mandatory = $true)]
-            [string]$To,
+            [System.String] $To,
+            
             [Parameter(Mandatory = $true)]
-            [double]$Value,
-            [int]$Precision = 2
+            [System.Double] $Value,
+
+            [System.Int32] $Precision = 2
         )
         # Convert the supplied value to Bytes
         switch -casesensitive ($From) {
@@ -145,42 +148,63 @@ Begin {
         }
         [Math]::Round($value, $Precision, [MidPointRounding]::AwayFromZero)
     }
-    Write-Verbose "Beginning file stats trawling."
-    $Files = @()
+    #endregion
+
+    Write-Verbose -Message "Beginning file stats trawling."
+    $fileList = New-Object -TypeName System.Collections.ArrayList
 }
 Process {
-    # For each path in $Path, check that the path exists
-    If (Test-Path -Path $Path -IsValid) {
+    ForEach ($folder in $Path) {
 
-        # Get the item to determine whether it's a file or folder
-        If ((Get-Item -Path $Path).PSIsContainer) {
+        # For each path in $folder, check that the path exists
+        If (Test-Path -Path $folder -IsValid) {
 
-            # Target is a folder, so trawl the folder for files in the target and sub-folders
-            Write-Verbose "Getting stats for files in folder: $Path"
-            $items = Get-ChildItem -Path $Path -Recurse -File -Include $Include -ErrorAction SilentlyContinue
+            # Get the item to determine whether it's a file or folder
+            If ((Get-Item -Path $folder).PSIsContainer) {
+
+                # Target is a folder, so trawl the folder for files in the target and sub-folders
+                Write-Verbose -Message "Getting stats for files in folder: $folder"
+                try {
+                    $items = Get-ChildItem -Path $folder -Recurse -File -Include $Include -ErrorAction SilentlyContinue
+                }
+                catch [System.Exception] {
+                    Write-Warning -Message "$($MyInvocation.MyCommand): `Get-ChildItem -Recurse` failed on $folder."
+                    Throw $_.Exception.Message
+                }
+            }
+            Else {
+                # Target is a file, so just get metadata for the file
+                Write-Verbose -Message "Getting stats for file: $folder"
+                try {
+                    $items = Get-ChildItem -Path $folder -ErrorAction SilentlyContinue
+                }
+                catch [System.Exception] {
+                    Write-Warning -Message "$($MyInvocation.MyCommand): `Get-ChildItem` failed on $folder."
+                    Throw $_.Exception.Message
+                }
+            }
+
+            # Create an array from what was returned for specific data and sort on file path
+            If ($Null -ne $items) {
+                $files = $items | Select-Object @{Name = "Location"; Expression = { $_.Directory } }, `
+                @{Name = "ContainerName"; Expression = { $_.Name } }, 
+                @{Name = "Owner"; Expression = { (Get-Acl -Path $_.FullName).Owner } }, `
+                @{Name = "Size"; Expression = { "$(Convert-Size -From B -To MiB -Value $_.Length) MiB" } }, `
+                @{Name = "LastWriteTime"; Expression = { $_.LastWriteTime } }, `
+                @{Name = "LastAccessTime"; Expression = { $_.LastAccessTime } }
+                $fileList.Add($files) | Out-Null
+            }
         }
         Else {
-            # Target is a file, so just get metadata for the file
-            Write-Verbose "Getting stats for file: $Path"
-            $items = Get-ChildItem -Path $Path -ErrorAction SilentlyContinue
+            Write-Warning -Message "Path does not exist: $folder"
         }
-
-        # Create an array from what was returned for specific data and sort on file path
-        $Files += $items | Select-Object @{Name = "Location"; Expression = { $_.Directory } }, `
-        @{Name = "ContainerName"; Expression = { $_.Name } }, 
-        @{Name = "Owner"; Expression = { (Get-Acl -Path $_.FullName).Owner } }, `
-        @{Name = "Size"; Expression = { "$(Convert-Size -From B -To MiB -Value $_.Length) MiB" } }, `
-        @{Name = "LastWriteTime"; Expression = { $_.LastWriteTime } }, `
-        @{Name = "LastAccessTime"; Expression = { $_.LastAccessTime } }
-    }
-    Else {
-        Write-Error "Path does not exist: $Path"
     }
 }
 End {
     # Return the array of file paths and metadata
     $StopWatch.Stop()
-    Write-Verbose "File stats trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
-    $output = $Files | Sort-Object -Property @{Expression = "LastWriteTime"; Descending = $True }, @{Expression = "Name"; Descending = $False }
-    Write-Output $output
+    Write-Verbose -Message "File stats trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
+    
+    $sortedFiles = $fileList | Sort-Object -Property @{Expression = "LastWriteTime"; Descending = $True }, @{Expression = "Name"; Descending = $False }
+    Write-Output -InputObject $sortedFiles
 }

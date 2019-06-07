@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.2
+.VERSION 1.0.3
 
 .GUID 118b1874-d4b2-45bc-a698-f91f9568416c
 
@@ -29,6 +29,7 @@
 .RELEASENOTES
     - April 2019, 1.0.1, Initial version
     - April 2019, 1.0.2, Support local Redirections.csv as input
+    - June 2019, 1.0.3, Convert-CsvContent function, code cleanup
 
 .PRIVATEDATA
 #>
@@ -63,40 +64,59 @@
         Output Redirections.xml to the C:\Temp\Redirections.xml.
 #>
 [CmdletBinding(SupportsShouldProcess = $True, HelpURI = "https://github.com/aaronparker/FSLogix/blob/master/Redirections/README.MD")]
-[OutputType([String])]
+[OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $false)]
-    [string] $Redirections = "https://raw.githubusercontent.com/aaronparker/FSLogix/master/Redirections/Redirections.csv",
+    [System.String] $Redirections = "https://raw.githubusercontent.com/aaronparker/FSLogix/master/Redirections/Redirections.csv",
 
     [Parameter(Mandatory = $false)]
-    [string] $OutFile = "Redirections.xml"
+    [System.String] $OutFile = "Redirections.xml"
 )
+
+#region Functions
+Function Convert-CsvContent {
+    [OutputType([System.Array])]
+    Param (
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline)]
+        [System.String] $Content
+    )
+    try {
+        $convertedContent = $Content | ConvertFrom-Csv
+    }
+    catch [System.Exception] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to convert content."
+        Throw $_.Exception.Message
+    }
+    finally {
+        If ($Null -ne $convertedContent) {
+            Write-Output -InputObject $convertedContent
+        }
+    }
+}
+#endregion
 
 # Read the file and convert from CSV. Support https or local file source
 If ($Redirections -match "http.*://") {
-    Try {
+    try {
         $Content = Invoke-WebRequest -Uri $Redirections -UseBasicParsing
     }
-    Catch {
-        Throw "Failed to read source file at $Redirections. Check that the URI exists or this machine has access to the internet."
+    catch [System.Exception] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file at $Redirections."
+        Throw $_.Exception.Message
     }
     # Convert the content from CSV into an object
     If ($Null -ne $Content) {
-        Try {
-            $Paths = $Content.Content | ConvertFrom-Csv
-        }
-        Catch {
-            Throw "Failed to convert CSV content."
-        }
+        $Paths = Convert-CsvContent -Content $Content.Content
     }
 }
 Else {
     If (Test-Path -Path (Resolve-Path -Path $Redirections)) {
-        Try {
+        try {
             $Content = Get-Content -Path (Resolve-Path -Path $Redirections) -Raw
         }
-        Catch {
-            Throw "Failed to read source file at $Redirections. Check that the file content is valid."
+        catch [System.Exception] {
+            Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file at $Redirections."
+            Throw $_.Exception.Message
         }
     }
     Else {
@@ -104,18 +124,13 @@ Else {
     }
     # Convert the content from CSV into an object
     If ($Null -ne $Content) {
-        Try {
-            $Paths = $Content | ConvertFrom-Csv
-        }
-        Catch {
-            Throw "Failed to convert CSV content."
-        }
+        $Paths = Convert-CsvContent -Content $Content
     }
 }
 
 # Convert
 If ($Null -eq $Paths) {
-    Write-Error -Message "List of redirection paths is null."
+    Write-Warning -Message "$($MyInvocation.MyCommand): List of redirection paths is null."
 }
 Else {
     # Strings
@@ -132,7 +147,7 @@ Else {
     $xmlNodeAttribute1 = "Copy"
 
     # Create the XML document
-    [xml] $xmlDoc = New-Object System.Xml.XmlDocument
+    [xml] $xmlDoc = New-Object -TypeName System.Xml.XmlDocument
     $declaration = $xmlDoc.CreateXmlDeclaration($xmlVersion, $xmlEncoding, $Null)
     $xmlDoc.AppendChild($declaration) | Out-Null
 
@@ -174,16 +189,17 @@ Else {
     Else {
         $Parent = Resolve-Path -Path $Parent
     }
-    $output = Join-Path $Parent (Split-Path -Path $OutFile -Leaf)
+    $output = Join-Path -Path $Parent -ChildPath (Split-Path -Path $OutFile -Leaf)
 
     # Save to an XML file
-    Try {
+    try {
         $xmlDoc.Save($output)
     }
-    Catch {
-        Throw "Failed when saving XML to path: $output."
+    catch [System.Exception] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Failed when saving XML to path: $output."
+        Throw $_.Exception.Message
     }
 
     # Write the output file path to the pipeline
-    Write-Output $output
+    Write-Output -InputObject $output
 }
