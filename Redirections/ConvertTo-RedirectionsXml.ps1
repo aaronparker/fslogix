@@ -138,7 +138,7 @@ Function Get-FileContent {
         Throw $_.Exception.Message
     }
     catch [System.IO.IOException] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Error reading find file: $Path."
+        Write-Warning -Message "$($MyInvocation.MyCommand): Error reading file: $Path."
         Throw $_.Exception.Message
     }
     catch [System.Exception] {
@@ -224,17 +224,26 @@ Else {
     Else {
         $Parent = Resolve-Path -Path $Parent
     }
-    $output = Join-Path -Path $Parent -ChildPath (Split-Path -Path $OutFile -Leaf)
+    $outputFilePath = Join-Path -Path $Parent -ChildPath (Split-Path -Path $OutFile -Leaf)
 
     # Save to an XML file
     try {
-        $xmlDoc.Save($output)
+        $xmlDoc.Save($outputFilePath)
+    }
+    catch [System.IO.FileNotFoundException] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Error in output file path: $outputFilePath."
+        Throw $_.Exception.Message
+    }
+    catch [System.IO.IOException] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Error saving XML to output file: $outputFilePath."
+        Throw $_.Exception.Message
     }
     catch [System.Exception] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Failed when saving XML to path: $output."
-        Throw $_.Exception.Message
+        Throw $_
     }
 
     # Write the output file path to the pipeline
-    Write-Output -InputObject $output
+    If ($Null -ne $outputFilePath) {
+        Write-Output -InputObject $outputFilePath
+    }
 }

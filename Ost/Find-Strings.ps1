@@ -1,8 +1,8 @@
 [CmdletBinding()]
-[OutputType([String])]
+[OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $false)]
-    [string] $Path
+    [System.String] $Path
 )
 
 #region Functions

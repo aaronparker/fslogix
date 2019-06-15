@@ -30,7 +30,7 @@ function New-FslDisk {
         [int]$Type,
 
         [Parameter( Position = 4)]
-        [String]$Label,
+        [System.String]$Label,
 
         [Parameter( Position = 5)]
         [Switch]$Passthru,

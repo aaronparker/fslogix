@@ -7,14 +7,14 @@ function New-FslDirectory {
             ValueFromPipelineByPropertyName = $true,
             ParameterSetName = 'Name')]
         [Alias("Name")]
-        [String]$SamAccountName,
+        [System.String]$SamAccountName,
 
         [Parameter (Position = 1,
             Mandatory = $true,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
             ParameterSetName = 'Name')]
-        [String]$SID,
+        [System.String]$SID,
 
         [Parameter (Position = 0,
             Mandatory = $true,
@@ -22,12 +22,12 @@ function New-FslDirectory {
             ValueFromPipelineByPropertyName = $true,
             ParameterSetName = 'AdUser')]
         [Alias("User")]
-        [String]$AdUser,
+        [System.String]$AdUser,
 
         [Parameter (Mandatory = $True,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true)]
-        [String]$Destination,
+        [System.String]$Destination,
 
         [Switch]$FlipFlop,
 

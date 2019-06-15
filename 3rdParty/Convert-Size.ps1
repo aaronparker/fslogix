@@ -74,11 +74,11 @@ Function Convert-Size {
     param(
         [validateset("b", "B","KB","KiB","MB","MiB","GB","GiB","TB","TiB","PB","PiB","EB","EiB", "ZB", "ZiB", "YB", "YiB")]
         [Parameter(Mandatory=$true)]
-        [string]$From,
+        [System.String]$From,
 
         [validateset("b", "B","KB","KiB","MB","MiB","GB","GiB","TB","TiB","PB","PiB","EB","EiB", "ZB", "ZiB", "YB", "YiB")]
         [Parameter(Mandatory=$true)]
-        [string]$To,
+        [System.String]$To,
 
         [Parameter(Mandatory=$true)]
         [double]$Value,

@@ -1,20 +1,20 @@
 [CmdletBinding(SupportsShouldProcess = $True)]
-[OutputType([String])]
+[OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $false)]
-    [string] $Path = "$env:LocalAppData\Microsoft\Outlook"
+    [System.String] $Path = "$env:LocalAppData\Microsoft\Outlook"
 )
 
 #region Functions
 Function ConvertFrom-Hex ($String) {
     $output = ($String.Split(",", [System.StringSplitOptions]::RemoveEmptyEntries) | `
             Where-Object { $_ -gt '0' } | ForEach-Object { [char][int]"$($_)" }) -join ''
-    Write-Output $output
+    Write-Output -InputObject $output
 }
 
 Function ConvertTo-Hex ($String) {
     $output = [System.Text.Encoding]::Unicode.GetBytes($String + "`0")
-    Write-Output $output
+    Write-Output -InputObject $output
 }
 
 Function Set-RegValue {
@@ -25,7 +25,7 @@ Function Set-RegValue {
         [Parameter(Mandatory = $True)] $Data,
         [Parameter(Mandatory = $False)]
         [ValidateSet('Binary', 'ExpandString', 'String', 'Dword', 'MultiString', 'QWord')]
-        [string] $Type = "String"
+        [System.String] $Type = "String"
     )
     try {
         If (!(Test-Path -Path $Key)) {
@@ -46,7 +46,7 @@ Function Set-RegValue {
 $ostRegValue = "001f6610"
 $keyPath = "HKCU:\Software\Microsoft\Office\16.0\Outlook\Profiles"
 $keys = (Get-ChildItem $keyPath -Recurse | `
-            Where-Object { $_.Property -eq $ostRegValue }).Name
+        Where-Object { $_.Property -eq $ostRegValue }).Name
 
 ForEach ($key in $keys) {
     $key = $key.Replace("HKEY_CURRENT_USER", "HKCU:")

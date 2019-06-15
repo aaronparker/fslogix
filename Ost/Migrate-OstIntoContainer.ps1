@@ -10,55 +10,55 @@
 Param (
     [Parameter(Mandatory = $False)]
     # AD group name for target users for migration
-    [string] $Group = "FSLogix-Office365Container-Migrate",
+    [System.String] $Group = "FSLogix-Office365Container-Migrate",
 
     [Parameter(Mandatory = $False)]
     # Location of the target OST / PST file
-    [string] $DataFilePath = "\\ad1\Home\%username%",
+    [System.String] $DataFilePath = "\\ad1\Home\%username%",
 
     [Parameter(Mandatory = $False)]
     # Network location of the FSLogix Containers
-    [string] $VHDLocation = "\\ad1\FSLogixContainers\RDS",
+    [System.String] $VHDLocation = "\\ad1\FSLogixContainers\RDS",
 
     [Parameter(Mandatory = $False)]
-    [string[]] $FileType = ("*.ost", "*.pst"),
+    [System.String[]] $FileType = ("*.ost", "*.pst"),
 
     [Parameter(Mandatory = $False)]
     # Target location in the new ODFC container
-    [string] $ODFCPath = "ODFC",
+    [System.String] $ODFCPath = "ODFC",
 
     [Parameter(Mandatory = $False)]
     # Flip flip SID and username in folder name
-    [switch] $FlipFlop,
+    [System.Management.Automation.SwitchParameter] $FlipFlop,
 
     [Parameter(Mandatory = $False)]
     # Maximum VHD size in MB
-    [string] $VHDSize = 30000,
+    [System.String] $VHDSize = 30000,
 
     [Parameter(Mandatory = $False)]
     # Maximum VHD size in MB
     [ValidateSet('0', '1')]
-    [int] $VhdIsDynamic = 1,
+    [System.Int32] $VhdIsDynamic = 1,
 
     [Parameter(Mandatory = $False)]
     # True to initialize driveletter, false to mount to path
-    [switch] $AssignDriveLetter,
+    [System.Management.Automation.SwitchParameter] $AssignDriveLetter,
 
     [Parameter(Mandatory = $False)]
     # Remove user account from target AD group after migration
-    [switch] $RemoveFromGroup,
+    [System.Management.Automation.SwitchParameter] $RemoveFromGroup,
 
     [Parameter(Mandatory = $False)]
     # Rename old Outlook data file/s
-    [switch] $RenameOldDataFile,
+    [System.Management.Automation.SwitchParameter] $RenameOldDataFile,
 
     [Parameter(Mandatory = $False)]
     # Rename directory containing Outlook data file/s
-    [switch] $RenameOldDirectory,
+    [System.Management.Automation.SwitchParameter] $RenameOldDirectory,
 
     [Parameter(Mandatory = $False)]
     # Log file path
-    [string] $LogFile
+    [System.String] $LogFile
 )
 
 Set-StrictMode -Version Latest
@@ -96,11 +96,11 @@ Function Invoke-Process {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string] $FilePath,
+        [System.String] $FilePath,
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [string] $ArgumentList
+        [System.String] $ArgumentList
     )
 
     $ErrorActionPreference = 'Stop'
@@ -131,7 +131,7 @@ Function Invoke-Process {
                 }
             }
             else {
-                if ([string]::IsNullOrEmpty($cmdOutput) -eq $false) {
+                if ([System.String]::IsNullOrEmpty($cmdOutput) -eq $false) {
                     Write-Output -InputObject $cmdOutput
                 }
             }
@@ -153,22 +153,22 @@ Function Write-Log {
             Position = 0,
             ParameterSetName = 'LOG')]
         [ValidateNotNullOrEmpty()]
-        [string] $Message,
+        [System.String] $Message,
 
         [Parameter(Mandatory = $false,
             Position = 1,
             ParameterSetName = 'LOG')]
         [ValidateSet("Error", "Warn", "Info")]
-        [string] $Level = "Info",
+        [System.String] $Level = "Info",
 
         [Parameter(Mandatory = $false,
             Position = 2)]
-        [string] $Path = "$env:temp\PowershellScript.log",
+        [System.String] $Path = "$env:temp\PowershellScript.log",
 
         [Parameter(Mandatory = $false,
             Position = 3,
             ParameterSetName = 'STARTNEW')]
-        [switch] $StartNew,
+        [System.Management.Automation.SwitchParameter] $StartNew,
 
         [Parameter(Mandatory = $false,
             Position = 4,

@@ -6,7 +6,7 @@ function Dismount-FslDisk {
             ValueFromPipelineByPropertyName = $true,
             ParameterSetName = "Path")]
         [ValidateNotNullOrEmpty()]
-        [string]$Path,
+        [System.String]$Path,
 
         [Parameter( Position = 1,
             Mandatory = $true,

@@ -417,7 +417,7 @@ function Add-FslRule {
             ValuefromPipelineByPropertyName = $true
         )]
         [ValidateSet('FolderOrKey', 'FileOrValue')]
-        [string]$RedirectType,
+        [System.String]$RedirectType,
 
         [Parameter(
             ParameterSetName = 'Redirect',
@@ -432,7 +432,7 @@ function Add-FslRule {
             Position = 9,
             ValuefromPipelineByPropertyName = $true
         )]
-        [string]$DiskFile,
+        [System.String]$DiskFile,
 
         [Parameter(
             ParameterSetName = 'SpecifyValue',
@@ -441,7 +441,7 @@ function Add-FslRule {
             ValuefromPipelineByPropertyName = $true
         )]
         [Alias('Binary')]
-        [string]$Data,
+        [System.String]$Data,
 
         [Parameter(
             Position = 11,
@@ -1452,7 +1452,7 @@ function Set-FslRule {
             ValuefromPipelineByPropertyName = $true
         )]
         [ValidateSet('FolderOrKey', 'FileOrValue')]
-        [string]$RedirectType,
+        [System.String]$RedirectType,
 
         [Parameter(
             ParameterSetName = 'Redirect',
@@ -1467,7 +1467,7 @@ function Set-FslRule {
             Position = 9,
             ValuefromPipelineByPropertyName = $true
         )]
-        [string]$DiskFile,
+        [System.String]$DiskFile,
 
         [Parameter(
             ParameterSetName = 'SpecifyValue',
@@ -1476,7 +1476,7 @@ function Set-FslRule {
             ValuefromPipelineByPropertyName = $true
         )]
         [Alias('Binary')]
-        [string]$Data,
+        [System.String]$Data,
 
         [Parameter(
             Position = 11,

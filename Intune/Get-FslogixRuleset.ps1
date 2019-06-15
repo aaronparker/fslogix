@@ -61,7 +61,7 @@ Function Get-AzureBlobItems {
     Param (
         [Parameter(ValueFromPipeline = $True, Mandatory = $True, HelpMessage = "Azure blob storage URL with List Containers request URI '?comp=list'.")]
         [ValidatePattern("^(http|https)://")]
-        [string]$Url
+        [System.String]$Url
     )
 
     # Get response from Azure blog storage; Convert contents into usable XML, removing extraneous leading characters

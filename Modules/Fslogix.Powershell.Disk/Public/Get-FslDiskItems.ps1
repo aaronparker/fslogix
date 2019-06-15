@@ -15,7 +15,7 @@ function Get-FslDiskItems {
         [Switch]$Force,
 
         [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [String]$Filter,
+        [System.String]$Filter,
 
         [Parameter(ValueFromPipelineByPropertyName = $true)]
         [String[]]$Include,
