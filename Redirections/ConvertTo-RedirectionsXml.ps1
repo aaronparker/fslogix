@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.3
+.VERSION 1.0.4
 
 .GUID 118b1874-d4b2-45bc-a698-f91f9568416c
 
@@ -27,9 +27,10 @@
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-    - April 2019, 1.0.1, Initial version
-    - April 2019, 1.0.2, Support local Redirections.csv as input
-    - June 2019, 1.0.3, Convert-CsvContent function, code cleanup
+    - 1.0.1, Initial version, April 2019
+    - 1.0.2, Support local Redirections.csv as input
+    - 1.0.3, Convert-CsvContent function, code cleanup
+    - 1.0.4, Additional error checking
 
 .PRIVATEDATA
 #>
@@ -75,13 +76,13 @@ Param (
 
 #region Functions
 Function Convert-CsvContent {
-    [OutputType([System.Array])]
+    [OutputType([System.Management.Automation.PSObject])]
     Param (
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline)]
         [System.String] $Content
     )
     try {
-        $convertedContent = $Content | ConvertFrom-Csv
+        $convertedContent = $Content | ConvertFrom-Csv -ErrorAction SilentlyContinue
     }
     catch [System.Exception] {
         Write-Warning -Message "$($MyInvocation.MyCommand): Failed to convert content."
@@ -93,40 +94,74 @@ Function Convert-CsvContent {
         }
     }
 }
+
+Function Get-WebRequest {
+    [OutputType([System.Management.Automation.PSObject])]
+    Param (
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline)]
+        [System.String] $Uri
+    )
+    try {
+        $content = Invoke-WebRequest -Uri $Uri -UseBasicParsing -ErrorAction SilentlyContinue
+    }
+    catch [System.Net.Http.HttpResponseException] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file at $Redirections."
+        Throw $_.Exception.Message        
+    }
+    catch [System.Net.Http.HttpRequestException] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file. Likely an issue with the remote hostname."
+        Throw $_.Exception.Message        
+    }
+    catch [System.Exception] {
+        Throw $_
+    }
+    finally {
+        If (($Null -ne $content) -and ($content.Content.Length -gt 1)) {
+            Write-Output -InputObject $content.Content
+        }
+    }
+}
+
+Function Get-FileContent {
+    [OutputType([System.Management.Automation.PSObject])]
+    Param (
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline)]
+        [ValidateScript( { If (Test-Path -Path $_ -PathType 'Leaf') { $True } Else { Throw "$($MyInvocation.MyCommand): cannot find file $_" } })]
+        [System.String] $Path
+    )
+    $Path = Resolve-Path -Path $Path
+    try {
+        $content = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
+    }
+    catch [System.IO.FileNotFoundException] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Cannot find file: $Path."
+        Throw $_.Exception.Message
+    }
+    catch [System.IO.IOException] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Error reading find file: $Path."
+        Throw $_.Exception.Message
+    }
+    catch [System.Exception] {
+        Throw $_
+    }
+    finally {
+        If ($Null -ne $content) {
+            Write-Output -InputObject $content
+        }
+    }
+}
 #endregion
 
 # Read the file and convert from CSV. Support https or local file source
 If ($Redirections -match "http.*://") {
-    try {
-        $Content = Invoke-WebRequest -Uri $Redirections -UseBasicParsing
-    }
-    catch [System.Exception] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file at $Redirections."
-        Throw $_.Exception.Message
-    }
-    # Convert the content from CSV into an object
-    If ($Null -ne $Content) {
-        $Paths = Convert-CsvContent -Content $Content.Content
-    }
+    $content = Get-WebRequest -Uri $Redirections
 }
 Else {
-    If (Test-Path -Path (Resolve-Path -Path $Redirections)) {
-        try {
-            $Content = Get-Content -Path (Resolve-Path -Path $Redirections) -Raw
-        }
-        catch [System.Exception] {
-            Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file at $Redirections."
-            Throw $_.Exception.Message
-        }
-    }
-    Else {
-        Throw "Failed to read source file at $Redirections. Check that the path exists."
-    }
-    # Convert the content from CSV into an object
-    If ($Null -ne $Content) {
-        $Paths = Convert-CsvContent -Content $Content
-    }
+    $content = Get-FileContent -Path (Resolve-Path -Path $Redirections)
 }
+
+# Convert the content from CSV format
+$Paths = Convert-CsvContent -Content $Content
 
 # Convert
 If ($Null -eq $Paths) {

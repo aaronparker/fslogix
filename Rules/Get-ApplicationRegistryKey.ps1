@@ -64,7 +64,7 @@ try {
             Write-Warning -Message "$($MyInvocation.MyCommand): Unable to change location to $key."
             Throw $_.Exception.Message        
         }
-        catch [System.SystemException] {
+        catch [System.Exception] {
             Throw $_
         }
         # If successfully changed to the target key, get child keys and match against data in the default values
@@ -81,7 +81,7 @@ try {
         }
     }
 }
-catch [System.SystemException] {
+catch [System.Exception] {
     Throw $_
 }
 finally {
