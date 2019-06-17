@@ -1,41 +1,48 @@
 <#PSScriptInfo
-    .VERSION 1.0
+    .VERSION 1.0.1
     .GUID 9c53a0e5-1cb3-4b35-90f0-372bc7665f4f
     .AUTHOR Aaron Parker, @stealthpuppy
     .COMPANYNAME stealthpuppy
     .COPYRIGHT Aaron Parker, https://stealthpuppy.com
-    .TAGS FSLogix
+    .TAGS FSLogix App-Masking
     .LICENSEURI https://github.com/aaronparker/FSLogix/blob/master/LICENSE
     .PROJECTURI https://github.com/aaronparker/FSLogix
+    .DESCRIPTION Returns strings from well known Registry keys that define a Windows application. Used to assist in defining an FSLogix App Masking rule set.
     .ICONURI 
     .EXTERNALMODULEDEPENDENCIES 
     .REQUIREDSCRIPTS 
     .EXTERNALSCRIPTDEPENDENCIES 
     .RELEASENOTES
+    - 1.0.1, First version pushed to the PowerShell Gallery, June 2019
     .PRIVATEDATA 
 #>
 <# 
     .DESCRIPTION 
-        Returns strings from well known Registry keys that define a Windows application.
+        Returns strings from well known Registry keys that define a Windows application. Used to assist in defining an FSLogix App Masking rule set.
 
     .PARAMETER Key
         A single key or array of Registry keys to check child keys for application details. The script includes the keys typically needed for most applications.
 
     .PARAMETER SearchString
-        An array of strings to check for application names
+        An array of strings to check for application names. Defaults to "Visio", "Project".
 
     .EXAMPLE
         To search for Registry keys specific to Adobe Reader or Acrobat:
 
-        C:\> . "\\Mac\Home\Projects\FSLogix\Rules\Get-ApplicationRegistryKey.ps1" -SearchString "Adobe"
+        C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Adobe"
 
     .EXAMPLE
         To search for Registry keys specific to Visio and Project:
 
-        C:\> . "\\Mac\Home\Projects\FSLogix\Rules\Get-ApplicationRegistryKey.ps1" -SearchString "Visio", "Project"
+        C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Visio", "Project"
+
+    .EXAMPLE
+        To search for Registry keys specific to Skype for Business:
+
+        C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Skype"
 #>
 [OutputType([System.Array])]
-[CmdletBinding(SupportsShouldProcess = $False, HelpUri = "https://github.com/aaronparker/FSLogix/blob/master/Rules/README.MD")]
+[CmdletBinding(SupportsShouldProcess = $False, HelpUri = "https://docs.stealthpuppy.com/docs/fslogix/appkeys")]
 Param (
     [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline)]
     [ValidateNotNull()]
