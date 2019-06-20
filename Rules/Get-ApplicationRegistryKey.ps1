@@ -46,7 +46,7 @@
 Param (
     [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline)]
     [ValidateNotNull()]
-    [System.String[]] $Key = @("HKLM:\SOFTWARE\Classes\CLSID", "HKLM:\SOFTWARE\Classes", "HKLM:\SOFTWARE\Wow6432Node\Classes", `
+    [System.String[]] $Keys = @("HKLM:\SOFTWARE\Classes\CLSID", "HKLM:\SOFTWARE\Classes", "HKLM:\SOFTWARE\Wow6432Node\Classes", `
             "HKLM:\SOFTWARE\Wow6432Node\Classes\CLSID", "HKLM:\Software\Microsoft\Office\Outlook\Addins", `
             "HKCU:\Software\Microsoft\Office\Outlook\Addins"),
 
