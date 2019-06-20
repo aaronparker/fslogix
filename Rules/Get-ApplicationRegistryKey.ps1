@@ -1,5 +1,5 @@
 <#PSScriptInfo
-    .VERSION 1.0.1
+    .VERSION 1.0.2
     .GUID 9c53a0e5-1cb3-4b35-90f0-372bc7665f4f
     .AUTHOR Aaron Parker, @stealthpuppy
     .COMPANYNAME stealthpuppy
@@ -14,6 +14,7 @@
     .EXTERNALSCRIPTDEPENDENCIES 
     .RELEASENOTES
     - 1.0.1, First version pushed to the PowerShell Gallery, June 2019
+    - 1.0.2, Fix -Key parameter in ForEach loop, Add Process block for pipeline support
     .PRIVATEDATA 
 #>
 <# 
@@ -54,44 +55,48 @@ Param (
     [ValidateNotNull()]
     [System.String[]] $SearchString = @("Visio", "Project")
 )
+begin {
+    # Get current location
+    $location = Get-Location
+}
+process {
+    try {
+        # Walk through $Keys
+        ForEach ($path in $Key) {
+            Write-Verbose -Message "Searching: $path."
 
-# Get current location
-$location = Get-Location
-
-try {
-    # Walk through $Keys
-    ForEach ($key in $Keys) {
-        Write-Verbose -Message "Searching: $key."
-
-        try {
-            # Attempt change location to $key
-            $result = Push-Location -Path $key -ErrorAction SilentlyContinue -PassThru
-        }
-        catch [System.Management.Automation.ItemNotFoundException] {
-            Write-Warning -Message "$($MyInvocation.MyCommand): Unable to change location to $key."
-            Throw $_.Exception.Message        
-        }
-        catch [System.Exception] {
-            Throw $_
-        }
-        # If successfully changed to the target key, get child keys and match against data in the default values
-        If ($result.Length -gt 0) {
-            $regItems = Get-ChildItem
-            ForEach ($item in $regItems) {
-                ForEach ($string in $SearchString) {
-                    If (($item | Get-ItemProperty).'(default)' | Where-Object { $_ -like "*$string*" }) {
-                        Write-Verbose -Message "Found '$(($item | Get-ItemProperty).'(default)')'."
-                        Write-Output -InputObject $item.Name
+            try {
+                # Attempt change location to $key
+                $result = Push-Location -Path $path -ErrorAction SilentlyContinue -PassThru
+            }
+            catch [System.Management.Automation.ItemNotFoundException] {
+                Write-Warning -Message "$($MyInvocation.MyCommand): Unable to change location to $path."
+                Throw $_.Exception.Message        
+            }
+            catch [System.Exception] {
+                Throw $_
+            }
+            # If successfully changed to the target key, get child keys and match against data in the default values
+            If ($result.Length -gt 0) {
+                $regItems = Get-ChildItem
+                ForEach ($item in $regItems) {
+                    ForEach ($string in $SearchString) {
+                        If (($item | Get-ItemProperty).'(default)' | Where-Object { $_ -like "*$string*" }) {
+                            Write-Verbose -Message "Found '$(($item | Get-ItemProperty).'(default)')'."
+                            Write-Output -InputObject $item.Name
+                        }
                     }
                 }
             }
         }
     }
+    catch [System.Exception] {
+        Throw $_
+    }
+    finally {
+        # Change back to original location
+        Set-Location -Path $location
+    }
 }
-catch [System.Exception] {
-    Throw $_
-}
-finally {
-    # Change back to original location
-    Set-Location -Path $location
+end {
 }
