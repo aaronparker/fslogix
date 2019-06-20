@@ -1,5 +1,5 @@
 <#PSScriptInfo
-    .VERSION 1.0.2
+    .VERSION 1.0.3
     .GUID 9c53a0e5-1cb3-4b35-90f0-372bc7665f4f
     .AUTHOR Aaron Parker, @stealthpuppy
     .COMPANYNAME stealthpuppy
@@ -15,17 +15,21 @@
     .RELEASENOTES
     - 1.0.1, First version pushed to the PowerShell Gallery, June 2019
     - 1.0.2, Fix -Key parameter in ForEach loop, Add Process block for pipeline support
+    - 1.0.3, Change parameter position & pipeline support for SearchString & Key
     .PRIVATEDATA 
 #>
 <# 
+    .SYNOPSIS
+        Returns strings from well known Registry keys that define a Windows application.
+
     .DESCRIPTION 
         Returns strings from well known Registry keys that define a Windows application. Used to assist in defining an FSLogix App Masking rule set.
 
-    .PARAMETER Key
-        A single key or array of Registry keys to check child keys for application details. The script includes the keys typically needed for most applications.
-
     .PARAMETER SearchString
         An array of strings to check for application names. Defaults to "Visio", "Project".
+
+    .PARAMETER Key
+        A single key or array of Registry keys to check child keys for application details. The script includes the keys typically needed for most applications.
 
     .EXAMPLE
         To search for Registry keys specific to Adobe Reader or Acrobat:
@@ -41,19 +45,24 @@
         To search for Registry keys specific to Skype for Business:
 
         C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Skype"
+
+    .EXAMPLE
+        To search for Registry keys specific to Visio and Project by passing strings to Get-ApplicationRegistryKey.ps1 via the pilpeline, use:
+
+        C:\> "Visio", "Project" | .\Get-ApplicationRegistryKey.ps1
 #>
 [OutputType([System.Array])]
 [CmdletBinding(SupportsShouldProcess = $False, HelpUri = "https://docs.stealthpuppy.com/docs/fslogix/appkeys")]
 Param (
     [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline)]
     [ValidateNotNull()]
+    [System.String[]] $SearchString = @("Visio", "Project"),
+
+    [Parameter(Mandatory = $False, Position = 1, ValueFromPipelineByPropertyName)]
+    [ValidateNotNull()]
     [System.String[]] $Key = @("HKLM:\SOFTWARE\Classes\CLSID", "HKLM:\SOFTWARE\Classes", "HKLM:\SOFTWARE\Wow6432Node\Classes", `
             "HKLM:\SOFTWARE\Wow6432Node\Classes\CLSID", "HKLM:\Software\Microsoft\Office\Outlook\Addins", `
-            "HKCU:\Software\Microsoft\Office\Outlook\Addins"),
-
-    [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline)]
-    [ValidateNotNull()]
-    [System.String[]] $SearchString = @("Visio", "Project")
+            "HKCU:\Software\Microsoft\Office\Outlook\Addins")
 )
 begin {
     # Get current location
@@ -61,7 +70,7 @@ begin {
 }
 process {
     try {
-        # Walk through $Keys
+        # Walk through $Key
         ForEach ($path in $Key) {
             Write-Verbose -Message "Searching: $path."
 
