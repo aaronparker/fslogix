@@ -24,7 +24,7 @@
         Specified a path to one or more location which to scan files.
 
     .EXAMPLE
-        .\Get-FileAge.ps1 -Path "\\server\share\folder"
+        .\Get-FileStats.ps1 -Path "\\server\share\folder"
 
         Description:
         Scans the specified path returns the age and owner for each file.
@@ -33,28 +33,24 @@
         Gets only the specified items.
 
     .EXAMPLE
-        .\Get-FileAge.ps1 -Path "\\server\share\folder" -Include ".vhdx"
+        .\Get-FileStats.ps1 -Path "\\server\share\folder" -Include ".vhdx"
 
         Description:
         Scans the specified path returns the age and owner for each .vhdx file.
 #>
 [CmdletBinding(HelpUri = 'https://github.com/aaronparker/FSLogix/Stats/README.MD')]
-[OutputType([System.Management.Automation.PSObject])]
+[OutputType([System.Array])]
 Param (
     [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
             HelpMessage = 'Specify a target path, paths or a list of files to scan for stats.')]
     [Alias('FullName', 'PSPath')]
     [System.String[]] $Path, 
 
-    [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
-            HelpMessage = 'Gets only the specified items.')]
+    [Parameter(Mandatory = $False, Position = 1, HelpMessage = 'Gets only the specified items.')]
     [Alias('Filter')]
-    [System.String[]] $Include = "*.*"
+    [System.String[]] $Include = "*.vhdx"
 )
 Begin {
-    # Measure time taken to gather data
-    $StopWatch = [system.diagnostics.stopwatch]::StartNew()
-
     #region Functions
     Function Convert-Size {
         <#
@@ -150,6 +146,9 @@ Begin {
     }
     #endregion
 
+    # Measure time taken to gather data
+    $StopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+
     Write-Verbose -Message "Beginning file stats trawling."
     $fileList = New-Object -TypeName System.Collections.ArrayList
 }
@@ -157,7 +156,7 @@ Process {
     ForEach ($folder in $Path) {
 
         # For each path in $folder, check that the path exists
-        If (Test-Path -Path $folder -IsValid) {
+        If (Test-Path -Path $folder) {
 
             # Get the item to determine whether it's a file or folder
             If ((Get-Item -Path $folder).PSIsContainer) {
@@ -165,10 +164,10 @@ Process {
                 # Target is a folder, so trawl the folder for files in the target and sub-folders
                 Write-Verbose -Message "Getting stats for files in folder: $folder"
                 try {
-                    $items = Get-ChildItem -Path $folder -Recurse -File -Include $Include -ErrorAction SilentlyContinue
+                    $items = Get-ChildItem -Path $folder -Recurse -File -Include $Include -Force -ErrorAction SilentlyContinue
                 }
                 catch [System.Exception] {
-                    Write-Warning -Message "$($MyInvocation.MyCommand): `Get-ChildItem -Recurse` failed on $folder."
+                    Write-Warning -Message "`Get-ChildItem -Recurse` failed on $folder."
                     Throw $_.Exception.Message
                 }
             }
@@ -179,7 +178,7 @@ Process {
                     $items = Get-ChildItem -Path $folder -ErrorAction SilentlyContinue
                 }
                 catch [System.Exception] {
-                    Write-Warning -Message "$($MyInvocation.MyCommand): `Get-ChildItem` failed on $folder."
+                    Write-Warning -Message "`Get-ChildItem -Recurse` failed on $folder."
                     Throw $_.Exception.Message
                 }
             }
@@ -187,7 +186,7 @@ Process {
             # Create an array from what was returned for specific data and sort on file path
             If ($Null -ne $items) {
                 $files = $items | Select-Object @{Name = "Location"; Expression = { $_.Directory } }, `
-                @{Name = "ContainerName"; Expression = { $_.Name } }, 
+                @{Name = "Name"; Expression = { $_.Name } }, 
                 @{Name = "Owner"; Expression = { (Get-Acl -Path $_.FullName).Owner } }, `
                 @{Name = "Size"; Expression = { "$(Convert-Size -From B -To MiB -Value $_.Length) MiB" } }, `
                 @{Name = "LastWriteTime"; Expression = { $_.LastWriteTime } }, `
