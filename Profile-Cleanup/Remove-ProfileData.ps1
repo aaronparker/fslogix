@@ -53,7 +53,7 @@ Param (
     [System.String] $Targets,
 
     [Parameter(Mandatory = $False, Position = 1)]
-    [ValidateScript( { If (Test-Path (Split-Path $LogFile -Parent) -PathType 'Container') { $True } Else { Throw "Cannot find log file directory." } })]
+    [ValidateScript( { If (Test-Path (Split-Path $_ -Parent) -PathType 'Container') { $True } Else { Throw "Cannot find log file directory." } })]
     [System.String] $LogFile = $(Join-Path (Resolve-Path $PWD) $("Profile-" + $((Get-Date).ToFileTimeUtc()) + ".log")),
 
     [Parameter(Mandatory = $False)]
