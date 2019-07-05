@@ -1,0 +1,1591 @@
+<html dir="ltr" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" gpmc_reportInitialized="false">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-16" />
+<title>RDS-FSLogixContainers</title>
+<!-- Styles -->
+<style type="text/css">
+                body    { background-color:#FFFFFF; border:1px solid #666666; color:#000000; font-size:68%; font-family:MS Shell Dlg; margin:0,0,10px,0; word-break:normal; word-wrap:break-word; }
+
+                table   { font-size:100%; table-layout:fixed; width:100%; }
+
+                td,th   { overflow:visible; text-align:left; vertical-align:top; white-space:normal; }
+
+                .title  { background:#FFFFFF; border:none; color:#333333; display:block; height:24px; margin:0px,0px,0px,0px; padding-top:0px; position:relative; table-layout:fixed; z-index:5; }
+
+                .he0_expanded    { background-color:#FEF7D6; border:1px solid #BBBBBB; color:#3333CC; cursor:hand; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:2.25em; margin-bottom:-1px; margin-left:0px; margin-right:0px; padding-left:8px; padding-right:5em; padding-top:4px; position:relative; }
+
+                .he1_expanded    { background-color:#A0BACB; border:1px solid #BBBBBB; color:#000000; cursor:hand; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:2.25em; margin-bottom:-1px; margin-left:20px; margin-right:0px; padding-left:8px; padding-right:5em; padding-top:4px; position:relative; }
+
+                .he0h_expanded   { background-color: #FEF0D0; border: 1px solid #BBBBBB; color: #000000; cursor: hand; display: block; font-family: MS Shell Dlg; font-size: 100%; font-weight: bold; height: 2.25em; margin-bottom: -1px; margin-left: 5px; margin-right: 0px; padding-left: 8px; padding-right: 5em; padding-top: 4px; position: relative;  }
+                .he1h_expanded   { background-color: #7197B3; border: 1px solid #BBBBBB; color: #000000; cursor: hand; display: block; font-family: MS Shell Dlg; font-size: 100%; font-weight: bold; height: 2.25em; margin-bottom: -1px; margin-left: 10px; margin-right: 0px; padding-left: 8px; padding-right: 5em; padding-top: 4px; position: relative; }
+
+                .he1    { background-color:#A0BACB; border:1px solid #BBBBBB; color:#000000; cursor:hand; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:2.25em; margin-bottom:-1px; margin-left:20px; margin-right:0px; padding-left:8px; padding-right:5em; padding-top:4px; position:relative; }
+
+                .he2    { background-color:#C0D2DE; border:1px solid #BBBBBB; color:#000000; cursor:hand; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:2.25em; margin-bottom:-1px; margin-left:30px; margin-right:0px; padding-left:8px; padding-right:5em; padding-top:4px; position:relative; }
+
+                .he3    { background-color:#D9E3EA; border:1px solid #BBBBBB; color:#000000; cursor:hand; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:2.25em; margin-bottom:-1px; margin-left:40px; margin-right:0px; padding-left:11px; padding-right:5em; padding-top:4px; position:relative; }
+
+                .he4    { background-color:#E8E8E8; border:1px solid #BBBBBB; color:#000000; cursor:hand; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:2.25em; margin-bottom:-1px; margin-left:50px; margin-right:0px; padding-left:11px; padding-right:5em; padding-top:4px; position:relative; }
+
+                .he4h   { background-color:#E8E8E8; border:1px solid #BBBBBB; color:#000000; cursor:hand; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:2.25em; margin-bottom:-1px; margin-left:55px; margin-right:0px; padding-left:11px; padding-right:5em; padding-top:4px; position:relative; }
+
+                .he4i   { background-color:#F9F9F9; border:1px solid #BBBBBB; color:#000000; display:block; font-family:MS Shell Dlg; font-size:100%; margin-bottom:-1px; margin-left:55px; margin-right:0px; padding-bottom:5px; padding-left:21px; padding-top:4px; position:relative; }
+
+                .he2i   { background-color:#F9F9F9; border:1px solid #BBBBBB; color:#000000; display:block; font-family:MS Shell Dlg; font-size:100%; margin-bottom:-1px; margin-left:35px; margin-right:0px; padding-bottom:5px; padding-left:21px; padding-top:4px; position:relative;}
+                .he5    { background-color:#E8E8E8; border:1px solid #BBBBBB; color:#000000; cursor:hand; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:2.25em; margin-bottom:-1px; margin-left:60px; margin-right:0px; padding-left:11px; padding-right:5em; padding-top:4px; position:relative; }
+
+                .he5h   { background-color:#E8E8E8; border:1px solid #BBBBBB; color:#000000; cursor:hand; display:block; font-family:MS Shell Dlg; font-size:100%; padding-left:11px; padding-right:5em; padding-top:4px; margin-bottom:-1px; margin-left:65px; margin-right:0px; position:relative; }
+
+                .he5i   { background-color:#F9F9F9; border:1px solid #BBBBBB; color:#000000; display:block; font-family:MS Shell Dlg; font-size:100%; margin-bottom:-1px; margin-left:65px; margin-right:0px; padding-left:21px; padding-bottom:5px; padding-top: 4px; position:relative; }
+
+                div .expando { color:#000000; text-decoration:none; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:normal; position:absolute; right:10px; text-decoration:underline; z-index: 0; }
+
+                .he0 .expando { font-size:100%; }
+
+                .info, .info3, .info4, .disalign  { line-height:1.6em; padding:0px,0px,0px,0px; margin:0px,0px,0px,0px; }
+
+                .disalign TD                      { padding-bottom:5px; padding-right:10px; }
+
+                .info TD                          { padding-right:10px; width:50%; }
+
+                .info3 TD                         { padding-right:10px; width:33%; }
+
+                .info4 TD, .info4 TH              { padding-right:10px; width:25%; }
+
+                .info TH, .info3 TH, .info4 TH, .disalign TH { border-bottom:1px solid #CCCCCC; padding-right:10px; }
+
+                .subtable, .subtable3             { border:1px solid #CCCCCC; margin-left:0px; background:#FFFFFF; margin-bottom:10px; }
+
+                .subtable TD, .subtable3 TD       { padding-left:10px; padding-right:5px; padding-top:3px; padding-bottom:3px; line-height:1.1em; }
+
+                .subtable TH, .subtable3 TH       { border-bottom:1px solid #CCCCCC; font-weight:normal; padding-left:10px; line-height:1.6em;  }
+
+                .subtable .footnote               { border-top:1px solid #CCCCCC; }
+
+                .subtable3 .footnote, .subtable .footnote { border-top:1px solid #CCCCCC; }
+
+                .subtable_frame     { background:#D9E3EA; border:1px solid #CCCCCC; margin-bottom:10px; margin-left:15px; }
+
+                .subtable_frame TD  { line-height:1.1em; padding-bottom:3px; padding-left:10px; padding-right:15px; padding-top:3px; }
+
+                .subtable_frame TH  { border-bottom:1px solid #CCCCCC; font-weight:normal; padding-left:10px; line-height:1.6em; }
+
+                .subtableInnerHead { border-bottom:1px solid #CCCCCC; border-top:1px solid #CCCCCC; }
+
+                .explainlink            { color:#0000FF; text-decoration:none; cursor:hand; }
+
+                .explainlink:hover      { color:#0000FF; text-decoration:underline; }
+
+                .spacer { background:transparent; border:1px solid #BBBBBB; color:#FFFFFF; display:block; font-family:MS Shell Dlg; font-size:100%; height:10px; margin-bottom:-1px; margin-left:43px; margin-right:0px; padding-top: 4px; position:relative; }
+
+                .filler { background:transparent; border:none; color:#FFFFFF; display:block; font:100% MS Shell Dlg; line-height:8px; margin-bottom:-1px; margin-left:53px; margin-right:0px; padding-top:4px; position:relative; }
+
+                .container { display:block; position:relative; }
+
+                .rsopheader { background-color:#A0BACB; border-bottom:1px solid black; color:#333333; font-family:MS Shell Dlg; font-size:130%; font-weight:bold; padding-bottom:5px; text-align:center; }
+
+                .rsopname { color:#333333; font-family:MS Shell Dlg; font-size:130%; font-weight:bold; padding-left:11px; }
+
+                .gponame{ color:#333333; font-family:MS Shell Dlg; font-size:130%; font-weight:bold; padding-left:11px; }
+
+                .gpotype{ color:#333333; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; padding-left:11px; }
+
+                #uri    { color:#333333; font-family:MS Shell Dlg; font-size:100%; padding-left:11px; }
+
+                #dtstamp{ color:#333333; font-family:MS Shell Dlg; font-size:100%; padding-left:11px; text-align:left; width:30%; }
+
+                #objshowhide { color:#000000; cursor:hand; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; margin-right:0px; padding-right:10px; text-align:right; text-decoration:underline; z-index:2; word-wrap:normal; }
+
+                #gposummary { display:block; }
+
+                #gpoinformation { display:block; }
+
+                @media print {
+
+                    #objshowhide{ display:none; }
+
+                    body    { color:#000000; border:1px solid #000000; }
+
+                    .title  { color:#000000; border:1px solid #000000; }
+
+                    .he0_expanded    { color:#000000; border:1px solid #000000; }
+
+                    .he1h_expanded   { color:#000000; border:1px solid #000000; }
+
+                    .he1_expanded    { color:#000000; border:1px solid #000000; }
+
+                    .he1    { color:#000000; border:1px solid #000000; }
+
+                    .he2    { color:#000000; background:#EEEEEE; border:1px solid #000000; }
+
+                    .he3    { color:#000000; border:1px solid #000000; }
+
+                    .he4    { color:#000000; border:1px solid #000000; }
+
+                    .he4h   { color:#000000; border:1px solid #000000; }
+
+                    .he4i   { color:#000000; border:1px solid #000000; }
+
+                    .he5    { color:#000000; border:1px solid #000000; }
+
+                    .he5h   { color:#000000; border:1px solid #000000; }
+
+                    .he5i   { color:#000000; border:1px solid #000000; }
+
+                    }
+
+</style>
+<!-- Scripts -->
+<script type="text/javascript" language="javascript">
+/*
+String "strShowHide(0/1)"
+0 = Hide all mode.
+1 = Show all mode.
+*/
+
+var windowsArray = new Array();
+var strShowHide = 1;
+
+//Localized strings
+
+var strShow = "show";
+var strHide = "hide";
+var strShowAll = "show all";
+var strHideAll = "hide all";
+var strShown = "shown";
+var strHidden = "hidden";
+var strExpandoNumPixelsFromEdge = "10px";
+
+
+function IsSectionHeader(obj) {
+    return (obj.className === "he0_expanded") || (obj.className === "he0h_expanded") || (obj.className === "he1h_expanded") || (obj.className === "he1_expanded") || (obj.className === "he1") || (obj.className === "he2") || (obj.className === "he3") || (obj.className === "he4") || (obj.className === "he4h") || (obj.className === "he5") || (obj.className === "he5h");
+}
+
+function IsSectionExpandedByDefault(objHeader) {
+    if (objHeader === null) {
+        return false;
+    } else {
+        return (objHeader.className.slice(objHeader.className.lastIndexOf("_")) === "_expanded");
+    }
+}
+
+function SetSectionState(objHeader, strState) {
+    var i = 0;
+    var j;
+    var all = objHeader.parentElement.ownerDocument.all;
+
+    if (all === null) {
+        return;
+    }
+
+    for (j = 0; j < all.length; j++) {
+        if (all[j] === objHeader) {
+            break;
+        }
+        i = i + 1;
+    }
+
+    for (j = i; j < all.length; j++) {
+        if (all[i].className === "container") {
+            break;
+        }
+        i = i + 1;
+    }
+
+    var objContainer = all[i];
+
+    if (strState === "toggle") {
+        if (objContainer.style.display === "none") {
+            SetSectionState(objHeader, "show");
+        }
+        else {
+            SetSectionState(objHeader, "hide");
+        }
+    }
+    else {
+        var objExpando = objHeader.children[1];
+
+        if (strState === "show") {
+            objContainer.style.display = "block";
+            objExpando.innerText = strHide;
+        }
+        else if (strState === "hide") {
+            objContainer.style.display = "none";
+            objExpando.innerText = strShow;
+        }
+    }
+}
+
+function ShowSection(objHeader) {
+    SetSectionState(objHeader, "show");
+}
+
+function HideSection(objHeader) {
+    SetSectionState(objHeader, "hide");
+}
+
+function ToggleSection(objHeader) {
+    SetSectionState(objHeader, "toggle");
+}
+
+/*================================================================================
+' link at the top of the page to collapse/expand all collapsable elements
+'================================================================================
+*/
+function objshowhide_onClick() {
+    var obji;
+    var objBody = document.body.getElementsByTagName("*");
+
+    if (objBody === null) {
+        return;
+    }
+    
+    switch (strShowHide) {
+        case 0:
+            strShowHide = 1;
+            window.objshowhide.innerText = strShowAll;
+            for (obji = 0; obji < objBody.length; obji++) {
+                if (objBody[obji].className !== 'undefined' && IsSectionHeader(objBody[obji])) {
+                    HideSection(objBody[obji]);
+                }
+            }
+            break;
+        case 1:
+            strShowHide = 0;
+            window.objshowhide.innerText = strHideAll;
+            for (obji = 0; obji < objBody.length; obji++) {
+                if (objBody[obji].className !== 'undefined' && IsSectionHeader(objBody[obji])) {
+                    ShowSection(objBody[obji]);
+                }
+            }
+            break;
+    }
+}
+
+/*================================================================================
+' onload collapse all except the first two levels of headers (he0, he1)
+'================================================================================*/
+function window_onload() {
+    // Only initialize once.  The UI may reinsert a report into the webbrowser control,
+    // firing onLoad multiple times.
+    if (document.documentElement.getAttribute("gpmc_reportInitialized").toUpperCase() !== "TRUE") {
+        // Set text direction
+        fDetDir(document.dir.toUpperCase());
+
+        // Initialize sections to default expanded/collapsed state.
+        var objBody = document.body.getElementsByTagName("*");
+
+        if (objBody === null) {
+            return;
+        }
+
+        for (var obji = 0; obji < objBody.length; obji++) {
+            if (IsSectionHeader(objBody[obji])) {
+                if (IsSectionExpandedByDefault(objBody[obji])) {
+                    ShowSection(objBody[obji]);
+                }
+                else {
+                    HideSection(objBody[obji]);
+                }
+            }
+        }
+
+        objshowhide.innerText = strShowAll;
+
+        document.documentElement.setAttribute("gpmc_reportInitialized", "true");
+    }
+}
+
+/*'================================================================================
+' When direction (LTR/RTL) changes, change adjust for readability
+'================================================================================
+*/
+function document_onPropertyChange() {
+    if (window.event.propertyName === "dir") {
+        fDetDir(document.dir.toUpperCase());
+    }
+}
+
+function fDetDir(strDir) {
+    var colRules;
+    var nug;
+    var i;
+    var strClass;
+
+    switch (strDir.toUpperCase()) {
+        case "LTR":
+            colRules = document.styleSheets[0].cssRules;
+            if (colRules !== null && colRules !== undefined ) {            
+                for (i = 0; i < colRules.length - 1; i++) {
+                    nug = colRules[i];
+                    strClass = nug.selectorText;
+                    if (nug.style.textAlign === "right") {
+                        nug.style.textAlign = "left";
+                    }
+                    switch (strClass) {
+                        case "div .expando":
+                            nug.style.Left = "";
+                            nug.style.Right = strExpandoNumPixelsFromEdge;
+                            break;
+                        case "#objshowhide":
+                            nug.style.textAlign = "right";
+                            break;
+                    }
+                }
+            }
+            break;
+        case "RTL":
+            colRules = document.styleSheets[0].cssRules;
+            if (colRules !== null && colRules !== undefined ) {            
+                for (i = 0; i < colRules.length - 1; i++) {
+                    nug = colRules[i];
+                    strClass = nug.selectorText;
+                    if (nug.style.textAlign === "left") {
+                        nug.style.textAlign = "right";
+                    }
+                    switch (strClass) {
+                        case "div .expando":
+                            nug.style.Left = strExpandoNumPixelsFromEdge;
+                            nug.style.Right = "";
+                            break;
+                        case "#objshowhide":
+                            nug.style.textAlign = "left";
+                            break;
+                    }
+                }
+            }
+            break;
+    }
+}
+
+/*'================================================================================
+'When printing reports, if a given section is expanded, let's says "shown" (instead of "hide" in the UI).
+'================================================================================
+*/
+function window_onbeforeprint() {
+    var obji;
+    for (obji in document.all) {
+        if (document.all.hasOwnProperty(obji)) {
+            if (obji.className === "expando") {
+                if (obji.innerText === strHide) {
+                    obji.innerText = strShown;
+                }
+                if (obji.innerText === strShow) {
+                    obji.innerText = strHidden;
+                }
+            }
+        }
+    }
+}
+
+/*================================================================================
+'If a section is collapsed, change to "hidden" in the printout (instead of "show").
+'================================================================================
+*/
+function window_onafterprint() {
+    var obji;
+    for (obji in document.all) {
+        if (document.all.hasOwnProperty(obji)) {
+            if (obji.className === "expando") {
+                if (obji.innerText === strShown) {
+                    obji.innerText = strHide;
+                }
+                if (obji.innerText === strHidden) {
+                    obji.innerText = strShow;
+                }
+            }
+        }
+    }
+}
+
+/*================================================================================
+' Adding keypress support for accessibility
+'================================================================================
+*/
+function document_onkeypress(event) {
+    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+
+    //space bar (32) or carriage return (13) or line feed (10)
+    if (chCode == "32" || chCode == "13" || chCode == "10") {
+        if (event.srcElement.className === "expando") {
+            document_onclick();
+            event.returnValue = false;
+        }
+        if (event.srcElement.className === "sectionTitle") {
+            document_onclick();
+            event.returnValue = false;
+        }
+        if (event.srcElement.id === "objshowhide") {
+            objshowhide_onClick();
+            event.returnValue = false;
+        }
+    }
+}
+
+/*================================================================================
+' When user clicks anywhere in the document body, determine if user is clicking
+' on a header element.
+'================================================================================
+*/
+function document_onclick() {
+    var strsrc = window.event.srcElement;
+
+    while (strsrc.className === "sectionTitle" || strsrc.className === "expando") {
+        strsrc = strsrc.parentElement;
+    }
+
+    // Only handle clicks on headers.
+    if (!IsSectionHeader(strsrc)) {
+        return;
+    }
+
+    ToggleSection(strsrc);
+
+    window.event.returnValue = false;
+}
+
+function ToggleState(e) {
+    var objParentDisplayItem;
+    var objDisplayItem;
+    var i;
+
+    if (e.innerText === strShow) {
+        e.innerText = strHide;
+        objParentDisplayItem = e.parentNode;
+        objDisplayItem = objParentDisplayItem.childNodes;
+        for (i = 0; i < objDisplayItem.length; i++) {
+            if (objDisplayItem[i].id === "showItem") {
+                objDisplayItem[i].style.display = "Block";
+            }
+        }
+    }
+    else {
+        e.innerText = strShow;
+        objParentDisplayItem = e.parentNode;
+        objDisplayItem = objParentDisplayItem.childNodes;
+        for (i = 0; i < objDisplayItem.length; i++) {
+            if (objDisplayItem[i].id === "showItem") {
+                objDisplayItem[i].style.display = "None";
+            }
+        }
+    }
+}
+
+function traverseToURL(url) {
+    if (url != null) {
+        var urlInitialSubstr = url.substring(0, 4).toLowerCase();
+        if (urlInitialSubstr === "http") {
+            window.open(url, "_blank");
+        }
+    }
+}
+
+function getExplainWindowTitle() {
+    return document.getElementById("explainText_windowTitle").innerHTML;
+}
+
+function getExplainWindowStyles() {
+    return document.getElementById("explainText_windowStyles").innerHTML;
+}
+
+function getExplainWindowSettingPathLabel() {
+    return document.getElementById("explainText_settingPathLabel").innerHTML;
+}
+
+function getExplainWindowExplainTextLabel() {
+    return document.getElementById("explainText_explainTextLabel").innerHTML;
+}
+
+function getExplainWindowPrintButton() {
+    return document.getElementById("explainText_printButton").innerHTML;
+}
+
+function getExplainWindowCloseButton() {
+    return document.getElementById("explainText_closeButton").innerHTML;
+}
+
+function getNoExplainTextAvailable() {
+    return document.getElementById("explainText_noExplainTextAvailable").innerHTML;
+}
+
+function getExplainWindowSupportedLabel() {
+    return document.getElementById("explainText_supportedLabel").innerHTML;
+}
+
+function getNoSupportedTextAvailable() {
+    return document.getElementById("explainText_noSupportedTextAvailable").innerHTML;
+}
+
+function showExplainText(srcElement)
+{
+    var strDiagArgs;
+
+    var strSettingName = srcElement.getAttribute("gpmc_settingName");
+    var strSettingPath = srcElement.getAttribute("gpmc_settingPath");
+    var strSettingDescription = srcElement.getAttribute("gpmc_settingDescription");
+
+    if (strSettingDescription === "")
+    {
+        strSettingDescription = getNoExplainTextAvailable();
+    }
+
+    var strSupported = srcElement.getAttribute("gpmc_supported");
+
+    if (strSupported === "")
+    {
+        strSupported = getNoSupportedTextAvailable();
+    }
+
+    var strHtml = "<html dir=" + document.dir +  ">\n";
+    strHtml += "<head>\n";
+    strHtml += "<title>" + getExplainWindowTitle() + "</title>\n";
+    strHtml += "<style type='text/css'>\n" + getExplainWindowStyles() + "</style>\n";
+    strHtml += "</head>\n";
+    strHtml += "<body>\n";
+    strHtml += "<div class='head'>" + strSettingName +"</div>\n";
+    strHtml += "<div class='path'><b>" + getExplainWindowSettingPathLabel() + "</b><br/>" + strSettingPath +"</div>\n";
+    strHtml += "<div class='path'><b>" + getExplainWindowSupportedLabel() + "</b><br/>" + strSupported +"</div>\n";
+    strHtml += "<div class='info'>\n";
+    strHtml += "<div class='hdr'>" + getExplainWindowExplainTextLabel() + "</div>\n";
+    strHtml += "<div class='bdy'>" + strSettingDescription + "</div>\n";
+    strHtml += "<div class='btn'>";
+    strHtml += getExplainWindowPrintButton();
+    strHtml += getExplainWindowCloseButton();
+    strHtml += "</div></body></html>";
+
+    // IE specific method for showing the popup.
+    if(navigator.userAgent.indexOf("MSIE") > 0 && window.location.toString().indexOf("file:") === -1)
+    {
+        strDiagArgs = "dialogHeight=360px;dialogWidth=630px;status=no;scroll=yes;resizable=yes;minimize=yes;maximize=yes;";
+
+        var vModeless = window.showModelessDialog("about:blank", window, strDiagArgs);
+        vModeless.document.write(strHtml);
+        vModeless.document.close();
+        vModeless.location.reload(false);
+                        
+        window.event.returnValue = false;
+    }
+    else
+    {
+        strDiagArgs = "height=360px, width=630px, status=no, toolbar=no, scrollbars=yes, resizable=yes ";
+        
+        var expWin = window.open("", "expWin", strDiagArgs);
+        expWin.document.write("");
+        expWin.document.close();
+        expWin.document.write(strHtml);
+        expWin.document.close();
+        expWin.focus();
+    }
+    
+    return false;
+}
+
+function showEvents(srcElement,bVerbose,bInformational,bWarning,bError)
+{
+    var strWindowId = "EventDetails_" + srcElement.getAttribute("eventLogActivityId");
+    if((windowsArray[strWindowId]) && (windowsArray[strWindowId].closed === false)) {
+        windowsArray[strWindowId].focus();
+    } else {
+        var eventIdLabelNode, eventTimeLabelNode, eventDescriptionLabelNode, eventDetailsLabelNode, eventXmlLabelNode, gpEventsTitleNode;
+        var eventIdLabelNodeText, eventTimeLabelNodeText, eventDescriptionLabelNodeText, eventXmlLabelNodeText, gpEventsTitleNodeText, eventDetailsLabelNodeText;
+        var singlePassEventsDetailsNode, eventRecordArray;
+        var dataNotFoundWarningLabelNode, dataNotFoundWarningLabelNodeText;
+        var mainSection;
+        var attributeValue;
+        var singlePassEventsDetails;
+        var singlePassEventsDetailsChildren;
+        var node;
+        var children;
+        var xmlDocumentRoot;
+        var xmlDocument;
+        var serializer;
+        var itemSub;
+        var doc;
+
+        if (window.XMLSerializer) 
+        {
+           serializer = new XMLSerializer();
+        }
+
+        if (window.DOMParser) 
+        {
+           // This browser appears to support DOMParser
+           parser = new DOMParser();
+
+           doc = document.getElementById("data-island").textContent;
+           xmlDocumentRoot = parser.parseFromString(doc, "application/xml");
+           xmlDocument = xmlDocumentRoot.documentElement;
+           itemSub = 1;
+        } 
+        else 
+        { 
+           // Internet Explorer, create a new XML document using ActiveX 
+           // and use loadXML as a DOM parser. 
+           try 
+           {
+              doc = document.getElementById("data-island");
+
+              xmlDocumentRoot = new ActiveXObject("Msxml2.DOMDocument.6.0"); 
+              xmlDocumentRoot.async = false; 
+              xmlDocumentRoot.loadXML(doc.innerHTML);
+              xmlDocument = xmlDocumentRoot.documentElement;
+              itemSub = 0;
+           } 
+           catch(e) 
+           {
+              // Not supported.
+           }
+        }
+
+        if (xmlDocument != null) {
+            mainSection = xmlDocument.getElementsByTagName("MainSection")[0].childNodes;
+
+            if (mainSection != null) {
+                for (children = 0; children < mainSection.length; children++) {
+                    node = mainSection[children];
+                    if (node.nodeType === 1 && node.nodeName === 'Label') {
+                        attributeValue = node.getAttribute("Name");
+                        if (attributeValue != null) {
+                            if (attributeValue === 'ComponentStatus_EventId') {
+                                eventIdLabelNode = node.childNodes[1];
+                            }
+                            if (attributeValue === 'ComponentStatus_EventTime') {
+                                eventTimeLabelNode = node.childNodes[1];
+                            }
+                            if (attributeValue === 'ComponentStatus_EventDescription') {
+                                eventDescriptionLabelNode = node.childNodes[1];
+                            }
+                            if (attributeValue === 'ComponentStatus_EventXml') {
+                                eventXmlLabelNode = node.childNodes[1];
+                            }
+                            if (attributeValue === 'ComponentStatus_EventDetails') {
+                                eventDetailsLabelNode = node.childNodes[1];
+                            }
+                            if (attributeValue === 'ComponentStatus_GPEvents') {
+                                gpEventsTitleNode = node.childNodes[1];
+                            }
+                            if (attributeValue === 'Warning_DataNotFound') {
+                                dataNotFoundWarningLabelNode = node.childNodes[1];
+                            }
+                        }
+                    }
+                }
+            }
+
+            singlePassEventsDetails = xmlDocument.getElementsByTagName("SinglePassEventsDetails");
+            if (singlePassEventsDetails != null) {
+                for (singlePassEventsDetailsChildren = 0; singlePassEventsDetailsChildren < singlePassEventsDetails.length; singlePassEventsDetailsChildren++) {
+                    node = singlePassEventsDetails[singlePassEventsDetailsChildren];
+                    attributeValue = node.getAttribute("ActivityId");
+                    if (attributeValue === srcElement.getAttribute("eventLogActivityId")) {
+                        singlePassEventsDetailsNode = node;
+                    }
+                }
+            }
+        }
+        
+        eventIdLabelNodeText = null;
+        if (eventIdLabelNode != null) {
+            if (eventIdLabelNode.childNodes.length > 0) {
+                eventIdLabelNodeText = eventIdLabelNode.childNodes[0].nodeValue;
+            }
+        }
+        if (eventIdLabelNodeText == null) {
+            eventIdLabelNodeText = "Event ID";
+        }
+
+        eventTimeLabelNodeText = null;
+        if (eventTimeLabelNode != null) {
+            if (eventTimeLabelNode.firstChild.childNodes.length > 0) {
+                eventTimeLabelNodeText = eventTimeLabelNode.childNodes[0].nodeValue;
+            }
+        }
+        if (eventTimeLabelNodeText == null) {
+            eventTimeLabelNodeText = "Event Time";
+        }
+
+        eventDescriptionLabelNodeText = null;
+        if (eventDescriptionLabelNode != null) {
+            if (eventDescriptionLabelNode.childNodes.length > 0) {
+                eventDescriptionLabelNodeText = eventDescriptionLabelNode.childNodes[0].nodeValue;
+            }
+        }
+        if (eventDescriptionLabelNodeText == null) {
+            eventDescriptionLabelNodeText = "Event Description";
+        }
+
+        eventXmlLabelNodeText = null;
+        if (eventXmlLabelNode != null) {
+            if (eventXmlLabelNode.childNodes.length > 0) {
+                eventXmlLabelNodeText = eventXmlLabelNode.childNodes[0].nodeValue;
+            }
+        }
+        if (eventXmlLabelNodeText == null) {
+            eventXmlLabelNodeText = "Event XML";
+        }
+
+        gpEventsTitleNodeText = null;
+        if (gpEventsTitleNode != null) {
+            if (gpEventsTitleNode.childNodes.length > 0) {
+                gpEventsTitleNodeText = gpEventsTitleNode.childNodes[0].nodeValue;
+            }
+        }
+        if (gpEventsTitleNodeText == null) {
+            gpEventsTitleNodeText = "Group Policy Events";
+        }
+
+        eventDetailsLabelNodeText = null;
+        if (eventDetailsLabelNode != null) {
+            if (eventDetailsLabelNode.childNodes.length > 0) {
+                eventDetailsLabelNodeText = eventDetailsLabelNode.childNodes[0].nodeValue;
+            }
+        }
+        if (eventDetailsLabelNodeText == null) {
+            eventDetailsLabelNodeText = "Event Details";
+        }
+
+        dataNotFoundWarningLabelNodeText = null;
+        if (dataNotFoundWarningLabelNode != null) {
+            if (dataNotFoundWarningLabelNode.childNodes.length > 0) {
+                dataNotFoundWarningLabelNodeText = dataNotFoundWarningLabelNode.childNodes[0].nodeValue;
+            }
+        }
+        if (dataNotFoundWarningLabelNodeText == null) {
+            dataNotFoundWarningLabelNodeText = "Data Not Found";
+        }
+                
+        if(singlePassEventsDetailsNode != null)
+        {
+            eventRecordArray = singlePassEventsDetailsNode.getElementsByTagName("EventRecord");
+        }
+        
+        var htmlText = "<html dir=" + document.dir +  ">";
+        htmlText = htmlText + "<head>";
+        htmlText = htmlText + "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />";
+        htmlText = htmlText + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-16\" />";
+        htmlText = htmlText + "<title>" + gpEventsTitleNodeText + "</title>";
+        htmlText = htmlText + "</head><style type=\"text/css\">";
+        htmlText = htmlText + "body    { background-color:#FFFFFF; color:#000000; font-size:68%; font-family:MS Shell Dlg; margin:0,0,10px,0; word-break:normal; word-wrap:break-word; }";
+        htmlText = htmlText + "table   { font-size:100%; table-layout:fixed; width:100%; }";
+        htmlText = htmlText + "td,th   { overflow:visible; text-align:left; vertical-align:top; white-space:normal; }";
+        htmlText = htmlText + ".he1    { text-align: center; vertical-align: middle; background-color:#C0D2DE; border:1px solid #BBBBBB; color:#000000; cursor:hand; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:4em; position:relative; }";
+        htmlText = htmlText + ".centerTxt { text-align: center; }";
+        htmlText = htmlText + ".txtFormat1 { text-align: left; vertical-align:top; white-space:pre-line; }";
+        htmlText = htmlText + "</style>";
+      
+        htmlText = htmlText + "<script> function toggle(e) {";
+        htmlText = htmlText + "if (e.style.display === \"none\"){ e.style.display = \"\"; }";
+        htmlText = htmlText + "else { e.style.display = \"none\"; }";
+        htmlText = htmlText + "}</";
+        htmlText = htmlText + "script";
+        htmlText = htmlText + ">";
+      
+        htmlText = htmlText + "<body><table border=1><tr>";
+        htmlText = htmlText + "<th class=\"he1\"><strong>" + eventIdLabelNodeText + "</strong></th>";
+        htmlText = htmlText + "<th class=\"he1\"><strong>" + eventTimeLabelNodeText + "</strong></th>";
+        htmlText = htmlText + "<th class=\"he1\"><strong>" + eventDescriptionLabelNodeText + "</strong></th>";
+        htmlText = htmlText + "<th class=\"he1\"><strong>" + eventDetailsLabelNodeText + "</strong></th>";
+
+        htmlText = htmlText + "</tr>";
+        var i;
+        var eventId;
+        var eventTime;
+        var eventDescription;
+        var eventXml;
+        var eventType;
+        var displayEvent;
+        var eventXmlId;
+        var displayBgColor;
+
+        if(eventRecordArray != null && eventRecordArray.length > 0)
+        {
+            for (i=0; i < eventRecordArray.length; i++)
+            {
+                displayEvent = false;
+                var eventIdElements = eventRecordArray[i].getElementsByTagName("EventId");        
+                if((eventIdElements != null) && (eventIdElements.length > 0) && (eventIdElements[0].firstChild != null))
+                {
+                    eventId =  eventIdElements[0].firstChild.nodeValue;
+                }
+                else
+                {
+                    eventId =  dataNotFoundWarningLabelNodeText;
+                }
+                var eventTimeElements = eventRecordArray[i].getElementsByTagName("EventTime");
+                if((eventTimeElements != null) && (eventTimeElements.length > 0) && (eventTimeElements[0].firstChild != null))
+                {
+                    eventTime = eventTimeElements[0].firstChild.nodeValue;
+                }
+                else
+                {
+                    eventTime = dataNotFoundWarningLabelNodeText;
+                }
+                var eventDescriptionElements = eventRecordArray[i].getElementsByTagName("EventDescription");
+                if((eventDescriptionElements != null) && (eventDescriptionElements.length > 0) && (eventDescriptionElements[0].firstChild != null))
+                {
+                        eventDescription = eventDescriptionElements[0].firstChild.nodeValue;
+                }
+                else
+                {
+                    eventDescription = dataNotFoundWarningLabelNodeText;
+                }
+                var eventXmlElements = eventRecordArray[i].getElementsByTagName("EventXml");
+                if((eventXmlElements != null) && (eventXmlElements.length > 0) && (eventXmlElements[0].firstChild != null))
+                {
+                    if (window.XMLSerializer) 
+                    {
+                       var xml = serializer.serializeToString(eventXmlElements[0].firstChild);
+                       eventXml = xml;
+                    } 
+                    else 
+                    {
+                       if (typeof eventXmlElements[0].firstChild.xml != "undefined") 
+                       {
+                          eventXml = eventXmlElements[0].firstChild.xml;
+                       }
+                    }
+                }
+                else
+                {
+                    eventXml = dataNotFoundWarningLabelNodeText;
+                }
+                var eventLevelElements = eventRecordArray[i].getElementsByTagName("EventLevel");
+                if((eventLevelElements != null) && (eventLevelElements.length > 0) && (eventLevelElements[0].firstChild != null))
+                {
+                    eventType = eventLevelElements[0].firstChild.nodeValue;
+                }
+                else
+                {
+                    eventType = 5;
+                }
+                
+                if((bVerbose === true)&&(eventType == 5))
+                {
+                    displayEvent = true;
+                }
+                else if((bInformational === true)&&(eventType == 4))
+                {
+                    displayEvent = true;
+                }
+                else if((bWarning === true)&&(eventType == 3))
+                {
+                    displayEvent = true;
+                }
+                else if((bError === true)&&((eventType == 1)||(eventType == 2)))
+                {
+                    displayEvent = true;
+                }
+                
+                if (displayEvent === true)
+                {
+                    eventXmlId = "EventXml" + (i+"");
+                    htmlText = htmlText + "<tr>";
+                    htmlText = htmlText + "<td class=\"centerTxt\" style=\"background:" + displayBgColor +"\">" + eventId + "</td>";
+                    htmlText = htmlText + "<td class=\"centerTxt\" style=\"background:" + displayBgColor +"\">" + eventTime + "</td>";
+                    htmlText = htmlText + "<td class=\"txtFormat1\" style=\"background:" + displayBgColor +"\">" + eventDescription + "</td>";
+                    htmlText = htmlText + "<td style=\"background:" + displayBgColor +"\"><span style=\"color:blue; cursor:hand\" onclick=\"toggle(" + eventXmlId +");\" onKeyPress=\"toggle(" + eventXmlId + ");\" tabIndex=1 >";
+                    htmlText = htmlText + eventXmlLabelNodeText + "</span><br/>";
+                    htmlText = htmlText + "<span style=\"display:none\" id=" + eventXmlId +">";
+                    htmlText = htmlText + eventXml + "</span>";
+                    htmlText = htmlText + "</td>";
+                    htmlText = htmlText + "</tr>";
+                }
+            }
+        }
+        htmlText = htmlText + "</table></body></html>";
+
+        if(windowsArray[strWindowId])
+        {
+            delete windowsArray[strWindowId];
+        }
+        
+        // IE specific method for showing the popup.
+        if(navigator.userAgent.indexOf("MSIE") > 0 && window.location.toString().indexOf("file:") === -1)
+        {
+            var strDiagArgs = "dialogHeight=360px;dialogWidth=630px;status=no;scroll=yes;resizable=yes;minimize=yes;maximize=yes;";
+
+            var vModeless = window.showModelessDialog("about:blank", window, strDiagArgs);
+            vModeless.document.write(htmlText);
+            vModeless.document.close();
+            vModeless.location.reload(false);
+            windowsArray[strWindowId] = vModeless;            
+        }
+        else
+        {
+            var strDiagArgs = "height=360px, width=630px, status=no, toolbar=no, scrollbars=yes, resizable=yes";
+        
+            windowsArray[strWindowId] = window.open("", "", strDiagArgs);
+            windowsArray[strWindowId].document.write(htmlText);
+            windowsArray[strWindowId].focus();
+        } 
+    }
+
+    xmlDocumentRoot = null;
+}
+
+function cleanUp() {
+    var windowsArray = this.windowsArray;
+    for (var currentWindow in windowsArray) {
+        if (windowsArray.hasOwnProperty(currentWindow)) {
+            windowsArray[currentWindow].close();
+        }
+    }
+}
+
+function getMessageText(messageNode) {
+    if (messageNode != null) {
+        if (messageNode.firstChild != null) {
+            if (messageNode.firstChild.nodeType === 3) {
+                for (var i = 0; i < messageNode.childNodes.length; i++) 
+                {
+                    var curNode = messageNode.childNodes[i];
+                    if(curNode.nodeType === 1){
+                        return curNode.childNodes[0].nodeValue;
+                    }
+                }
+            } else {
+                return messageNode.firstChild.childNodes[0].nodeValue;
+            }
+        }
+    }
+    return null;
+}
+
+function showComponentProcessingDetails(srcElement) {
+    var strWindowId = "ProcessingDetails_" + srcElement.getAttribute("eventLogActivityId");
+    if ((windowsArray[strWindowId]) && (windowsArray[strWindowId].closed === false)) {
+        windowsArray[strWindowId].focus();
+    } else {
+        var doc;
+        var parser;
+        var xmlDocumentRoot;
+        var xmlDocument;
+
+        var extensionsProcessedLabelNode, slowLinkThresholdLabelNode, linkSpeedLabelNode, extensionsProcessedTimeTakenNode;
+        var domainControllerIpLabelNode, domainControllerNameLabelNode, processingTypeLabelNode, loopbackModeLabelNode;
+        var processingTriggerLabelNode, extensionNameLabelNode, timeTakenLabelNode;
+        var dataNotFoundWarningLabelNode;
+        var singlePassEventsDetailsNode, totalProcessingTimeLabelNode, refreshMessageLabelNode;
+        var processingDetailsUserTitleNode, processingDetailsComputerTitleNode;
+        var policySectionNode;
+        var policyEventsDetailsNode, detailsLabelNode;
+
+        var extensionsProcessedLabelNodeText, slowLinkThresholdLabelNodeText, linkSpeedLabelNodeText, extensionsProcessedTimeTakenNodeText;
+        var domainControllerIpLabelNodeText, domainControllerNameLabelNodeText, processingTypeLabelNodeText, loopbackModeLabelNodeText;
+        var processingTriggerLabelNodeText, extensionNameLabelNodeText, timeTakenLabelNodeText;
+        var dataNotFoundWarningLabelNodeText, totalProcessingTimeLabelNodeText, refreshMessageLabelNodeText;
+        var processingDetailsUserTitleNodeText, processingDetailsComputerTitleNodeText;
+        var detailsLabelNodeText;
+
+        var slowLinkThresholdValue, linkSpeedValue, domainControllerIpValue, domainControllerNameValue;
+        var processingTypeValue, loopbackModeValue, processingTriggerValue, totalPolicyProcessingTime, extensionProcessingTimeArray;
+        var cseNameArray = new Array();
+        var cseElapsedTimeArray = new Array();
+        var policyApplicationFinishedTime;
+
+        var isComputerProcessing;
+        var strDiagArgs;
+        var mainSection;
+        var attributeValue;
+        var singlePassEventsDetails;
+        var singlePassEventsDetailsChildren;
+        var node;
+        var children;
+        var itemSub;
+
+        if (window.DOMParser) 
+        {
+           // This browser appears to support DOMParser
+           parser = new DOMParser();
+           doc = document.getElementById("data-island").textContent;
+
+           xmlDocumentRoot = parser.parseFromString(doc, "application/xml");
+
+           xmlDocument = xmlDocumentRoot.documentElement;
+
+           itemSub = 1;
+        } 
+        else 
+        { 
+           // Internet Explorer, create a new XML document using ActiveX 
+           // and use loadXML as a DOM parser. 
+           try 
+           {
+              doc = document.getElementById("data-island");
+
+              xmlDocumentRoot = new ActiveXObject("Msxml2.DOMDocument.6.0"); 
+              xmlDocumentRoot.async = false; 
+              xmlDocumentRoot.loadXML(doc.innerHTML);
+              xmlDocument = xmlDocumentRoot.documentElement;
+              itemSub = 0;
+           } 
+           catch(e) 
+           {
+              // Not supported.
+           }
+        }
+
+        if (xmlDocument != null) {
+            mainSection = xmlDocument.getElementsByTagName("MainSection")[0].childNodes;
+
+            if (mainSection != null) {
+                for (children = 0; children < mainSection.length; children++) {
+                    node = mainSection[children];
+                    if (node.nodeType === 1 && node.nodeName === 'Label') {
+                        attributeValue = node.getAttribute("Name")
+                        if (attributeValue != null) {
+                            if (attributeValue === 'ComponentStatus_ExtensionsProcessed') {
+                                extensionsProcessedLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_SlowLinkThreshold') {
+                                slowLinkThresholdLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_LinkSpeed') {
+                                linkSpeedLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_TimeTaken') {
+                                extensionsProcessedTimeTakenNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_DomainControllerIP') {
+                                domainControllerIpLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_DomainControllerName') {
+                                domainControllerNameLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_ProcessingTrigger') {
+                                processingTriggerLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_ExtensionName') {
+                                extensionNameLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_TimeTaken') {
+                                timeTakenLabelNode = node;
+                            }
+                            if (attributeValue === 'Warning_DataNotFound') {
+                                dataNotFoundWarningLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_TotalProcessingTime') {
+                                totalProcessingTimeLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_RefreshMessage') {
+                                refreshMessageLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_UserProcessingDetails') {
+                                processingDetailsUserTitleNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_ComputerProcessingDetails') {
+                                detailsLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_ProcessingType') {
+                                processingTypeLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_LoopbackMode') {
+                                loopbackModeLabelNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_UserProcessingDetails') {
+                                processingDetailsUserTitleNode = node;
+                            }
+                            if (attributeValue === 'ComponentStatus_ComputerProcessingDetails') {
+                                processingDetailsComputerTitleNode = node;
+                            }
+                        }
+                    }
+                }
+            }
+
+            singlePassEventsDetails = xmlDocument.getElementsByTagName("SinglePassEventsDetails");
+            if (singlePassEventsDetails != null) {
+                for (singlePassEventsDetailsChildren = 0; singlePassEventsDetailsChildren < singlePassEventsDetails.length; singlePassEventsDetailsChildren++) {
+                    node = singlePassEventsDetails[singlePassEventsDetailsChildren];
+                    if (node.getAttribute("ActivityId") === srcElement.getAttribute("eventLogActivityId")) {
+                        singlePassEventsDetailsNode = node;
+                    }
+                }
+            }
+
+            if (singlePassEventsDetailsNode) {
+                policyEventsDetailsNode = singlePassEventsDetailsNode.parentNode;
+                if (policyEventsDetailsNode) {
+                    policySectionNode = policyEventsDetailsNode.parentNode;
+                    if (policySectionNode) {
+                        if (policySectionNode.nodeName === 'UserPolicySection') {
+                            isComputerProcessing = false;
+                        }
+                        if (policySectionNode.nodeName === 'ComputerPolicySection') {
+                            isComputerProcessing = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        
+        extensionsProcessedLabelNodeText = getMessageText(extensionsProcessedLabelNode);
+        slowLinkThresholdLabelNodeText = getMessageText(slowLinkThresholdLabelNode);
+        linkSpeedLabelNodeText = getMessageText(linkSpeedLabelNode);
+        domainControllerIpLabelNodeText = getMessageText(domainControllerIpLabelNode);
+        domainControllerNameLabelNodeText = getMessageText(domainControllerNameLabelNode);
+        processingTypeLabelNodeText = getMessageText(processingTypeLabelNode);
+        loopbackModeLabelNodeText = getMessageText(loopbackModeLabelNode);
+        processingTriggerLabelNodeText = getMessageText(processingTriggerLabelNode);
+        extensionNameLabelNodeText = getMessageText(extensionNameLabelNode);
+        timeTakenLabelNodeText = getMessageText(timeTakenLabelNode);
+        processingDetailsUserTitleNodeText = getMessageText(processingDetailsUserTitleNode);
+        processingDetailsComputerTitleNodeText = getMessageText(processingDetailsComputerTitleNode);
+        dataNotFoundWarningLabelNodeText = getMessageText(dataNotFoundWarningLabelNode);
+        totalProcessingTimeLabelNodeText = getMessageText(totalProcessingTimeLabelNode);
+        refreshMessageLabelNodeText = getMessageText(refreshMessageLabelNode);
+        detailsLabelNodeText = getMessageText(detailsLabelNode);
+     
+
+        slowLinkThresholdValue = null;
+        linkSpeedValue = null;
+        domainControllerIpValue = null;
+        domainControllerNameValue = null;
+        processingTypeValue = null;
+        loopbackModeValue = null;
+        processingTriggerValue = null;
+
+        if (singlePassEventsDetailsNode != null) {
+            slowLinkThresholdValue = singlePassEventsDetailsNode.getAttribute("SlowLinkThresholdInKbps");
+            linkSpeedValue = singlePassEventsDetailsNode.getAttribute("LinkSpeedInKbps");
+            domainControllerIpValue = singlePassEventsDetailsNode.getAttribute("DomainControllerIPAddress");
+            domainControllerNameValue = singlePassEventsDetailsNode.getAttribute("DomainControllerName");
+            processingTypeValue = singlePassEventsDetailsNode.getAttribute("ProcessingAppMode");
+            loopbackModeValue = singlePassEventsDetailsNode.getAttribute("PolicyProcessingMode");
+            processingTriggerValue = singlePassEventsDetailsNode.getAttribute("ProcessingTrigger");
+            totalPolicyProcessingTime = singlePassEventsDetailsNode.getAttribute("PolicyElapsedTime");
+            extensionProcessingTimeArray = singlePassEventsDetailsNode.getElementsByTagName("ExtensionProcessingTime");
+        }
+        if (slowLinkThresholdValue == null) {
+            slowLinkThresholdValue = dataNotFoundWarningLabelNodeText;
+        }
+        if (linkSpeedValue == null) {
+            linkSpeedValue = dataNotFoundWarningLabelNodeText;
+        }
+        if (domainControllerIpValue == null) {
+            domainControllerIpValue = dataNotFoundWarningLabelNodeText;
+        }
+        else {
+            domainControllerIpValue = domainControllerIpValue.replace(/^\\\\/, "");
+        }
+        if (domainControllerNameValue == null) {
+            domainControllerNameValue = dataNotFoundWarningLabelNodeText;
+        }
+        else {
+            domainControllerNameValue = domainControllerNameValue.replace(/^\\\\/, "");
+        }
+        if (processingTypeValue == null) {
+            processingTypeValue = dataNotFoundWarningLabelNodeText;
+        }
+        if (loopbackModeValue == null) {
+            loopbackModeValue = dataNotFoundWarningLabelNodeText;
+        }
+        if (processingTriggerValue == null) {
+            processingTriggerValue = dataNotFoundWarningLabelNodeText;
+        }
+
+        if (extensionProcessingTimeArray != null && extensionProcessingTimeArray.length > 0) {
+            var cseName;
+            var cseElapsedTime;
+            var cseProcessedTime;
+            var cseId;
+            var i;
+            var index = 0;
+            for (i = 0; i < extensionProcessingTimeArray.length; i++) {
+                var cseNameElements = extensionProcessingTimeArray[i].getElementsByTagName("ExtensionName");
+                var cseElapsedTimeElements = extensionProcessingTimeArray[i].getElementsByTagName("ElapsedTime");
+                var cseProcessedTimeElements = extensionProcessingTimeArray[i].getElementsByTagName("ProcessedTime");
+                var cseIdElements = extensionProcessingTimeArray[i].getElementsByTagName("ExtensionGuid");
+                if ((cseNameElements.length > 0) && (cseElapsedTimeElements.length > 0) && (cseProcessedTimeElements.length > 0) && (cseIdElements.length > 0)) {
+                    if ((cseNameElements[0].firstChild != null) && (cseElapsedTimeElements[0].firstChild != null) && (cseProcessedTimeElements[0].firstChild != null) && (cseIdElements[0].firstChild != null)) {
+                        cseName = cseNameElements[0].firstChild.nodeValue;
+                        cseElapsedTime = cseElapsedTimeElements[0].firstChild.nodeValue;
+                        cseProcessedTime = cseProcessedTimeElements[0].firstChild.nodeValue;
+                        cseId = cseIdElements[0].firstChild.nodeValue;
+                        if ((cseName != null) && (cseElapsedTime != null) && (cseProcessedTime != null) && (cseId != null)) {
+                            cseNameArray[index] = cseName;
+                            cseElapsedTimeArray[index] = cseElapsedTime;
+                            index = index + 1;
+                            if (cseId === '{00000000-0000-0000-0000-000000000000}') {
+                                policyApplicationFinishedTime = cseProcessedTime;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+          
+        var htmlText = "<html dir=" + document.dir +  ">";
+        htmlText = htmlText + "<head>";
+        htmlText = htmlText + "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />";
+        htmlText = htmlText + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-16\" />";
+        if(isComputerProcessing != null)
+        {
+            if(isComputerProcessing === true)
+            {
+                htmlText = htmlText + "<title>" + processingDetailsComputerTitleNodeText + "</title>";
+            }
+            else
+            {
+                htmlText = htmlText + "<title>" + processingDetailsUserTitleNodeText + "</title>";
+            }
+        }
+        
+
+        htmlText = htmlText + "</head><style type=\"text/css\">";
+        htmlText = htmlText + "body    { background-color:#FFFFFF; color:#000000; font-size:68%; font-family:MS Shell Dlg; margin:0,0,10px,0; word-break:normal; word-wrap:break-word; }";
+        htmlText = htmlText + "table   { font-size:100%; table-layout:fixed; width:100%; }";
+        htmlText = htmlText + "td,th   { overflow:visible; text-align:left; vertical-align:top; white-space:normal; }";
+        htmlText = htmlText + ".he0    { background-color:#FEF7D6; border:1px solid #BBBBBB; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:2.25em; margin-bottom:-1px; margin-left:0px; margin-right:0px; padding-left:8px; padding-right:5em; padding-top:4px; position:relative; width:100%; }";
+        htmlText = htmlText + ".he1    { color:#000000; display:block; font-family:MS Shell Dlg; font-size:100%; font-weight:bold; height:2em;margin-left: 5 px; margin-top: 5 px; position:relative; width:100%; }";
+        htmlText = htmlText + ".tblspecialfmt { border:1px solid black;border-collapse:collapse; }";
+        htmlText = htmlText + ".tblfirstcolfmt { border-left-width: 1px;border-top-width: 1px;border-bottom-width: 1px;border-right-width: 0px;border-style: solid; border-color: black; }";
+        htmlText = htmlText + ".tblsecondcolfmt { border-left-width: 0px;border-top-width: 1px;border-bottom-width: 1px;border-right-width: 1px;border-style: solid; border-color: black; }";
+        htmlText = htmlText + "</style>";
+        htmlText = htmlText + "<body>";
+        htmlText = htmlText + "<span class=\"he1\">" + refreshMessageLabelNodeText + " " + policyApplicationFinishedTime + "</span>" ;
+        htmlText = htmlText + "<div class=\"he0\">" + detailsLabelNodeText + "</div>"
+        htmltext = htmlText + "<table><tr>";
+
+        htmlText = htmlText + "<td>";
+        htmlText = htmlText + "<table>";
+        htmlText = htmlText + "<tr><td colspan=\"2\">&nbsp;</td></tr>";
+
+
+        htmlText = htmlText + "<tr><td style=\"width: 50%\"><strong>" + processingTypeLabelNodeText + "</strong></td>";
+        htmlText = htmlText + "<td>" + processingTypeValue + "</td></tr>";
+
+        htmlText = htmlText + "<tr><td style=\"width: 50%\"><strong>" + loopbackModeLabelNodeText + "</strong></td>";
+        htmlText = htmlText + "<td>" + loopbackModeValue + "</td></tr>";
+
+        htmlText = htmlText + "<tr><td style=\"width: 50%\"><strong>" + linkSpeedLabelNodeText + "</strong></td>";
+        htmlText = htmlText + "<td>" + linkSpeedValue + "</td></tr>";
+
+        htmlText = htmlText + "<tr><td style=\"width: 50%\"><strong>" + slowLinkThresholdLabelNodeText + "</strong></td>";
+        htmlText = htmlText + "<td>" + slowLinkThresholdValue + "</td></tr>";
+
+        htmlText = htmlText + "<tr><td style=\"width: 50%\"><strong>" + domainControllerNameLabelNodeText + "</strong></td>";
+        htmlText = htmlText + "<td>" + domainControllerNameValue +"</td></tr>";
+
+        htmlText = htmlText + "<tr><td style=\"width: 50%\"><strong>" + domainControllerIpLabelNodeText + "</strong></td>";
+        htmlText = htmlText + "<td>" + domainControllerIpValue +"</td></tr>";
+
+        htmlText = htmlText + "<tr><td style=\"width: 50%\"><strong>" + processingTriggerLabelNodeText + "</strong></td>";
+        htmlText = htmlText + "<td>" + processingTriggerValue + "</td></tr>";
+
+        htmlText = htmlText + "</table></td></tr>";
+        htmlText = htmlText + "<tr ><td ><table>";
+
+
+        htmlText = htmlText + "<tr><td><span class=\"he1\" >" + extensionsProcessedLabelNodeText +"</span></td></tr>";
+        htmlText = htmlText + "<tr><td><table class=\"tblspecialfmt\" >";
+        htmlText = htmlText + "<tr><td class=\"tblfirstcolfmt\" style=\"width: 50%;background-color:#FEF7D6;\"><strong>" + extensionNameLabelNodeText + "</strong></td>";
+        htmlText = htmlText + "<td class=\"tblsecondcolfmt\" style=\"background-color:#FEF7D6;\" ><strong>" + timeTakenLabelNodeText + "</strong></td></tr>";
+
+        for (var idx in cseNameArray)
+        {
+            htmlText = htmlText + "<tr><td style=\"width: 50%\">" + cseNameArray[idx] + "</td>";                   
+            htmlText = htmlText + "<td>" + cseElapsedTimeArray[idx] + "</td></tr>";
+        }
+
+        if (totalPolicyProcessingTime != null)
+        {
+            htmlText = htmlText + "<tr><td class=\"tblfirstcolfmt\" style=\"width: 50%\" >" + totalProcessingTimeLabelNodeText +":</td>";
+            htmlText = htmlText + "<td class=\"tblsecondcolfmt\">" + totalPolicyProcessingTime + "</td></tr>";
+        }
+        htmlText = htmlText + "</table></td></tr></table></td></tr></table></body></html>";
+
+        if(windowsArray[strWindowId])
+        {
+            delete windowsArray[strWindowId];
+        }
+         
+        // IE specific method for showing the popup.
+        if(navigator.userAgent.indexOf("MSIE") > 0 && window.location.toString().indexOf("file:") === -1)
+        {
+            strDiagArgs = "dialogHeight=360px;dialogWidth=630px;status=no;scroll=yes;resizable=yes;minimize=yes;maximize=yes;";
+
+            var vModeless = window.showModelessDialog("about:blank", window, strDiagArgs);
+            vModeless.document.write(htmlText);
+            vModeless.document.close();
+            vModeless.location.reload(false);
+            windowsArray[strWindowId] = vModeless;                      
+        }
+        else
+        {
+            strDiagArgs = "height=360px, width=630px, status=no, toolbar=no, scrollbars=yes, resizable=yes";
+        
+            windowsArray[strWindowId] = window.open("", "" , strDiagArgs);
+            windowsArray[strWindowId].document.write(htmlText);
+            windowsArray[strWindowId].focus();
+        }
+    }
+
+    xmlDocumentRoot = null;
+}
+</script>
+</head>
+
+<body onload="window_onload();" onclick="document_onclick();" onkeypress="document_onkeypress(event);" onunload="cleanUp();">
+
+<!-- HTML resources -->
+<div style="display:none;">
+        <div id="explainText_windowTitle">Group Policy Management</div>
+        <div id="explainText_windowStyles">
+        
+                            body  { font-size:68%;font-family:MS Shell Dlg; margin:0px,0px,0px,0px; border: 1px solid #666666; background:#F6F6F6; width:100%; word-break:normal; word-wrap:break-word; }
+
+                            .head { font-weight:bold; font-size:160%; font-family:MS Shell Dlg; width:100%; color:#6587DC; background:#E3EAF9; border:1px solid #5582D2; padding-left:8px; height:24px; }
+
+                            .path { margin-left: 10px; margin-top: 10px; margin-bottom:5px;width:100%; }
+
+                            .info { padding-left:10px;width:100%; }
+
+                            table { font-size:100%; width:100%; border:1px solid #999999; }
+
+                            th    { border-bottom:1px solid #999999; text-align:left; padding-left:10px; height:24px; }
+
+                            td    { background:#FFFFFF; padding-left:10px; padding-bottom:10px; padding-top:10px; }
+
+                            .btn  { width:100%; text-align:right; margin-top:16px; }
+
+                            .hdr  { font-weight:bold; border:1px solid #999999; text-align:left; padding-top: 4px; padding-left:10px; height:24px; margin-bottom:-1px; width:100%; }
+
+                            .bdy  { width:100%; height:182px; display:block; overflow:scroll; z-index:2; background:#FFFFFF; padding-left:10px; padding-bottom:10px; padding-top:10px; border:1px solid #999999; }
+
+                            button { width:6.9em; height:2.1em; font-size:100%; font-family:MS Shell Dlg; margin-right:15px; }
+
+                            @media print {
+
+                                .bdy { display:block; overflow:visible; }
+
+                                button { display:none; }
+
+                                .head { color:#000000; background:#FFFFFF; border:1px solid #000000; }
+
+                            }
+
+                
+        </div>
+        <div id="explainText_settingPathLabel">Setting Path:</div>
+        <div id="explainText_explainTextLabel">Explanation</div>
+        <div id="explainText_printButton">
+        <button name="Print" onClick="window.print()" accesskey="P"><u>P</u>rint</button>
+
+        </div>
+        <div id="explainText_closeButton">
+        <button name="Close" onClick="window.close()" accesskey="C"><u>C</u>lose</button>
+                
+        </div>
+        <div id="explainText_noExplainTextAvailable">No explanation is available for this setting.</div>
+        <div id="explainText_supportedLabel">Supported On:</div>
+        <div id="explainText_noSupportedTextAvailable">Not available</div>
+</div><table class="title" >
+<tr><td colspan="2" class="gponame">RDS-FSLogixContainers</td></tr>
+<tr>
+    <td id="dtstamp">Data collected on: 7/5/2019 10:09:06 AM</td>
+    <td><div id="objshowhide" tabindex="0" onclick="objshowhide_onClick();return false;"></div></td>
+</tr>
+</table>
+
+<div class="gposummary">
+<div class="he0_expanded"><span class="sectionTitle" tabindex="0">General</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he1"><span class="sectionTitle" tabindex="0">Details</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><table class="info" >
+<tr><td scope="row">Domain</td><td>home.stealthpuppy.com</td></tr>
+<tr><td scope="row">Owner</td><td>home\Domain Admins</td></tr>
+<tr><td scope="row">Created</td><td>2/11/2019 9:47:08 AM</td></tr>
+<tr><td scope="row">Modified</td><td>4/22/2019 9:42:32 PM</td></tr>
+<tr><td scope="row">User Revisions</td><td>0 (AD), 0 (SYSVOL)</td></tr>
+<tr><td scope="row">Computer Revisions</td><td>53 (AD), 53 (SYSVOL)</td></tr>
+<tr><td scope="row">Unique ID</td><td>{E3781D09-A3DD-47FA-9911-669A533D5FD6}</td></tr>
+<tr><td scope="row">GPO Status</td><td>Enabled</td></tr>
+</table></div></div>
+<div class="filler"></div>
+<div class="he1"><span class="sectionTitle" tabindex="0">Links</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><table class="info3" ><tr><th scope="col">Location</th><th scope="col">Enforced</th><th scope="col">Link Status</th><th scope="col">Path</th></tr>
+    <tr><td>XenApp VDAs</td><td>No</td><td>Enabled</td><td>home.stealthpuppy.com/stealthpuppy/Servers/XenApp VDAs</td></tr>
+    </table>
+    <br/>This list only includes links in the domain of the GPO.</div></div>
+<div class="filler"></div>
+<div class="he1"><span class="sectionTitle" tabindex="0">Security Filtering</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><b>The settings in this GPO can only apply to the following groups, users, and computers:</b></div>
+<div class="he4i">
+<table class="info" ><tr><th scope="col">Name</th></tr><tr><td>NT AUTHORITY\Authenticated Users</td></tr></table>
+</div>
+</div>
+<div class="filler"></div>
+
+<div class="filler"></div>
+<div class="he1"><span class="sectionTitle" tabindex="0">Delegation</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><b>These groups and users have the specified permission for this GPO</b></div>
+<div class="he4i">
+<table class="info3" >
+<tr><th scope="col">Name</th><th scope="col">Allowed Permissions</th><th scope="col">Inherited</th></tr>
+<tr><td>home\Domain Admins</td><td>Edit settings, delete, modify security</td><td>No</td></tr>
+<tr><td>home\Enterprise Admins</td><td>Edit settings, delete, modify security</td><td>No</td></tr>
+<tr><td>NT AUTHORITY\Authenticated Users</td><td>Read (from Security Filtering)</td><td>No</td></tr>
+<tr><td>NT AUTHORITY\ENTERPRISE DOMAIN CONTROLLERS</td><td>Read</td><td>No</td></tr>
+<tr><td>NT AUTHORITY\SYSTEM</td><td>Edit settings, delete, modify security</td><td>No</td></tr>
+</table>
+
+</div></div></div>
+<div class="filler"></div>
+</div>
+<div class="he0_expanded"><span class="sectionTitle" tabindex="0">Computer Configuration (Enabled)</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he1h_expanded"><span class="sectionTitle" tabindex="0">Policies</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he1"><span class="sectionTitle" tabindex="0">Administrative Templates</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i">Policy definitions (ADMX files) retrieved from the central store.</div><div class="he3"><span class="sectionTitle" tabindex="0">FSLogix/Office 365 Containers</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><table class="info3" >
+<tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Allow concurrent user sessions" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="Enable FSLogix to handle concurrent user sessions on the same machine. Note: If you are using the Windows server feature to allow concurrent logins for the same Windows account on the same server (seen most often with Citrix XenApp), you must enable this policy." gpmc_supported="FSLogix Office 365 Containers 2.5">Allow concurrent user sessions</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Allow concurrent user sessions</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Dynamic VHD(X) allocation" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="If checked, VHD(X)s will be dynamically allocated (VHD(X) file size will grow as data is added to the VHD(X)). If not checked, VHD(X)s that are auto-created will be fully allocated. Defaults to Dynamic." gpmc_supported="FSLogix Office 365 Containers 2.5">Dynamic VHD(X) allocation</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Dynamic VHD(X) allocation</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Enabled" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="Controls whether or not the Profiles feature is active." gpmc_supported="FSLogix Office 365 Containers 2.5">Enabled</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Enabled</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Include Office activation data in container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When Enabled is checked, the Office license activation data will be included in the Office 365 Container." gpmc_supported="FSLogix Office 365 Containers 2.5">Include Office activation data in container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Include Office activation data in container</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Include Office cache data in container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When Enabled is checked, the Office cache data will be included in the Office 365 Container." gpmc_supported="FSLogix Office 365 Containers 2.5">Include Office cache data in container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Include Office cache data in container</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Include OneDrive data in container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When Enabled is checked, the OneDrive cache will be included in the Office 365 Container." gpmc_supported="FSLogix Office 365 Containers 2.5">Include OneDrive data in container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Include OneDrive data in container</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Include OneNote data in container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When Enabled is checked, the OneNote local notebook cache will be included in the Office 365 Container." gpmc_supported="FSLogix Office 365 Containers 2.5">Include OneNote data in container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Include OneNote data in container</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Include OneNote UWP notebook data in container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When Enabled is checked, the OneNote UWP notebook data will be included in the Office 365 Container." gpmc_supported="FSLogix Office 365 Containers 2.5">Include OneNote UWP notebook data in container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Include OneNote UWP notebook data in container</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Include Outlook data in container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When Enabled is checked, the Outlook data files will be included in the Office 365 Container." gpmc_supported="FSLogix Office 365 Containers 2.5">Include Outlook data in container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Include Outlook data in container</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Include Outlook personalization data in container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When Enabled is checked, the Outlook personalization data will be included in the Office 365 Container." gpmc_supported="FSLogix Office 365 Containers 2.5">Include Outlook personalization data in container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Include Outlook personalization data in container</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Include Sharepoint data in container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When Enabled is checked, the Sharepoint data files will be included in the Office 365 Container." gpmc_supported="FSLogix Office 365 Containers 2.5">Include Sharepoint data in container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Include Sharepoint data in container</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Include Skype data in container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When Enabled is checked, the Skype for Business GAL data files will be included in the Office 365 Container." gpmc_supported="FSLogix Office 365 Containers 2.5">Include Skype data in container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Include Skype data in container</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Include Teams data in container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When Enabled is checked, the Teams data files will be included in the Office 365 Container." gpmc_supported="FSLogix Office 365 Containers 2.5">Include Teams data in container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Include Teams data in container</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Number of per-Session VHDs to persist" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="This setting is used when VHDAccessMode is set to &amp;#39;3&amp;#39;. This controls the number of session VHDs that are persistent. For example, if this is set to &amp;#39;2&amp;#39; and the user creates a 3rd session, a new session VHD will be created and used, but it will be deleted when the 3rd session ends." gpmc_supported="FSLogix Office 365 Containers 2.8.4">Number of per-Session VHDs to persist</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Number of per-Session VHDs to persist</td><td>2</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Set Outlook cached mode on successful container attach" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="When the Office 365 Container is successfully attached, set Outlook to work in cached mode for the user. The setting change will only be effective for the specific user and for the length of the user session." gpmc_supported="FSLogix Office 365 Containers 2.5">Set Outlook cached mode on successful container attach</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Set Outlook cached mode on successful container attach</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Store search database in Office 365 container" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="Used to control the FSLogix Search Roaming feature and store search data in the Office 365 container." gpmc_supported="FSLogix Office 365 Containers 2.5">Store search database in Office 365 container</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td></td><td>Multi-user search</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="VHD access type" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="Controls whether the VHD/X file should be accessed directly or whether a difference disk should be used." gpmc_supported="FSLogix Office 365 Containers 2.5">VHD access type</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td></td><td>Unique disk per session</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="VHD location" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="Specifies the network location where the VHD(X) files are stored. For example, \\servername\share\containers." gpmc_supported="FSLogix Office 365 Containers 2.5">VHD location</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>VHD location</td><td>\\ad1\FSLogixContainers\RDS</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Virtual disk type" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Office 365 Containers" gpmc_settingDescription="Specifies the type of virtual disk to auto-create. Default is VHD." gpmc_supported="FSLogix Office 365 Containers 2.5">Virtual disk type</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td></td><td>VHDX</td></tr>
+</table></td></tr></table>
+</div></div><div class="he3"><span class="sectionTitle" tabindex="0">FSLogix/Profile Containers</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><table class="info3" >
+<tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Allow concurrent user sessions" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Profile Containers" gpmc_settingDescription="Enable FSLogix to handle concurrent user sessions on the same machine. Note: If you are using the Windows server feature to allow concurrent logins for the same Windows account on the same server (seen most often with Citrix XenApp), you must enable this policy." gpmc_supported="FSLogix Profiles 2.5">Allow concurrent user sessions</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Allow concurrent user sessions</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Delete local profile when FSLogix Profile should apply" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Profile Containers" gpmc_settingDescription="Please use caution with this setting. When the FSLogix Profiles system determines that a user should have a FSLogix profile but a local profile exists, the local profile WILL BE REMOVED and the user logged on with the FSLogix profile." gpmc_supported="FSLogix Profiles 2.5">Delete local profile when FSLogix Profile should apply</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Delete local profile when FSLogix Profile should apply</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Enabled" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Profile Containers" gpmc_settingDescription="Controls whether or not the Profiles feature is active." gpmc_supported="FSLogix Profiles 2.5">Enabled</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Enabled</td><td>Enabled</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Profile type" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Profile Containers" gpmc_settingDescription="Controls whether the VHD/X file should be accessed directly, if a difference disk should be used, and if Read/Write or Read Only access should be used." gpmc_supported="FSLogix Profiles 2.5">Profile type</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td></td><td>Read-write profile</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Size in MBs" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Profile Containers" gpmc_settingDescription="Specify the size for auto-created VHD(X) files. Default is 30,000 (30 GBs)." gpmc_supported="FSLogix Profiles 2.5">Size in MBs</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>Size in MBs</td><td>500</td></tr>
+</table></td></tr><tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="VHD location" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Profile Containers" gpmc_settingDescription="Specifies the network location where the VHD(X) files are stored. For example, \\servername\share\containers." gpmc_supported="FSLogix Profiles 2.5">VHD location</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td>VHD location</td><td>\\ad1\FSLogixContainers\RDS</td></tr>
+</table></td></tr></table>
+</div></div><div class="he3"><span class="sectionTitle" tabindex="0">FSLogix/Profile Containers/Container and Directory Naming</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><table class="info3" >
+<tr><th scope="col">Policy</th><th scope="col">Setting</th><th scope="col">Comment</th></tr>
+<tr><td><span class="explainlink" tabindex="0" onkeypress="javascript:showExplainText(this); return false;" onclick="javascript:showExplainText(this); return false;" gpmc_settingName="Virtual disk type" gpmc_settingPath="Computer Configuration/Administrative Templates/FSLogix/Profile Containers/Container and Directory Naming" gpmc_settingDescription="Specifies the type of virtual disk to auto-create. Default is VHD." gpmc_supported="FSLogix Profiles 2.5">Virtual disk type</span></td><td>Enabled</td><td></td></tr>
+<tr><td colspan="3"><table class="subtable_frame" >
+<tr><td></td><td>VHDX</td></tr>
+</table></td></tr></table>
+</div></div></div></div><div class="filler"></div>
+<div class="he1h_expanded"><span class="sectionTitle" tabindex="0">Preferences</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he1_expanded"><span class="sectionTitle" tabindex="0">Control Panel Settings</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he2"><span class="sectionTitle" tabindex="0">Local Users and Groups</span><a class="expando" href="#"></a></div>
+        <div class="container"><div class="he3"><span class="sectionTitle" tabindex="0">Group (Name: FSLogix Profile Include List)</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4"><span class="sectionTitle" tabindex="0">FSLogix Profile Include List (Order: 1)</span><a class="expando" href="#"></a></div>
+    <div class="container">
+<div class="he4h"><span class="sectionTitle" tabindex="0">Local Group</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><table class="info" >
+<tr><td>Action</td><td>Update</td></tr>
+</table>
+<b>Properties</b><table class="subtable" ><tr><td>Group name</td><td>FSLogix Profile Include List</td></tr>
+<tr><td>Delete all member users</td><td>Enabled</td></tr>
+<tr><td>Delete all member groups</td><td>Enabled</td></tr>
+</table><b>Add members</b><table class="subtable" ><tr><td>home\FSLogix-ProfileContainer</td><td>S-1-5-21-2625184940-1311984064-3469394446-1118</td></tr>
+</table></div></div><div class="he4h"><span class="sectionTitle" tabindex="0">Common</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><b>Options</b><table class="subtable" ><tr><td>Stop processing items on this extension if an error occurs on this item</td><td>No</td></tr>
+<tr><td>Remove this item when it is no longer applied</td><td>No</td></tr>
+<tr><td>Apply once and do not reapply</td><td>No</td></tr>
+</table></div></div></div></div><div class="he3"><span class="sectionTitle" tabindex="0">Group (Name: FSLogix ODFC Include List)</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4"><span class="sectionTitle" tabindex="0">FSLogix ODFC Include List (Order: 2)</span><a class="expando" href="#"></a></div>
+    <div class="container">
+<div class="he4h"><span class="sectionTitle" tabindex="0">Local Group</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><table class="info" >
+<tr><td>Action</td><td>Update</td></tr>
+</table>
+<b>Properties</b><table class="subtable" ><tr><td>Group name</td><td>FSLogix ODFC Include List</td></tr>
+<tr><td>Delete all member users</td><td>Enabled</td></tr>
+<tr><td>Delete all member groups</td><td>Enabled</td></tr>
+</table><b>Add members</b><table class="subtable" ><tr><td>home\FSLogix-Office365Container</td><td>S-1-5-21-2625184940-1311984064-3469394446-1117</td></tr>
+</table></div></div><div class="he4h"><span class="sectionTitle" tabindex="0">Common</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i"><b>Options</b><table class="subtable" ><tr><td>Stop processing items on this extension if an error occurs on this item</td><td>No</td></tr>
+<tr><td>Remove this item when it is no longer applied</td><td>No</td></tr>
+<tr><td>Apply once and do not reapply</td><td>No</td></tr>
+</table></div></div></div></div></div></div></div></div>
+<div class="filler"></div>
+<div class="he0_expanded"><span class="sectionTitle" tabindex="0">User Configuration (Enabled)</span><a class="expando" href="#"></a></div>
+<div class="container"><div class="he4i">No settings defined.</div></div>
+</body></html>
