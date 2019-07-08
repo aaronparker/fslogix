@@ -1,12 +1,23 @@
 <#
     .SYNOPSIS
         Export the path to Outlook data files (PST / OST files) loaded in the user's Outlook profile
+
+    .PARAMETER LogPath
+        Path to a local or network directory to store the output CSV file
 #>
 
 [CmdletBinding(SupportsShouldProcess = $True)]
 [OutputType([System.String])]
 Param (
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $False)]
+    [ValidateScript( {
+            If (Test-Path -Path $_ -PathType 'Container') {
+                Return $True
+            }
+            Else {
+                Throw "Cannot find path $_"
+            }
+        })]
     [System.String] $LogPath
 )
 
@@ -70,8 +81,9 @@ ForEach ($key in $keys) {
 }
 
 If ($PSBoundParameters.ContainsKey('LogPath')) {
-    Write-Verbose -Message "Output: $LogPath\$env:USERNAME.$env:USERDOMAIN.csv"
-    $fileList | Export-Csv -Path $("$LogPath\$env:USERNAME.$env:USERDOMAIN.csv") -Delimiter "," -NoTypeInformation
+    $Path = "$LogPath\$env:USERNAME.$env:USERDOMAIN-Outlook.csv"
+    Write-Verbose -Message "Output: $Path"
+    $fileList | Export-Csv -Path $Path -Delimiter "," -NoTypeInformation
 }
 Else {
     Write-Output -InputObject $fileList
