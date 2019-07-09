@@ -213,7 +213,7 @@ Function Write-Log {
 
 # Script
 # Build log file path
-If ($PSBoundParameters.ContainsKey('$LogFile')) {
+If ($PSBoundParameters.ContainsKey('LogFile')) {
     Write-Verbose -Message "Log file at: $LogFile."
 }
 Else {
@@ -260,7 +260,7 @@ Write-Verbose -Message "Frx.exe path is: $frx."
 #region Get group members from target migration AD group
 # Modify to open a CSV list of usernames + OST/PST paths
 try {
-    $fileList = Get-Content -Path $DataFileList -ErrorAction SilentlyContinue
+    $fileList = Get-Content -Path $DataFileList -ErrorAction SilentlyContinue | ConvertFrom-Csv
 }
 catch {
     Write-Error -Message "Failed to read: $DataFileList"
@@ -269,33 +269,34 @@ catch {
 #region Step through each group member to create the container
 If ($Null -ne $fileList) {
 
-    $userFiles = $fileList | Group-Object -Property "samAccountName"
+    $userFiles = $fileList | Group-Object -Property samAccountName
     ForEach ($user in $userFiles) {
 
         # Find user account in AD
         Try {
             $AdUserParam = @{
                 Identity    = $user.Name
-                ErrorAction = SilentlyContinue
+                ErrorAction = "SilentlyContinue"
             }
             If ($PSBoundParameters.ContainsKey('SearchBase')) { $AdUserParam | Add-Member -NotePropertyName "SearchBase" -NotePropertyValue $SearchBase }
             If ($PSBoundParameters.ContainsKey('SearchServer')) { $AdUserParam | Add-Member -NotePropertyName "Server" -NotePropertyValue $SearchServer }
+            Write-Verbose -Message "Searching AD for samAccountName: [$($user.Name)]."
+            Write-Verbose $AdUserParam
             $UserAccount = Get-ADUser @AdUserParam
         }
         Catch {
             Write-Warning -Message "Failed to find $($user.Name)."
-            Write-Log -Level Warning "Failed to find $($user.Name)."
+            Write-Log -Level Warn "Failed to find $($user.Name)."
             Write-Log -Level Error -Message $Error[0]
         }
         
-        If ($Null -ne $UserAccount) {
+        If ($UserAccount) {
             #region Determine target container folder for the user's container
             Try {
                 $FslDirParam = @{
                     SamAccountName = $UserAccount.SamAccountName
                     SID            = $UserAccount.SID
                     Destination    = $VHDLocation
-                    FlipFlop       = $True
                     Passthru       = $True
                     ErrorAction    = "Stop"    
                 }
@@ -328,7 +329,7 @@ If ($Null -ne $fileList) {
                 #region Generate the container
                 Try {
                     $VHDSizeMB = $VHDSizeMB -as [System.String]
-                    $arguments = "create-vhd -filename $vhdPath -size-mbs=$VHDSizeMB -dynamic=$vhdIsDynamic -label $($User.SamAccountName)"
+                    $arguments = "create-vhd -filename $vhdPath -size-mbs=$VHDSizeMB -dynamic=$vhdIsDynamic -label $($UserAccount.SamAccountName)"
                     Write-Log -Message "Invoke: $frx $arguments"
                     If ($pscmdlet.ShouldProcess($vhdPath, "Create VHD")) {
                         Invoke-Process -FilePath $frx -ArgumentList $arguments
@@ -429,7 +430,7 @@ If ($Null -ne $fileList) {
             }
 
             #region Copy the data files
-            ForEach ($file in $name.Group) {
+            ForEach ($file in $user.Group) {
                 Try {
                     Write-Verbose -Message "Copy file $($file.Path) to $ODFCPath."
                     Write-Log -Message "Copy file $($file.Path) to $ODFCPath."
