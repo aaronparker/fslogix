@@ -6,15 +6,15 @@ The list of redirections (`Redirections.csv`) is hosted here in CSV format so th
 
 ## Test Before Implementing in Production
 
-`Redirections.csv` is not a definitive list of paths to exclude or include in the Profile Container. You should assess each of the paths included in this list for your environment and undestand whether a path should be excluded or [cleaned up with alternative methods](https://github.com/aaronparker/FSLogix/tree/master/Profile-Cleanup). It is likely that additional paths can be added to the list. With community feedback, this list can be improved.
+`Redirections.csv` is not a definitive list of paths to exclude or include in the Profile Container. `AdditionalRedirectionsList.csv` lists an additional set of paths. You should assess each of the paths included in these lists for your environment and understand the impacts of excluding the path or whether it should instead be [cleaned up with alternative methods](https://github.com/aaronparker/FSLogix/tree/master/Profile-Cleanup). With community feedback, this list can be improved.
 
-It is also important to understand the performance impacts of implementing exclusions for Profile Containers. Ensure that the `redirections.xml` that you implement in your environment is well tested before moving into production.
+It is also important to understand the performance impacts of implementing exclusions for Profile Containers. Ensure that the `Redirections.xml` that you implement in your environment is well tested before moving into production.
 
 ## How To Contribute
 
 Contributions to the list of folders to exclude or include from the Profile Container is needed to improve the list. There are two ways to contribute:
 
-1. [Fork the repo](https://help.github.com/en/articles/fork-a-repo), update `redirections.csv` and create a [Pull Request](https://help.github.com/en/desktop/contributing-to-projects/creating-a-pull-request)
+1. [Fork the repo](https://help.github.com/en/articles/fork-a-repo), update `Redirections.csv` and create a [Pull Request](https://help.github.com/en/desktop/contributing-to-projects/creating-a-pull-request)
 2. If would prefer not to create a pull request, you can instead [create a new issue to request an addition or improvement](https://github.com/aaronparker/FSLogix/issues/new?assignees=&labels=&template=custom.md&title=)
 
 ## Install the Script

@@ -1,0 +1,75 @@
+Action,Copy,Path,Description,Notes
+Exclude,0,Videos,Videos folder,Omit if redirected to the network
+Exclude,0,Saved Games,Saved Games folder,Omit if redirected to the network
+Exclude,0,Contacts,Windows Contacts,Omit if redirected to the network
+Exclude,0,Music,Music folder,Omit if redirected to the network
+Exclude,0,Downloads,Downloads folder,Omit if redirected to the network
+Exclude,0,$Recycle.Bin,User's Recycle bin folder,Omit if GPO manages Recycle Bin or folder redirection manages other folders
+Exclude,0,Tracing,Skype for Business debug logs,Path can be pointed to %TEMP% via Registry
+Exclude,0,AppData\Local\Apps,Microsoft Windows,May be required for UWP and other apps
+Exclude,0,AppData\Local\Downloaded Installations,Microsoft Windows,May break per-user installed apps
+Exclude,0,AppData\Local\assembly,.NET Framework Shadow Copies,May impact performance of .NET apps
+Exclude,0,AppData\Local\CEF,Microsoft Windows,
+Exclude,0,AppData\Local\Deployment,Microsoft Windows,
+Exclude,0,AppData\Local\GroupPolicy,Group Policy,
+Exclude,0,AppData\Local\Microsoft Help,Microsoft Help,
+Exclude,0,AppData\Local\Sun,Sun Java cache,
+Exclude,0,AppData\Local\VirtualStore,UAC redirection,
+Exclude,0,AppData\Local\CrashDumps, Windows application crash dumps,
+Exclude,0,AppData\Local\Package Cache,Package cache,
+Exclude,0,AppData\Local\D3DSCache,D3DSCache,
+Exclude,0,AppData\Local\Microsoft\TokenBroker\Cache, Token Broker cache,
+Exclude,0,AppData\Local\Microsoft\Notifications,Windows 10 notifications & live tiles,
+Exclude,0,AppData\Local\Microsoft\Internet Explorer\DOMStore,Internet Explorer persistent client-side data,
+Exclude,0,AppData\Local\Microsoft\MSOIdentityCRL\Tracing,Microsoft Online Services Sign-in Assistant debug logs,
+Exclude,0,AppData\Local\Microsoft\Messenger,Microsoft Messenger,
+Exclude,0,AppData\Local\Microsoft\Terminal Server Client,Microsoft Remote Desktop Client cache,
+Exclude,0,AppData\Local\Microsoft\UEV,Microsoft UEV,
+Exclude,0,AppData\Local\Microsoft\Windows\Mail,Microsoft Mail,
+Exclude,0,AppData\Local\Microsoft\Windows\WebCache.old,Microsoft Windows,
+Exclude,0,AppData\Local\Microsoft\Windows\AppCache,Microsoft Windows,
+Exclude,0,AppData\Local\Microsoft\Windows\Caches,Microsoft Windows,
+Exclude,0,AppData\Local\Microsoft\Windows\Explorer,Windows Explorer cache,May impact Explorer performance for thumbnails
+Exclude,0,AppData\Local\Microsoft\Windows\GameExplorer,Windows Game Explorer cache,
+Exclude,0,AppData\Local\Microsoft\Windows\DNTException,Microsoft Windows,
+Exclude,0,AppData\Local\Microsoft\Windows\IECompatCache,Internet Explorer,Internet Explorer compatibility list
+Exclude,0,AppData\Local\Microsoft\Windows\IECompatUACache,Internet Explorer,
+Exclude,0,AppData\Local\Microsoft\Windows\Notifications,Microsoft Windows,
+Exclude,0,AppData\Local\Microsoft\Windows\PRICache,Microsoft Windows,
+Exclude,0,AppData\Local\Microsoft\Windows\PrivacIE,Microsoft Windows,
+Exclude,0,AppData\Local\Microsoft\Windows\RoamingTiles,Microsoft Windows,
+Exclude,0,AppData\Local\Microsoft\Windows\SchCache,Microsoft Windows,
+Exclude,0,AppData\Local\Microsoft\Windows\WebCache,Microsoft Windows,
+Exclude,0,AppData\Local\Microsoft\Windows\1031,Microsoft Windows,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\BrowserMetrics,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Default\Code Cache\js,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\CertificateRevocation,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\CertificateTransparency,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Crashpad,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\FileTypePolicies,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\InterventionPolicyDatabase,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\MEIPreload,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\PepperFlash,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\pnacl,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Safe Browsing,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\ShaderCache,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\SSLErrorAssistant,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Subresource Filter,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\SwReporter,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Default\JumpListIcons,Google Chrome,
+Exclude,0,AppData\Roaming\Google\Chrome\UserData\Default\JumpListIconsOld,Google Chrome,
+Exclude,0,AppData\Roaming\com.adobe.formscentral.FormsCentralForAcrobat,Adobe Acrobat Forms Central,
+Exclude,0,AppData\Roaming\Adobe\SLData,Adobe Acrobat,
+Exclude,0,AppData\Roaming\Sun\Java\Deployment\cache,Oracle JRE cache folder,May impact performance of Java apps
+Exclude,0,AppData\Roaming\Sun\Java\Deployment\log,Oracle JRE log folder,
+Exclude,0,AppData\Roaming\Sun\Java\Deployment\tmp,Oracle JRE temp folder,
+Exclude,0,AppData\Roaming\Citrix\PNAgent\AppCache,Citrix Workspace app cache,
+Exclude,0,AppData\Roaming\Citrix\PNAgent\IconCache,Citrix Workspace app cache,
+Exclude,0,AppData\Roaming\Citrix\PNAgent\ResourceCache,Citrix Workspace app cache,
+Exclude,0,AppData\Roaming\ICAClient\Cache,Citrix Workspace app cache,
+Exclude,0,AppData\Roaming\Macromedia\Flash Player\macromedia.com\support\flashplayer\sys,Adobe Flash Player,
+Exclude,0,AppData\Roaming\Macromedia\Flash Player\macromedia.com\support\flashplayer\flashplayer\#SharedObjects,Adobe Flash Player cookies and cache,
+Exclude,0,AppData\Roaming\ConnectWise\CrashDumps,ConnectWise crash dumps,
+Exclude,0,AppData\Roaming\ConnectWise\cache,ConnectWise cache,
+Exclude,0,AppData\LocalLow,Low Integrity Local AppData,Confirm required inclusions before excluding
+Include,3,AppData\LocalLow\Sun\Java\Deployment\security,Java exception site list,
