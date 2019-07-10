@@ -47,6 +47,7 @@
         <Path Action="Prune" Days="30">%LocalAppData%\assembly</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\CEF</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Deployment</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\SCOM\LOGS</Path>
     </Target>
     <Target Name="Internet Explorer">
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Internet Explorer\*.log</Path>
