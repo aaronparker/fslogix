@@ -11,7 +11,7 @@ Exclude,0,AppData\Local\Sun,Oracle Java cache,May impact performance of Java app
 Exclude,0,AppData\Local\CrashDumps,Windows application crash dumps,
 Exclude,0,AppData\Local\Microsoft\Terminal Server Client,Microsoft Remote Desktop Client cache,
 Exclude,0,AppData\Local\Microsoft\Windows\Explorer,Windows Explorer cache,Will impact Windows Explorer shortcut icons and thumbnail performance
-Exclude,0,AppData\Local\Google\Chrome\User Data\Default\Cache,Google Chrome cache
-Exclude,0,AppData\Local\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache,Microsoft Edge cache
+Exclude,0,AppData\Local\Google\Chrome\User Data\Default\Cache,Google Chrome cache,
+Exclude,0,AppData\Local\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache,Microsoft Edge cache,
 Exclude,0,AppData\Local\Microsoft\Edge Dev\User Data\Default\Cache,Microsoft Edge Dev cache,Path with change with final Edge release
 Exclude,0,AppData\Roaming\Sun\Java\Deployment\cache,Oracle JRE cache folder,May impact performance of Java apps - Only include if the JRE is in the environment
