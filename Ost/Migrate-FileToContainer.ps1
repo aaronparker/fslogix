@@ -161,7 +161,7 @@ Function Write-Log {
 
         [Parameter(Mandatory = $false,
             Position = 2)]
-        [System.String] $Path = "$env:temp\PowershellScript.log",
+        [System.String] $Path = (Join-Path $env:Temp "PowershellScript.log"),
 
         [Parameter(Mandatory = $false,
             Position = 3,
@@ -272,6 +272,7 @@ If ($Null -ne $fileList) {
     $userFiles = $fileList | Group-Object -Property samAccountName
     ForEach ($user in $userFiles) {
 
+        Write-Log -Message "Start migration for [$($user.Name)]."
         # Find user account in AD
         Try {
             $AdUserParam = @{
@@ -281,7 +282,7 @@ If ($Null -ne $fileList) {
             If ($PSBoundParameters.ContainsKey('SearchBase')) { $AdUserParam | Add-Member -NotePropertyName "SearchBase" -NotePropertyValue $SearchBase }
             If ($PSBoundParameters.ContainsKey('SearchServer')) { $AdUserParam | Add-Member -NotePropertyName "Server" -NotePropertyValue $SearchServer }
             Write-Verbose -Message "Searching AD for samAccountName: [$($user.Name)]."
-            Write-Verbose $AdUserParam
+            Write-Log -Message "Searching AD for samAccountName: [$($user.Name)]."
             $UserAccount = Get-ADUser @AdUserParam
         }
         Catch {
@@ -323,13 +324,17 @@ If ($Null -ne $fileList) {
 
             #region Create container
             If (Test-Path -Path $vhdPath) {
-                Write-Log -Message "Removing: $vhdPath."
+                Write-Verbose -Message "Container exists: $vhdPath."
+                Write-Log -Message "Container exists: $vhdPath."
             }
             Else {
+                Write-Verbose -Message "No existing container at: $vhdPath."
+                Write-Log -Message "No existing container at: $vhdPath."
                 #region Generate the container
                 Try {
                     $VHDSizeMB = $VHDSizeMB -as [System.String]
                     $arguments = "create-vhd -filename $vhdPath -size-mbs=$VHDSizeMB -dynamic=$vhdIsDynamic -label $($UserAccount.SamAccountName)"
+                    Write-Verbose -Message "Invoke: $frx $arguments"
                     Write-Log -Message "Invoke: $frx $arguments"
                     If ($pscmdlet.ShouldProcess($vhdPath, "Create VHD")) {
                         Invoke-Process -FilePath $frx -ArgumentList $arguments
@@ -341,6 +346,7 @@ If ($Null -ne $fileList) {
                     Exit
                 }
                 Write-Verbose -Message "Generated new VHD at: $vhdPath"
+                Write-Log -Message "Generated new VHD at: $vhdPath"
             }
             #endregion
 
@@ -375,7 +381,8 @@ If ($Null -ne $fileList) {
             #endregion
 
             #region Apply permissions to the container
-            Write-Verbose -Message "Applying security permissions for $($UserAccount.samAccountName)."
+            Write-Verbose -Message "Applying security permissions for $($UserAccount.samAccountName) to $Directory."
+            Write-Log -Message "Applying security permissions for $($UserAccount.samAccountName) to $Directory."
             Try {
                 If ($pscmdlet.ShouldProcess($UserAccount.samAccountName, "Add permissions")) {
                     Add-FslPermissions -User $UserAccount.samAccountName -Folder $Directory
@@ -391,8 +398,8 @@ If ($Null -ne $fileList) {
             #endregion
 
             #region Mount the container
-            Write-Verbose -Message "Mounting FSLogix Container."
-            Write-Log -Message "Mounting FSLogix Container."
+            Write-Verbose -Message "Mounting FSLogix Container: $vhdPath ."
+            Write-Log -Message "Mounting FSLogix Container: $vhdPath."
             Try {
                 If ($AssignDriveLetter.IsPresent) {
                     If ($pscmdlet.ShouldProcess($vhdPath, "Mount")) {
@@ -432,8 +439,8 @@ If ($Null -ne $fileList) {
             #region Copy the data files
             ForEach ($file in $user.Group) {
                 Try {
-                    Write-Verbose -Message "Copy file $($file.Path) to $ODFCPath."
-                    Write-Log -Message "Copy file $($file.Path) to $ODFCPath."
+                    Write-Verbose -Message "Copy file $($file.Path) to $vhdPath."
+                    Write-Log -Message "Copy file $($file.Path) to $vhdPath."
                     If ($pscmdlet.ShouldProcess($file.Path, "Copy to disk")) {
                         Copy-FslToDisk -VHD $vhdPath -Path $file.Path -Destination $ODFCPath -ErrorAction Stop
                     }
@@ -463,5 +470,6 @@ If ($Null -ne $fileList) {
         }
     }
 }
+Write-Verbose -Message "Migration complete."
 Write-Log -Message "Migration complete."
 #endregion

@@ -64,19 +64,21 @@ function New-FslDirectory {
             $Directory = $Destination -replace "%Username%", $User_Dir_Name
         }
         else {
-            $Directory = join-path ($Destination) ($User_Dir_Name)
+            $Directory = Join-Path ($Destination) ($User_Dir_Name)
         }
 
-        if (test-path -path $Directory) {
-            Remove-item -Path $Directory -Force -Recurse -ErrorAction SilentlyContinue
+        If (Test-Path -Path $Directory) {
+            Write-Verbose "Directory exists: $Directory"
+            # Remove-item -Path $Directory -Force -Recurse -ErrorAction SilentlyContinue
         }
-
-        Try {
-            New-Item -path $Directory -ItemType Directory -Force -ErrorAction Stop | out-null
-            Write-Verbose "Created Directory: $Directory"
-        }
-        catch {
-            Write-Error $Error[0]
+        Else {
+            Try {
+                New-Item -Path $Directory -ItemType Directory -Force -ErrorAction Stop | Out-Null
+                Write-Verbose "Created directory: $Directory"
+            }
+            catch {
+                Write-Error $Error[0]
+            }
         }
 
         if ($PSBoundParameters.ContainsKey("Passthru")) {
