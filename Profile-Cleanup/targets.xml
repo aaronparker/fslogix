@@ -2,6 +2,7 @@
 <Targets>
     <Target Name="Windows">
         <Path Action="Delete">%TEMP%</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Apps</Path>
         <Path Action="Prune" Days="1">%LocalAppData%\Microsoft\Windows\Explorer\IconCacheToDelete</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\Explorer\ThumbCacheToDelete</Path>
         <Path Action="Prune" Days="1">%LocalAppData%\Microsoft\Windows\Explorer\*.db</Path>
@@ -74,8 +75,6 @@
         <Path Action="Prune" Days="30">%AppData%\Slack\GPUCache</Path>
         <Path Action="Prune" Days="30">%AppData%\Slack\Local Storage</Path>
         <Path Action="Prune" Days="7">%AppData%\Slack\logs</Path>
-        <Path Action="Prune" Days="30">%AppData%\Slack\*\Resources</Path>
-        <Path Action="Prune" Days="30">%AppData%\Slack\*\Locales</Path>
     </Target>
     <Target Name ="Electron">
         <Path Action="Prune" Days="7">%LocalAppData%\SquirrelTemp</Path>
@@ -194,10 +193,6 @@
     <Target Name="WhatsApp">
         <Path Action="Prune" Days="10">%LocalAppData%\WhatsApp\*\Resources</Path>
         <Path Action="Prune" Days="10">%LocalAppData%\WhatsApp\*\Locales</Path>
-    </Target>
-    <Target Name="GitHub Desktop">
-        <Path Action="Prune" Days="10">%LocalAppData%\GitHubDesktop\*\Resources</Path>
-        <Path Action="Prune" Days="10">%LocalAppData%\GitHubDesktop\*\Locales</Path>
     </Target>
     <Target Name="Edge Dev">
         <Path Action="Prune" Days="30">%AppData%\Edge Dev\User Data\*\Cache</Path>

@@ -8,6 +8,7 @@
     Reads a list of files and folders from an XML file to delete data based on age.
     The script reads an XML file that defines a list of files and folders to remove to reduce profile size.
     Supports -WhatIf and -Verbose output and returns a list of files removed from the profile.
+    Run within the user session to prune the local profile.
 
     .PARAMETER Targets
         Path to an XML file that defines the profile paths to prune and delete
@@ -19,14 +20,14 @@
         Override the Days value listed for each Path with action Prune, in the XML file resulting in the forced removal of all files in the path.
 
     .EXAMPLE
-    C:\> .\$($MyInvocation.MyCommand).ps1 -Targets .\targets.xml -WhatIf
+    C:\> .\Remove-ProfileData.ps1 -Targets .\targets.xml -WhatIf
 
         Description:
         Reads targets.xml that defines a list of files and folders to delete from the user profile.
         Reports on the files/folders to delete without deleting them.
 
     .EXAMPLE
-    C:\> .\$($MyInvocation.MyCommand).ps1 -Targets .\targets.xml -Confirm:$False -Verbose
+    C:\> .\Remove-ProfileData.ps1 -Targets .\targets.xml -Confirm:$False -Verbose
 
         Description:
         Reads targets.xml that defines a list of files and folders to delete from the user profile.
