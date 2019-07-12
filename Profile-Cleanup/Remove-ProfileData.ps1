@@ -2,13 +2,13 @@
 #Requires -PSEdition Desktop
 <#
     .SYNOPSIS
-    Removes files and folders in the user profile to reduce profile size.
+        Removes files and folders in the user profile to reduce profile size.
 
     .DESCRIPTION
-    Reads a list of files and folders from an XML file to delete data based on age.
-    The script reads an XML file that defines a list of files and folders to remove to reduce profile size.
-    Supports -WhatIf and -Verbose output and returns a list of files removed from the profile.
-    Run within the user session to prune the local profile.
+        Reads a list of files and folders from an XML file to delete data based on age.
+        The script reads an XML file that defines a list of files and folders to remove to reduce profile size.
+        Supports -WhatIf and -Verbose output and returns a list of files removed from the profile.
+        Run within the user session to prune the local profile.
 
     .PARAMETER Targets
         Path to an XML file that defines the profile paths to prune and delete
@@ -20,21 +20,21 @@
         Override the Days value listed for each Path with action Prune, in the XML file resulting in the forced removal of all files in the path.
 
     .EXAMPLE
-    C:\> .\Remove-ProfileData.ps1 -Targets .\targets.xml -WhatIf
+        C:\> .\Remove-ProfileData.ps1 -Targets .\targets.xml -WhatIf
 
         Description:
         Reads targets.xml that defines a list of files and folders to delete from the user profile.
         Reports on the files/folders to delete without deleting them.
 
     .EXAMPLE
-    C:\> .\Remove-ProfileData.ps1 -Targets .\targets.xml -Confirm:$False -Verbose
+        C:\> .\Remove-ProfileData.ps1 -Targets .\targets.xml -Confirm:$False -Verbose
 
         Description:
         Reads targets.xml that defines a list of files and folders to delete from the user profile.
         Deletes the targets and reports on the total size of files removed.
 
     .INPUTS
-    XML file that defines target files and folders to remove.
+        XML file that defines target files and folders to remove.
 
     .OUTPUTS
         [System.String]
@@ -44,7 +44,7 @@
         Use with traditional profile solutions to clean up profiles or with Container-based solution to keep Container sizes to minimum.
 #>
 [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High', `
-        HelpUri = 'https://github.com/aaronparker/FSLogix/blob/master/Profile-Cleanup/README.MD')]
+        HelpUri = 'https://docs.stealthpuppy.com/docs/fslogix/profile')]
 [OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
@@ -243,23 +243,23 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
     ForEach ($target in (Select-Xml -Xml $xmlDocument -XPath "//Target")) {
 
         Write-Verbose -Message "Processing target: [$($target.Node.Name)]"
-        ForEach ($path in $target.Node.Path) {
+        ForEach ($targetPath in $target.Node.Path) {
             
             # Convert path from XML with environment variable to actual path
-            $thisPath = $(ConvertTo-Path -Path $path.innerText)
+            $thisPath = $(ConvertTo-Path -Path $targetPath.innerText)
             Write-Verbose -Message "Processing folder: $thisPath"
 
             # Get files to delete from Paths and file age; build output array
             If (Test-Path -Path $(Get-TestPath -Path $thisPath) -ErrorAction SilentlyContinue) {
 
-                Switch ($path.Action) {
+                Switch ($targetPath.Action) {
                     "Prune" {
                         # Get file age from Days value in XML; if -Override used, set $dateFilter to now
                         If ($Override) {
                             $dateFilter = Get-Date
                         }
                         Else {
-                            $dateFilter = (Get-Date).AddDays(- $path.Days)
+                            $dateFilter = (Get-Date).AddDays(- $targetPath.Days)
                         }
 
                         # Construct the file list for this folder and add to the full list for logging
@@ -344,20 +344,20 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
 }
 
 # Output total size of files deleted
-If ($fileList.Count -gt 1) {
+If ([bool]($fileList.PSobject.Properties.name -match "FullName")) {
     $size = ($fileList | Measure-Object -Sum Length).Sum
     $size = Convert-Size -From B -To MiB -Value $size
+
+    # Write deleted file list out to the log file
+    If ($WhatIfPreference -eq $True) { $WhatIfPreference = $False }
+    "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] File list start" | Out-File -FilePath $LogFile -Append
+    $fileList.FullName | Out-File -FilePath $LogFile -Append
+    "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] File list end" | Out-File -FilePath $LogFile -Append
 }
 Else {
     $size = 0
 }
 Write-Verbose -Message "Total file size deleted: $size MiB"
-
-# Write deleted file list out to the log file
-If ($WhatIfPreference -eq $True) { $WhatIfPreference = $False }
-"[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] File list start" | Out-File -FilePath $LogFile -Append
-$fileList.FullName | Out-File -FilePath $LogFile -Append
-"[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] File list end" | Out-File -FilePath $LogFile -Append
 
 # Stop time recording
 $stopWatch.Stop()
