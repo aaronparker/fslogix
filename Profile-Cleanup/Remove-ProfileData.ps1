@@ -342,6 +342,9 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
         }
     }
 }
+Else {
+    Write-Error -Message "$Targets failed validation."
+}
 
 # Output total size of files deleted
 If ([bool]($fileList.PSobject.Properties.name -match "FullName")) {
