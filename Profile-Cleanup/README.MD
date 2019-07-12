@@ -16,7 +16,7 @@ Supports `-WhatIf` and `-Verbose` output and returns a list of files removed fro
 
 Deleting files from the profile can potentially result in data loss, so testing is advised and the use of `-Confirm:$false` is required for the script perform a delete.
 
-Usage:
+### Usage
 
 ```powershell
 .\Remove-ProfileData.ps1 -Targets .\targets.xml
@@ -36,7 +36,13 @@ Supports `-WhatIf` and `-Verbose` output and returns a list of files removed fro
 
 Deleting files from the Container can potentially result in data loss, so testing is advised and the use of `-Confirm:$false` is required for the script perform a delete.
 
-Usage:
+This script depends on the following PowerShell modules:
+
+* `ActiveDirectory` - Installed as a feature in Windows Server or via [RSAT](https://support.microsoft.com/en-us/help/2693643/remote-server-administration-tools-rsat-for-windows-operating-systems)
+* `Hyper-V` - Installed as a feature in Windows Server or via [RSAT](https://support.microsoft.com/en-us/help/2693643/remote-server-administration-tools-rsat-for-windows-operating-systems)
+* `Fslogix.Powershell.Disk` - this module is found here: [https://github.com/aaronparker/FSLogix/tree/master/Modules/Fslogix.Powershell.Disk](https://github.com/aaronparker/FSLogix/tree/master/Modules/Fslogix.Powershell.Disk)
+
+### Usage
 
 ```powershell
 .\Remove-ContainerData.ps1 -Path \\server\FSLogixContainer -Targets .\targets.xml
