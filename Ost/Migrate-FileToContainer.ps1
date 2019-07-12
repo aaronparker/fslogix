@@ -279,8 +279,8 @@ If ($Null -ne $fileList) {
                 Identity    = $user.Name
                 ErrorAction = "SilentlyContinue"
             }
-            If ($PSBoundParameters.ContainsKey('SearchBase')) { $AdUserParam | Add-Member -NotePropertyName "SearchBase" -NotePropertyValue $SearchBase }
-            If ($PSBoundParameters.ContainsKey('SearchServer')) { $AdUserParam | Add-Member -NotePropertyName "Server" -NotePropertyValue $SearchServer }
+            If ($PSBoundParameters.ContainsKey('SearchBase')) { $AdUserParam.SearchBase = $SearchBase }
+            If ($PSBoundParameters.ContainsKey('SearchServer')) { $AdUserParam.Server = $SearchServer }
             Write-Verbose -Message "Searching AD for samAccountName: [$($user.Name)]."
             Write-Log -Message "Searching AD for samAccountName: [$($user.Name)]."
             $UserAccount = Get-ADUser @AdUserParam
