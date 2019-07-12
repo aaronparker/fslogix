@@ -1,8 +1,12 @@
 # Profile Cleanup
 
-## WARNING - Caveat Emptor
+## WARNING
 
-This script will **DELETE** target files and folders. Be certain that the targets listed in the XML are OK to be removed. Test and test again before putting the script into production.
+Caveat Emptor - this script will **DELETE** target files and folders. Be certain that the targets listed in the XML are OK to be removed. Test and test again before putting the script into production.
+
+## Profile Capacity Management
+
+A full discussion on managing Profile Container size can be found in this article: [A Practical Guide to FSLogix Containers Capacity Planning and Maintenance](https://stealthpuppy.com/fslogix-containers-capacity/).
 
 ## About Remove-ProfileData.ps1
 
