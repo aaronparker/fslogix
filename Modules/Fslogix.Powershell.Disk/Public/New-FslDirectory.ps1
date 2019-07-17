@@ -1,51 +1,35 @@
-function New-FslDirectory {
+Function New-FslDirectory {
     [CmdletBinding(DefaultParameterSetName = 'Name')]
-    param (
-        [Parameter (Position = 0,
-            Mandatory = $true,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'Name')]
+    Param (
+        [Parameter (Position = 0, Mandatory = $True, ParameterSetName = 'Name')]
         [Alias("Name")]
-        [System.String]$SamAccountName,
+        [System.String] $SamAccountName,
 
-        [Parameter (Position = 1,
-            Mandatory = $true,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'Name')]
-        [System.String]$SID,
+        [Parameter (Position = 1, Mandatory = $True, ParameterSetName = 'Name')]
+        [System.String] $SID,
 
-        [Parameter (Position = 0,
-            Mandatory = $true,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'AdUser')]
+        [Parameter (Position = 0, Mandatory = $True, ParameterSetName = 'AdUser')]
         [Alias("User")]
-        [System.String]$AdUser,
+        [System.String] $AdUser,
 
-        [Parameter (Mandatory = $True,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true)]
-        [System.String]$Destination,
+        [Parameter (Mandatory = $True)]
+        [System.String] $Destination,
 
-        [Switch]$FlipFlop,
+        [System.Management.Automation.SwitchParameter] $FlipFlop,
 
-        [Switch]$Passthru
+        [System.Management.Automation.SwitchParameter] $Passthru
     )
     
-    begin {
+    Begin {
         Set-StrictMode -Version Latest
         #Requires -RunAsAdministrator
         #Requires -Modules "ActiveDirectory"
     }
-    
-    process {
-        
-        if ($PSBoundParameters.ContainsKey("Aduser")) {
+    Process {   
+        If ($PSBoundParameters.ContainsKey("AdUser")) {
             Try {
-                $User = Get-AdUser $AdUser -ErrorAction Stop
-                $SamAccountName = $User.Samaccountname
+                $User = Get-AdUser -Identity $AdUser -ErrorAction Stop
+                $SamAccountName = $User.SamAccountName
                 $SID = $User.SID
             }
             Catch {
@@ -53,39 +37,38 @@ function New-FslDirectory {
             }
         }
         
-        if ($PSBoundParameters.ContainsKey("FlipFlop")) {
-            $User_Dir_Name = $SID + "_" + $SamAccountName
+        If ($PSBoundParameters.ContainsKey("FlipFlop")) {
+            $UserDirName = "$($SamAccountName)_$($SID)"
         }
-        else {
-            $User_Dir_Name = $SamAccountName + "_" + $SID
+        Else {
+            $UserDirName = "$($SID)_$($SamAccountName)"
         }
 
-        if ($Destination.ToLower().Contains("%username%")) {
-            $Directory = $Destination -replace "%Username%", $User_Dir_Name
+        If ($Destination.ToLower().Contains("%username%")) {
+            $Directory = $Destination -replace "%Username%", $UserDirName
         }
-        else {
-            $Directory = Join-Path ($Destination) ($User_Dir_Name)
+        Else {
+            $Directory = Join-Path -Path $Destination -ChildPath $UserDirName
         }
 
         If (Test-Path -Path $Directory) {
             Write-Verbose "Directory exists: $Directory"
-            # Remove-item -Path $Directory -Force -Recurse -ErrorAction SilentlyContinue
+            # Remove-Item -Path $Directory -Force -Recurse -ErrorAction SilentlyContinue
         }
         Else {
             Try {
                 New-Item -Path $Directory -ItemType Directory -Force -ErrorAction Stop | Out-Null
                 Write-Verbose "Created directory: $Directory"
             }
-            catch {
+            Catch {
                 Write-Error $Error[0]
             }
         }
 
-        if ($PSBoundParameters.ContainsKey("Passthru")) {
-            $Directory
+        If ($PSBoundParameters.ContainsKey("Passthru")) {
+            Write-Output -InputObject $Directory
         }
     }
-    
-    end {
+    End {
     }
 }

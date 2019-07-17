@@ -1,73 +1,64 @@
-function Confirm-FslProfile {
-    [CmdletBinding(DefaultParameterSetName = 'User')]
-    param (
+Function Confirm-FslProfile {
+    [CmdletBinding()]
+    Param (
+        [Parameter(Position = 0, Mandatory = $True)]
+        [System.String] $Path,
 
-        [Parameter(Position = 0,
-            Mandatory = $true,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'User')]
-        [System.String]$Path,
+        [Parameter(Position = 1, Mandatory = $True)]
+        [System.String] $SamAccountName,
 
-        [Parameter(Position = 1,
-            Mandatory = $true,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'User')]
-        [System.String]$SamAccountName,
+        [Parameter(Position = 2, Mandatory = $True)]
+        [System.String] $SID,
 
-        [Parameter(Position = 2,
-            Mandatory = $true,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'User')]
-        [System.String]$SID,
+        [Parameter(Mandatory = $False)]
+        [System.Management.Automation.SwitchParameter] $FlipFlop,
 
-        [Switch]$FlipFlop,
-
-        [Switch]$VHD
-        
+        [Parameter(Mandatory = $False)]
+        [System.Management.Automation.SwitchParameter] $VHD
     )
     
-    begin {
-        Set-Strictmode -Version Latest
+    Begin {
+        Set-StrictMode -Version Latest
         #Requires -RunAsAdministrator
         #Requires -Modules "ActiveDirectory"
-        $IsFslProfile = $False
     }
-    
-    process {
-        switch($PSCmdlet.ParameterSetName){
-            User{
-                
-                if($PSBoundParameters.ContainsKey("FlipFlop")){
-                    $Directory = $SID + "_" + $SamAccountName
-                }else{
-                    $Directory = $SamAccountName + "_" + $SID
-                }
-
-                $Path = join-path ($Path) ($Directory)
-                if(-not(test-path -path $Path)){
-                    Write-Warning "Could not find path: $Path"
-                    break
-                }
-
-                $VHDName = "ODFC_" + $SamAccountName
-                if($PSBoundParameters.ContainsKey("VHD")){
-                    $VHDName += ".vhd"
-                }else{
-                    $VHDName += ".vhdx"
-                }
-                
-                $VHDPath = join-path ($Path) ($VHDName)
-                if(-not(test-path -path $VHDPath)){
-                    Write-Warning "Could not find VHD: $VHDPath"
-                }else{
-                    $IsFslProfile = $true
-                }
-            }
+    Process {
+        If ($PSBoundParameters.ContainsKey("FlipFlop")) {
+            $Directory = "$($SamAccountName)_$($SID)"
+        }
+        Else {
+            $Directory = "$($SID)_$($SamAccountName)"
         }
 
-        $IsFslProfile
+        $Path = Join-Path -Path $Path -ChildPath $Directory
+        If (-not(Test-Path -Path $Path)) {
+            Write-Warning -Message "Could not find path: $Path"
+            Break
+        }
+
+        If ($SamAccountName -like "*@*") {
+            $VHDName = "ODFC_$(($SamAccountName -split "@")[0])"
+        }
+        Else {
+            $VHDName = "ODFC_$($SamAccountName)"
+        }
+        If ($PSBoundParameters.ContainsKey("VHD")) {
+            $VHDName += ".vhd"
+        }
+        Else {
+            $VHDName += ".vhdx"
+        }
+                
+        $VHDPath = Join-Path -Path $Path -ChildPath $VHDName
+        If (Test-Path -path $VHDPath) {
+            $IsFslProfile = $True
+        }
+        Else {
+            Write-Warning "Could not find VHD: $VHDPath"
+            $IsFslProfile = $False
+        }
+        Write-Output -InputObject $IsFslProfile
     }
-    
-    end {
+    End {
     }
 }

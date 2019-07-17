@@ -41,9 +41,13 @@ Param (
     [System.Management.Automation.SwitchParameter] $FlipFlop,
 
     [Parameter(Mandatory = $False)]
+    # Use the user's UPN instead of the SamAccountName in the user directory
+    [System.Management.Automation.SwitchParameter] $UseUpn,
+
+    [Parameter(Mandatory = $False)]
     # Maximum VHD size in MB
     [ValidateRange(256, 67108864)]
-    [System.Int32] $VHDSizeMB = 30000,
+    [System.Int32] $VHDSizeMB = 30720,
 
     [Parameter(Mandatory = $False)]
     # Maximum VHD size in MB
@@ -66,10 +70,6 @@ Set-StrictMode -Version Latest
 #Requires -Modules "FsLogix.PowerShell.Disk"
 
 #region Functions
-Function Get-LineNumber() {
-    $MyInvocation.ScriptLineNumber
-}
-
 Function Invoke-Process {
     <#PSScriptInfo 
     .VERSION 1.4 
@@ -235,8 +235,6 @@ Try {
     Write-Log -Message "Frx path: $FrxPath."
 }
 Catch {
-    Write-Warning -Message "Error on line: $(Get-LineNumber)."
-    Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
     Write-Error $Error[0]
     Write-Log -Level Error -Message $Error[0]
     Exit
@@ -249,8 +247,6 @@ Try {
     Pop-Location
 }
 Catch {
-    Write-Warning -Message "Error on line: $(Get-LineNumber)."
-    Write-Log -Level Warn -Message "Error on line: $(Get-LineNumber)."
     Write-Error $Error[0]
     Write-Log -Level Error -Message $Error[0]
     Exit
@@ -295,16 +291,25 @@ If ($Null -ne $fileList) {
             #region Determine target container folder for the user's container
             Try {
                 $FslDirParam = @{
-                    SamAccountName = $UserAccount.SamAccountName
-                    SID            = $UserAccount.SID
-                    Destination    = $VHDLocation
-                    Passthru       = $True
-                    ErrorAction    = "Stop"    
+                    SID         = $UserAccount.SID
+                    Destination = $VHDLocation
+                    Passthru    = $True
+                    ErrorAction = "Stop"
+                }
+                If ($PSBoundParameters.ContainsKey('UseUpn')) {
+                    Write-Verbose -Message "UseUpn is present. Using UserPrincipalName in FslDir."
+                    Write-Log -Message "UseUpn is present. Using UserPrincipalName in FslDir."
+                    $FslDirParam.SamAccountName = $UserAccount.UserPrincipalName
+                }
+                Else {
+                    Write-Verbose -Message "Using SamAccountName in FslDir."
+                    Write-Log -Message "Using SamAccountName in FslDir."
+                    $FslDirParam.SamAccountName = $UserAccount.SamAccountName
                 }
                 If ($PSBoundParameters.ContainsKey('FlipFlop')) {
                     Write-Verbose -Message "FlipFlip is present."
                     Write-Log -Message "FlipFlip is present."
-                    $FslDirParam | Add-Member -NotePropertyName "FlipFlop" -NotePropertyValue $True
+                    $FslDirParam.FlipFlop = $True
                 }
                 $Directory = New-FslDirectory @FslDirParam
                 Write-Verbose -Message "Container directory: $Directory."
@@ -316,8 +321,8 @@ If ($Null -ne $fileList) {
                 Exit
             }
             # Construct full VHD path 
-            $vhdName = "ODFC_" + $UserAccount.SamAccountName + ".vhdx"
-            $vhdPath = Join-Path $Directory $vhdName
+            $vhdName = "ODFC_$($UserAccount.SamAccountName).vhdx"
+            $vhdPath = Join-Path -Path $Directory -ChildPath $vhdName
             Write-Verbose -Message "VHDLocation: $vhdPath."
             Write-Log -Message "VHDLocation: $vhdPath."
             #endregion
@@ -363,10 +368,20 @@ If ($Null -ne $fileList) {
                 SamAccountName = $UserAccount.samAccountName
                 SID            = $UserAccount.SID
             }
+            If ($PSBoundParameters.ContainsKey('UseUpn')) {
+                Write-Verbose -Message "UseUpn is present. Using UserPrincipalName in FslDir."
+                Write-Log -Message "UseUpn is present. Using UserPrincipalName in FslDir."
+                $FslProfParam.SamAccountName = $UserAccount.UserPrincipalName
+            }
+            Else {
+                Write-Verbose -Message "Using SamAccountName in FslDir."
+                Write-Log -Message "Using SamAccountName in FslDir."
+                $FslProfParam.SamAccountName = $UserAccount.SamAccountName
+            }
             If ($PSBoundParameters.ContainsKey('FlipFlop')) {
                 Write-Verbose -Message "FlipFlip is present."
                 Write-Log -Message "FlipFlip is present."
-                $FslProfParam | Add-Member -NotePropertyName "FlipFlop" -NotePropertyValue $True
+                $FslProfParam.FlipFlop = $True
             }
             $IsFslProfile = Confirm-FslProfile @FslProfParam
 
@@ -375,8 +390,8 @@ If ($Null -ne $fileList) {
                 Write-Log -Message "Validated Outlook container: $FslPath."
             }
             Else {
-                Write-Error $Error "Could not validate Outlook container: $FslPath."
-                Write-Log -Level Error -Message "Could not validate Outlook container: $FslPath."
+                Write-Error $Error[0] #"Could not validate Office 365 Container: $FslPath."
+                Write-Log -Level Error -Message "Could not validate Office 365 Container: $FslPath."
             }
             #endregion
 
@@ -457,7 +472,7 @@ If ($Null -ne $fileList) {
             Try {
                 If ($pscmdlet.ShouldProcess($vhdPath, "Dismount")) {
                     Write-Verbose -Message "Dismounting container."
-                    Write-Log -Message "Dismounting container."        
+                    Write-Log -Message "Dismounting container."
                     Dismount-FslDisk -Path $vhdPath -ErrorAction Stop
                 }
             }

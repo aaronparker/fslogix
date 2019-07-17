@@ -1,61 +1,58 @@
-function Copy-FslToDisk {
+Function Copy-FslToDisk {
     [CmdletBinding()]
-    param (
+    Param (
         [Parameter(Position = 0, Mandatory = $true)]
-        [System.String]$VHD,
+        [System.String] $VHD,
 
         [Parameter(Position = 1, Mandatory = $true)]
-        [System.String[]]$Path,
+        [System.String[]] $Path,
 
         [Parameter(Position = 2)]
-        [System.String]$Destination,
+        [System.String] $Destination,
 
         [Parameter(Position = 3)]
-        [Switch]$Dismount,
+        [System.Management.Automation.SwitchParameter] $Dismount,
 
         [Parameter(Position = 4)]
-        [System.String]$CopyLog = (Join-Path -Path $PWD -ChildPath "$($MyInvocation.MyCommand).log"),
+        [System.String] $CopyLog = (Join-Path -Path $PWD -ChildPath "$($MyInvocation.MyCommand).log"),
 
         [Parameter(Position = 5)]
-        [Switch]$CheckSpace
+        [System.Management.Automation.SwitchParameter] $CheckSpace
     )
     
-    begin {
+    Begin {
         Set-StrictMode -Version Latest
         #Requires -RunAsAdministrator
     }
-    
-    process {
+    Process {
         Try {
             $MountedDisk = Mount-FslDisk -Path $VHD -PassThru -ErrorAction Stop
         }
         Catch {
             Write-Error $Error[0]
-            exit
+            Exit
         }
         $MountedPath = $MountedDisk.Path
-        $DiskNumber = $MountedDisk.disknumber
+        $DiskNumber = $MountedDisk.DiskNumber
         $PartitionNumber = $MountedDisk.PartitionNumber
-        
         $CopyDestination = Join-Path ($MountedPath) ($Destination)
     
-        if (-not(Test-Path -path $CopyDestination)) {
+        If (-not(Test-Path -path $CopyDestination)) {
             New-Item -ItemType Directory $CopyDestination -Force -ErrorAction SilentlyContinue | Out-Null
         }
 
-        if ($PSBoundParameters.ContainsKey("CheckSpace")) {
-            $Partition = Get-Partition -disknumber $DiskNumber -PartitionNumber $PartitionNumber
-            $FreeSpace = get-volume -Partition $Partition | Select-Object -expandproperty SizeRemaining
-            $Size = Get-FslSize -path $Path
-            if ($Size -ge $FreeSpace) {
+        If ($PSBoundParameters.ContainsKey("CheckSpace")) {
+            $Partition = Get-Partition -DiskNumber $DiskNumber -PartitionNumber $PartitionNumber
+            $FreeSpace = get-volume -Partition $Partition | Select-Object -ExpandProperty SizeRemaining
+            $Size = Get-FslSize -Path $Path
+            If ($Size -ge $FreeSpace) {
                 Write-Warning "Contents: $([Math]::round($Size/1mb,2)) MB. Disk free space is: $([Math]::round($Freespace/1mb,2)) MB."
                 Write-Error "Disk is too small to copy contents over." -ErrorAction Stop
             }
         }
         
-        
         Try {
-            foreach ($file in $Path) {
+            ForEach ($file in $Path) {
                 ## Using Robocopy to copy permissions.
                 $fileName = Split-Path -Path $file -Leaf
                 $filePath = Split-Path -Path $file -Parent
@@ -71,22 +68,21 @@ function Copy-FslToDisk {
             }
             Write-Verbose "Copied $filePath to $CopyDestination."
         }
-        catch {
+        Catch {
             Dismount-FslDisk -DiskNumber $DiskNumber
             Write-Error $Error[0]
-            exit
+            Exit
         }
 
-        if ($Dismount) {
+        If ($Dismount) {
             Try {
                 Dismount-FslDisk -DiskNumber $DiskNumber
             }
-            catch {
+            Catch {
                 Write-Error $Error[0]
             }
         }
     }
-    
-    end {
+    End {
     }
 }
