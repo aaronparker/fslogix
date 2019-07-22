@@ -56,13 +56,13 @@ Function Copy-FslToDisk {
                 ## Using Robocopy to copy permissions.
                 $fileName = Split-Path -Path $file -Leaf
                 $filePath = Split-Path -Path $file -Parent
-                $Command = "robocopy $filePath $CopyDestination $fileName /S /NJH /NJS /NDL /NP /FP /W:0 /R:0 /XJ /SEC /COPYALL /LOG+:$($CopyLog)"
+                $Command = "robocopy `"$filePath`" `"$CopyDestination`" `"$fileName`" /S /NJH /NJS /NDL /NP /FP /W:0 /R:0 /XJ /SEC /COPYALL /LOG+:$($CopyLog)"
                 Invoke-Expression $Command 
 
                 # Invoke-Process parameters
                 <#$invokeProcessParams = @{
                     FilePath     = "$env:SystemRoot\System32\robocopy.exe"
-                    ArgumentList = "$filePath $CopyDestination $fileName /S /NJH /NJS /NDL /NP /FP /W:0 /R:0 /XJ /SEC /COPYALL /LOG+:$($CopyLog)"
+                    ArgumentList = "`"$filePath`" `"$CopyDestination`" `"$fileName`" /S /NJH /NJS /NDL /NP /FP /W:0 /R:0 /XJ /SEC /COPYALL /LOG+:$($CopyLog)"
                 }
                 Invoke-Process @invokeProcessParams#>
             }
