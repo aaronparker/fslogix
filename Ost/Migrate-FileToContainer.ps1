@@ -395,15 +395,15 @@ If ($Null -ne $fileList) {
             }
             #endregion
 
-            #region Apply permissions to the container
+            #region Apply permissions to the Container directory
             Write-Verbose -Message "Applying security permissions for $($UserAccount.samAccountName) to $Directory."
             Write-Log -Message "Applying security permissions for $($UserAccount.samAccountName) to $Directory."
             Try {
                 If ($pscmdlet.ShouldProcess($UserAccount.samAccountName, "Add permissions")) {
                     Add-FslPermissions -User $UserAccount.samAccountName -Folder $Directory
                 }
-                Write-Verbose -Message "Successfully applied security permissions for $($UserAccount.samAccountName)."
-                Write-Log -Message "Successfully applied security permissions for $($UserAccount.samAccountName)."
+                Write-Verbose -Message "Successfully applied security permissions for $($UserAccount.samAccountName) to $Directory."
+                Write-Log -Message "Successfully applied security permissions for $($UserAccount.samAccountName) to $Directory."
             }
             Catch {
                 Write-Error $Error[0]
@@ -482,6 +482,22 @@ If ($Null -ne $fileList) {
                 Exit
             }
 
+            #region Apply permissions to the Container itself
+            Write-Verbose -Message "Applying security permissions for $($UserAccount.samAccountName) to $vhdPath."
+            Write-Log -Message "Applying security permissions for $($UserAccount.samAccountName) to $vhdPath."
+            Try {
+                If ($pscmdlet.ShouldProcess($UserAccount.samAccountName, "Add permissions")) {
+                    Add-FslPermissions -User $UserAccount.samAccountName -File $vhdPath
+                }
+                Write-Verbose -Message "Successfully applied security permissions for $($UserAccount.samAccountName) to $vhdPath."
+                Write-Log -Message "Successfully applied security permissions for $($UserAccount.samAccountName) to $vhdPath."
+            }
+            Catch {
+                Write-Error $Error[0]
+                Write-Log -Level Error -Message $Error[0]
+                Exit
+            }
+            #endregion
         }
     }
 }
