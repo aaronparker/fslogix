@@ -30,11 +30,11 @@ function Add-FslPermissions {
             "Traverse", "ExecuteFile", "DeleteSubdirectoriesAndFiles", "ReadAttributes",
             "WriteAttributes", "Write", "Delete", "ReadPermissions", "Read", "ReadAndExecute", "Modify", 
             "ChangePermissions", "TakeOwnership", "Synchronize", "FullControl")]
-        [System.String[]]$PermissionType,
+        [System.String[]]$PermissionType = @('CreateDirectories', 'ListDirectory', 'AppendData', 'Traverse', 'ReadAttributes'),
 
         [Parameter (ValueFromPipelineByPropertyName = $true)]
         [ValidateSet("Allow", "Deny")]
-        [System.String]$Permission
+        [System.String]$Permission = "Allow"
     )
     
     begin {
@@ -46,7 +46,7 @@ function Add-FslPermissions {
     process {
 
         Try {
-            $Ad_User = Get-ADUser $User -ErrorAction Stop | Select-Object -ExpandProperty SamAccountName
+            $AdUser = Get-ADUser $User -ErrorAction Stop | Select-Object -ExpandProperty SamAccountName
         }
         Catch {
             Write-Error $Error[0]
@@ -63,22 +63,22 @@ function Add-FslPermissions {
 
         Switch ($PSCmdlet.ParameterSetName) {
             File {
-                if (-not(test-path -path $file)) {
+                if (-not(Test-Path -path $file)) {
                     Write-Error "Could not find path: $File" -ErrorAction Stop
                 }
                 else {
-                    $File_isFile = Get-item -path $file
-                    if ($File_isFile.Attributes -ne "Archive") {
-                        Write-Error "$($File_isFile.BaseName) is not a file." -ErrorAction Stop
+                    $FileisFile = Get-Item -path $file
+                    if ($FileisFile.Attributes -ne "Archive") {
+                        Write-Error "$($FileisFile.BaseName) is not a file." -ErrorAction Stop
                     }
                 }
 
                 Try {
-                    $ACL = Get-Acl $File
-                    $Ar = New-Object system.Security.AccessControl.FileSystemAccessRule($Ad_User, $PermissionType, $Permission)
+                    $Acl = Get-Acl $File
+                    $Ar = New-Object System.Security.AccessControl.FileSystemAccessRule($AdUser, $PermissionType, $Permission)
                     $Acl.Setaccessrule($Ar)
-                    Set-Acl -Path $File $ACL
-                    Write-Verbose "Assigned permissions for user: $Ad_User"
+                    Set-Acl -Path $File $Acl
+                    Write-Verbose "Assigned permissions for user: $AdUser"
                 }
                 catch {
                     Write-Error $Error[0]
@@ -86,28 +86,28 @@ function Add-FslPermissions {
             }
 
             Folder {
-                if (-not(test-path -path $folder)) {
+                if (-not(Test-Path -path $folder)) {
                     Write-Error "Could not find path: $Folder" -ErrorAction Stop
                 }
                 
-                $Folder_isFolder = get-item -path $Folder
-                if ($Folder_isFolder.Attributes -ne 'Directory') {
-                    Write-Error "$($Folder_isFolder.BaseName) is not a folder." -ErrorAction Stop
+                $FolderisFolder = Get-Item -path $Folder
+                if ($FolderisFolder.Attributes -ne 'Directory') {
+                    Write-Error "$($FolderisFolder.BaseName) is not a folder." -ErrorAction Stop
                 }
                 
-                $Dir = $Folder_isFolder.FullName
+                $Dir = $FolderisFolder.FullName
                 
                 Try {
                     $ACL = Get-Acl $dir
                     if ($PSBoundParameters.ContainsKey("inherit")) {
-                        $Ar = New-Object system.Security.AccessControl.FileSystemAccessRule($Ad_User, $PermissionType, "ContainerInherit, ObjectInherit", "None", $Permission)
+                        $Ar = New-Object system.Security.AccessControl.FileSystemAccessRule($AdUser, $PermissionType, "ContainerInherit, ObjectInherit", "None", $Permission)
                     }
                     else {
-                        $Ar = New-Object system.Security.AccessControl.FileSystemAccessRule($Ad_User, $PermissionType, "None", "none" , $Permission)
+                        $Ar = New-Object system.Security.AccessControl.FileSystemAccessRule($AdUser, $PermissionType, "None", "none" , $Permission)
                     }
                     $Acl.Setaccessrule($Ar)
                     Set-Acl -Path $dir $ACL
-                    Write-Verbose "Assigned permissions for user: $Ad_User"
+                    Write-Verbose "Assigned permissions for user: $AdUser"
                 }
                 catch {
                     Write-Error $Error[0]
