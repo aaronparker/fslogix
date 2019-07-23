@@ -96,17 +96,23 @@ function Add-FslPermissions {
                 }
                 
                 $Dir = $FolderisFolder.FullName
+
+                $PermissionType = @("ListDirectory", "ReadData", "WriteData", "CreateFiles", "CreateDirectories", 
+                    "AppendData", "ReadExtendedAttributes", "WriteExtendedAttributes", 
+                    "Traverse", "ExecuteFile", "DeleteSubdirectoriesAndFiles", "ReadAttributes",
+                    "WriteAttributes", "Write", "Delete", "ReadPermissions", "Read", "ReadAndExecute", "Modify", 
+                    "ChangePermissions", "TakeOwnership", "Synchronize", "FullControl")
                 
                 Try {
-                    $ACL = Get-Acl $dir
+                    $ACL = Get-Acl $Dir
                     if ($PSBoundParameters.ContainsKey("inherit")) {
-                        $Ar = New-Object system.Security.AccessControl.FileSystemAccessRule($AdUser, $PermissionType, "ContainerInherit, ObjectInherit", "None", $Permission)
+                        $Ar = New-Object System.Security.AccessControl.FileSystemAccessRule($AdUser, $PermissionType, "ContainerInherit, ObjectInherit", "None", $Permission)
                     }
                     else {
-                        $Ar = New-Object system.Security.AccessControl.FileSystemAccessRule($AdUser, $PermissionType, "None", "none" , $Permission)
+                        $Ar = New-Object System.Security.AccessControl.FileSystemAccessRule($AdUser, $PermissionType, "None", "none" , $Permission)
                     }
                     $Acl.Setaccessrule($Ar)
-                    Set-Acl -Path $dir $ACL
+                    Set-Acl -Path $Dir $ACL
                     Write-Verbose "Assigned permissions for user: $AdUser"
                 }
                 catch {
