@@ -22,7 +22,7 @@ function Add-FslPermissions {
         [System.String]$Folder,
 
         [Parameter(ParameterSetName = 'Folder')]
-        [Switch]$inherit,
+        [Switch]$Inherit,
 
         [Parameter (ValueFromPipelineByPropertyName = $true)]
         [ValidateSet("ListDirectory", "ReadData", "WriteData", "CreateFiles", "CreateDirectories", 
@@ -105,7 +105,7 @@ function Add-FslPermissions {
                 
                 Try {
                     $ACL = Get-Acl $Dir
-                    if ($PSBoundParameters.ContainsKey("inherit")) {
+                    if ($PSBoundParameters.ContainsKey("Inherit")) {
                         $Ar = New-Object System.Security.AccessControl.FileSystemAccessRule($AdUser, $PermissionType, "ContainerInherit, ObjectInherit", "None", $Permission)
                     }
                     else {

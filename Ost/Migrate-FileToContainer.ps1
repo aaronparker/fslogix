@@ -450,7 +450,7 @@ If ($Null -ne $fileList) {
                     Write-Log -Message "Created path: $dataFileDestination."
                 }
                 If ($pscmdlet.ShouldProcess($dataFileDestination, "Set permissions")) {
-                    Add-FslPermissions -User $UserAccount.samAccountName -Folder $dataFileDestination
+                    Add-FslPermissions -User $UserAccount.samAccountName -Folder $dataFileDestination -Inherit
                     Write-Verbose -Message "Set permissions for $($UserAccount.samAccountName) on path: $dataFileDestination."
                     Write-Log -Message "Set permissions for $($UserAccount.samAccountName) on path: $dataFileDestination."
                 }
