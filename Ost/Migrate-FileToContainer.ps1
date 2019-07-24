@@ -442,12 +442,17 @@ If ($Null -ne $fileList) {
             # Create destination
             Write-Verbose -Message "Copy Outlook data file/s for $($UserAccount.samAccountName)."
             Write-Log -Message "Copy Outlook data file/s for $($UserAccount.samAccountName)."
-            $dataFileDestination = Join-Path $MountPath $ODFCPath
+            $dataFileDestination = Join-Path -Path $MountPath -ChildPath $ODFCPath
             If (-not (Test-Path -Path $dataFileDestination)) {
                 If ($pscmdlet.ShouldProcess($dataFileDestination, "Create")) {
                     New-Item -ItemType Directory -Path $dataFileDestination -Force | Out-Null
                     Write-Verbose -Message "Created path: $dataFileDestination."
                     Write-Log -Message "Created path: $dataFileDestination."
+                }
+                If ($pscmdlet.ShouldProcess($dataFileDestination, "Set permissions")) {
+                    Add-FslPermissions -User $UserAccount.samAccountName -Folder $dataFileDestination
+                    Write-Verbose -Message "Set permissions for $($UserAccount.samAccountName) on path: $dataFileDestination."
+                    Write-Log -Message "Set permissions for $($UserAccount.samAccountName) on path: $dataFileDestination."
                 }
             }
 
