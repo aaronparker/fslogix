@@ -1,15 +1,15 @@
 Action,Copy,Path,Description,Notes
-Exclude,0,Downloads,Downloads folder,Omit if redirected to the network
+Exclude,0,Downloads,Downloads folder,Omit if folder is redirected to the network
 Exclude,0,$Recycle.Bin,User's Recycle bin folder,Omit if GPO manages Recycle Bin or folder redirection manages other folders
 Exclude,0,Tracing,Skype for Business debug logs,Path can be pointed to %TEMP% via Registry to avoid redirection
-Exclude,0,AppData\Local\Apps,Microsoft Windows,Office add-ins and other apps - will impact performance of some apps
+Exclude,0,AppData\Local\Apps,Microsoft Windows,Office add-ins and other apps. May impact performance of some apps
 Exclude,0,AppData\Local\Downloaded Installations,Microsoft Windows,May break per-user installed apps
 Exclude,0,AppData\Local\Assembly,.NET Framework Shadow Copies,May impact performance of .NET apps
-Exclude,0,AppData\Local\Sun,Oracle Java cache,Will impact performance of Java apps - Only include if the JRE is in the environment
+Exclude,0,AppData\Local\Sun,Oracle Java cache,Only include if the JRE is in the environment. May impact performance of Java apps
 Exclude,0,AppData\Local\CrashDumps,Windows application crash dumps,Omit if you don't see this path in your environment
-Exclude,0,AppData\Local\Microsoft\Terminal Server Client,Microsoft Remote Desktop Client cache,Omit if not using Remote Desktop Connection client
-Exclude,0,AppData\Local\Microsoft\Windows\Explorer,Windows Explorer cache,Will impact Windows Explorer shortcut icons and thumbnail performance
+Exclude,0,AppData\Local\Microsoft\Terminal Server Client,Microsoft Remote Desktop Client cache,Omit if not using Remote Desktop Connection client inside a remote desktop
 Exclude,0,AppData\Local\Google\Chrome\User Data\Default\Cache,Google Chrome cache,Google Chrome brower cache
 Exclude,0,AppData\Local\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache,Microsoft Edge cache,Microsoft Edge UWP browser cache
-Exclude,0,AppData\Local\Microsoft\Edge Dev\User Data\Default\Cache,Microsoft Edge Dev cache,Path with change with final Edge release
-Exclude,0,AppData\Roaming\Sun\Java\Deployment\cache,Oracle JRE cache folder,Will impact performance of Java apps - Only include if the JRE is in the environment
+Exclude,0,AppData\Local\Microsoft\Edge Dev\User Data\Default\Cache,Microsoft Edge Dev (Chromium) cache,Path with change with final Edge release
+Exclude,0,AppData\Local\Microsoft\Edge Dev\User\Default\Cache,Microsoft Edge (Chromium) cache,Shoul be the cache path in the final Edge release
+Exclude,0,AppData\Roaming\Sun\Java\Deployment\cache,Oracle JRE cache folder,Only include if the JRE is in the environment. May impact performance of Java apps
