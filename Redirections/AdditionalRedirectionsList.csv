@@ -28,7 +28,6 @@ Exclude,0,AppData\Local\Microsoft\UEV,Microsoft UEV,
 Exclude,0,AppData\Local\Microsoft\Windows\Mail,Microsoft Mail,
 Exclude,0,AppData\Local\Microsoft\Windows\WebCache.old,Microsoft Windows,
 Exclude,0,AppData\Local\Microsoft\Windows\AppCache,Microsoft Windows,
-Exclude,0,AppData\Local\Microsoft\Windows\Caches,Microsoft Windows,
 Exclude,0,AppData\Local\Microsoft\Windows\Explorer,Windows Explorer cache,May impact Explorer performance for thumbnails
 Exclude,0,AppData\Local\Microsoft\Windows\GameExplorer,Windows Game Explorer cache,
 Exclude,0,AppData\Local\Microsoft\Windows\DNTException,Microsoft Windows,
