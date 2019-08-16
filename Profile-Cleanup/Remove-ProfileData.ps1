@@ -11,27 +11,30 @@
         Run within the user session to prune the local profile.
 
     .PARAMETER Targets
-        Path to an XML file that defines the profile paths to prune and delete
+        Path to an XML file that defines the profile paths to prune and delete.
 
-    .PARAMETER LogFile
-        Path to file for logging all files that are removed.
+    .PARAMETER LogPath
+        Path to a directory for storing log files that log all files that are removed. Defaults to %LocalAppData%.
 
     .PARAMETER Override
         Override the Days value listed for each Path with action Prune, in the XML file resulting in the forced removal of all files in the path.
+
+    .PARAMETER KeepLog
+        A integer value between 0 and 256 for the number of logs to keep. Defaults to 30. The oldest log files will be removed.
 
     .EXAMPLE
         C:\> .\Remove-ProfileData.ps1 -Targets .\targets.xml -WhatIf
 
         Description:
         Reads targets.xml that defines a list of files and folders to delete from the user profile.
-        Reports on the files/folders to delete without deleting them.
+        Reports on the files/folders to delete without deleting them. A log file of deleted files and folders will be kept in %LocalAppData%.
 
     .EXAMPLE
-        C:\> .\Remove-ProfileData.ps1 -Targets .\targets.xml -Confirm:$False -Verbose
+        C:\> .\Remove-ProfileData.ps1 -Targets .\targets.xml -LogPath \\server\share\logs -Confirm:$False -Verbose
 
         Description:
         Reads targets.xml that defines a list of files and folders to delete from the user profile.
-        Deletes the targets and reports on the total size of files removed.
+        Deletes the targets and reports on the total size of files removed. A log file of deleted files and folders will be kept in \\server\share\logs.
 
     .INPUTS
         XML file that defines target files and folders to remove.
@@ -49,16 +52,20 @@
 Param (
     [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
     [ValidateNotNullOrEmpty()]
-    [ValidateScript( { If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find file $_" } })]
+    [ValidateScript( { If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find targets file: $_." } })]
     [Alias("Path", "Xml")]
     [System.String] $Targets,
 
     [Parameter(Mandatory = $False, Position = 1)]
-    [ValidateScript( { If (Test-Path (Split-Path $_ -Parent) -PathType 'Container') { $True } Else { Throw "Cannot find log file directory." } })]
-    [System.String] $LogFile = $(Join-Path (Resolve-Path $PWD) $("Profile-" + $((Get-Date).ToFileTimeUtc()) + ".log")),
+    [ValidateScript( { If (Test-Path -Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find log file directory: $_." } })]
+    [System.String] $LogPath = (Resolve-Path -Path $env:LocalAppData),
 
     [Parameter(Mandatory = $False)]
-    [System.Management.Automation.SwitchParameter] $Override
+    [System.Management.Automation.SwitchParameter] $Override,
+
+    [Parameter(Mandatory = $False)]
+    [ValidateRange(1, 256)]
+    [System.Int32] $KeepLog = 30
 )
 
 #region Functions
@@ -211,6 +218,7 @@ Function Get-TestPath {
 #endregion
 
 # Output array, will contain the list of files/folders removed
+$LogFile = Join-Path -Path $LogPath -ChildPath $("$($MyInvocation.MyCommand)-$((Get-Date).ToFileTimeUtc()).log")
 $fileList = New-Object -TypeName System.Collections.ArrayList
 
 # Measure time taken to gather data
@@ -223,7 +231,8 @@ If ($WhatIfPreference -eq $True) {
 Else {
     "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Delete mode" | Out-File -FilePath $LogFile -Append
 }
-Write-Verbose -Message "Writing file list to $LogFile."
+Write-Verbose -Message "Writing file list to: $LogFile."
+If ($Override) { "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Overide mode enabled" | Out-File -FilePath $LogFile -Append }
 
 # Read the specifed XML document
 Try {
@@ -257,7 +266,6 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                         # Get file age from Days value in XML; if -Override used, set $dateFilter to now
                         If ($Override) {
                             $dateFilter = Get-Date
-                            "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Overide mode enabled" | Out-File -FilePath $LogFile -Append
                         }
                         Else {
                             $dateFilter = (Get-Date).AddDays(- $targetPath.Days)
@@ -361,7 +369,7 @@ If ($fileList.FullName.Count -gt 0) {
 Else {
     $size = 0
 }
-Write-Verbose -Message "Total file size deleted: $size MiB"
+Write-Verbose -Message "Total file size deleted: $size MiB."
 
 # Stop time recording
 $stopWatch.Stop()
@@ -369,5 +377,12 @@ $stopWatch.Stop()
 "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Total file size deleted $size MiB" | Out-File -FilePath $LogFile -Append
 Write-Verbose -Message "Script took $($stopWatch.Elapsed.TotalMilliseconds) ms to complete."
 
+# Prune old log files. Keep last number of logs: $KeepLogs
+$Logs = Get-ChildItem -Path $LogPath -Filter $("$($MyInvocation.MyCommand)-*.log")
+If ($Logs.Count -gt $KeepLog) {
+    $Logs | Sort-Object -Property LastWriteTime | Select-Object -First ($Logs.Count - $KeepLog) | Remove-Item -Force
+    Write-Verbose -Message "Removed log files: $($Logs.Count - $KeepLog)."
+}
+
 # Return the size of the deleted files in MiB to the pipeline
-Write-Output -InputObject "Deleted: $size MiB"
+Write-Output -InputObject "Deleted: $size MiB."
