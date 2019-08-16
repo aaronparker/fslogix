@@ -257,6 +257,7 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                         # Get file age from Days value in XML; if -Override used, set $dateFilter to now
                         If ($Override) {
                             $dateFilter = Get-Date
+                            "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Overide mode enabled" | Out-File -FilePath $LogFile -Append
                         }
                         Else {
                             $dateFilter = (Get-Date).AddDays(- $targetPath.Days)
@@ -347,7 +348,7 @@ Else {
 }
 
 # Output total size of files deleted
-If ([bool]($fileList.PSobject.Properties.name -match "FullName")) {
+If ($fileList.FullName.Count -gt 0) {
     $size = ($fileList | Measure-Object -Sum Length).Sum
     $size = Convert-Size -From B -To MiB -Value $size
 
