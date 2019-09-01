@@ -275,8 +275,8 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                             $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -le $dateFilter }
                         }
                         Catch [System.UnauthorizedAccessException] {
-                            Write-Warning -Message "$($MyInvocation.MyCommand): Access exception error. Failed to resolve $thisPath."
-                            "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Access exception error. Failed to resolve $thisPath." | Out-File -FilePath $LogFile -Append
+                            Write-Warning -Message "$($MyInvocation.MyCommand): Access exception error. Failed to access $thisPath."
+                            "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Access exception error. Failed to access $thisPath." | Out-File -FilePath $LogFile -Append
                         }
                         Catch [System.Exception] {
                             Write-Warning -Message "$($MyInvocation.MyCommand): failed to resolve $thisPath."
@@ -336,7 +336,6 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                     "Trim" {
                         # Determine sub-folders of the target path to delete
                         $folders = Get-AllExceptLatest -Path $thisPath
-
                         ForEach ($folder in $folders) {
 
                             # Construct the file list for this folder and add to the full list for logging
@@ -373,12 +372,13 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
 }
 Else {
     Write-Error -Message "$Targets failed validation."
+    "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)]$Targets failed validation" | Out-File -FilePath $LogFile -Append
 }
 
 # Output total size of files deleted
 If ($fileList.FullName.Count -gt 0) {
     $size = ($fileList | Measure-Object -Sum Length).Sum
-    $size = Convert-Size -From B -To MiB -Value $size
+    $sizeMiB = Convert-Size -From B -To MiB -Value $size
 
     # Write deleted file list out to the log file
     If ($WhatIfPreference -eq $True) { $WhatIfPreference = $False }
@@ -387,15 +387,15 @@ If ($fileList.FullName.Count -gt 0) {
     "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] File list end" | Out-File -FilePath $LogFile -Append
 }
 Else {
-    $size = 0
+    $sizeMiB = 0
 }
-Write-Verbose -Message "Total file size deleted: $size MiB."
+"[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Total file size deleted $sizeMiB MiB" | Out-File -FilePath $LogFile -Append
+Write-Verbose -Message "Total file size deleted: $sizeMiB MiB."
 
 # Stop time recording
 $stopWatch.Stop()
-"[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Time to complete $($stopWatch.Elapsed.TotalMilliseconds) ms" | Out-File -FilePath $LogFile -Append
-"[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Total file size deleted $size MiB" | Out-File -FilePath $LogFile -Append
 Write-Verbose -Message "Script took $($stopWatch.Elapsed.TotalMilliseconds) ms to complete."
+"[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Time to complete $($stopWatch.Elapsed.TotalMilliseconds) ms" | Out-File -FilePath $LogFile -Append
 
 # Prune old log files. Keep last number of logs: $KeepLogs
 $Logs = Get-ChildItem -Path $LogPath -Filter $("$($MyInvocation.MyCommand)-*.log")
@@ -405,4 +405,5 @@ If ($Logs.Count -gt $KeepLog) {
 }
 
 # Return the size of the deleted files in MiB to the pipeline
-Write-Output -InputObject "Deleted: $size MiB."
+# Write-Output -InputObject $fileList
+# Write-Output -InputObject "Deleted: $size MiB."
