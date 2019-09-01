@@ -46,8 +46,7 @@
         Windows profiles can be cleaned up to reduce profile size and bloat.
         Use with traditional profile solutions to clean up profiles or with Container-based solution to keep Container sizes to minimum.
 #>
-[CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High', `
-        HelpUri = 'https://docs.stealthpuppy.com/docs/fslogix/profile')]
+[CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High', HelpUri = 'https://docs.stealthpuppy.com/docs/fslogix/profile')]
 [OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
@@ -272,8 +271,20 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                         }
 
                         # Construct the file list for this folder and add to the full list for logging
-                        $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -le $dateFilter }
-                        $fileList.Add($files) | Out-Null
+                        Try {
+                            $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -le $dateFilter }
+                        }
+                        Catch [System.UnauthorizedAccessException] {
+                            Write-Warning -Message "$($MyInvocation.MyCommand): Access exception error. Failed to resolve $thisPath."
+                            "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Access exception error. Failed to resolve $thisPath." | Out-File -FilePath $LogFile -Append
+                        }
+                        Catch [System.Exception] {
+                            Write-Warning -Message "$($MyInvocation.MyCommand): failed to resolve $thisPath."
+                            "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Failed to resolve $thisPath." | Out-File -FilePath $LogFile -Append
+                        }
+                        Finally {
+                            $fileList.Add($files) | Out-Null
+                        }
 
                         # Delete files with support for -WhatIf
                         ForEach ($file in $files) {
@@ -283,12 +294,15 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                                 }
                                 Catch [System.IO.IOException] {
                                     Write-Warning -Message "$($MyInvocation.MyCommand): IO exception error. Failed to remove $($file.FullName)."
+                                    "$($MyInvocation.MyCommand): IO exception error. Failed to remove $($file.FullName)." | Out-File -FilePath $LogFile
                                 }
                                 Catch [System.UnauthorizedAccessException] {
                                     Write-Warning -Message "$($MyInvocation.MyCommand): Access exception error. Failed to remove $($file.FullName)."
+                                    "$($MyInvocation.MyCommand): Access exception error. Failed to remove $($file.FullName)." | Out-File -FilePath $LogFile
                                 }
                                 Catch [System.Exception] {
                                     Write-Warning -Message "$($MyInvocation.MyCommand): failed to remove $($file.FullName)."
+                                    "$($MyInvocation.MyCommand): failed to remove $($file.FullName)." | Out-File -FilePath $LogFile
                                 }
                             }
                         }
@@ -306,12 +320,15 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                             }
                             Catch [System.IO.IOException] {
                                 Write-Warning -Message "$($MyInvocation.MyCommand): IO exception error. Failed to remove $thisPath."
+                                "$($MyInvocation.MyCommand): IO exception error. Failed to remove $thisPath." | Out-File -FilePath $LogFile
                             }
                             Catch [System.UnauthorizedAccessException] {
                                 Write-Warning -Message "$($MyInvocation.MyCommand): Access exception error. Failed to remove $thisPath."
+                                "$($MyInvocation.MyCommand): Access exception error. Failed to remove $thisPath." | Out-File -FilePath $LogFile
                             }
                             Catch [System.Exception] {
                                 Write-Warning -Message "$($MyInvocation.MyCommand): failed to remove $thisPath."
+                                "$($MyInvocation.MyCommand): failed to remove $thisPath." | Out-File -FilePath $LogFile
                             }
                         }
                     }
@@ -332,12 +349,15 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                                 }
                                 Catch [System.IO.IOException] {
                                     Write-Warning -Message "$($MyInvocation.MyCommand): IO exception error. Failed to remove $folder."
+                                    "$($MyInvocation.MyCommand): IO exception error. Failed to remove $folder." | Out-File -FilePath $LogFile
                                 }
                                 Catch [System.UnauthorizedAccessException] {
                                     Write-Warning -Message "$($MyInvocation.MyCommand): Access exception error. Failed to remove $folder."
+                                    "$($MyInvocation.MyCommand): Access exception error. Failed to remove $folder." | Out-File -FilePath $LogFile
                                 }
                                 Catch [System.Exception] {
                                     Write-Warning -Message "$($MyInvocation.MyCommand): failed to remove $folder."
+                                    "$($MyInvocation.MyCommand): failed to remove $folder." | Out-File -FilePath $LogFile
                                 }
                             }
                         }
