@@ -363,7 +363,7 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                     }
                     
                     Default {
-                        Write-Warning -Message "[Unable to determine action for $thisPath]"
+                        Write-Warning -Message "$($MyInvocation.MyCommand): [Unable to determine action for $thisPath]"
                     }
                 }
             }
@@ -371,14 +371,21 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
     }
 }
 Else {
-    Write-Error -Message "$Targets failed validation."
+    Write-Error -Message "$($MyInvocation.MyCommand): $Targets failed XML validation. Aborting script."
     "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)]$Targets failed validation" | Out-File -FilePath $LogFile -Append
 }
 
 # Output total size of files deleted
 If ($fileList.FullName.Count -gt 0) {
-    $size = ($fileList | Measure-Object -Sum Length).Sum
-    $sizeMiB = Convert-Size -From B -To MiB -Value $size
+    #$fileSize = ($fileList | Measure-Object -Sum Length).Sum
+    # Work around previous approach to calculating size not working
+    ForEach ($item in $fileList) {
+        ForEach ($file in $item) {
+            $fileSize += $file.Length
+            $fileCount += 1
+        }
+    }
+    $sizeMiB = Convert-Size -From B -To MiB -Value $fileSize
 
     # Write deleted file list out to the log file
     If ($WhatIfPreference -eq $True) { $WhatIfPreference = $False }
@@ -390,7 +397,12 @@ Else {
     $sizeMiB = 0
 }
 "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Total file size deleted $sizeMiB MiB" | Out-File -FilePath $LogFile -Append
-Write-Verbose -Message "Total file size deleted: $sizeMiB MiB."
+# Return the size of the deleted files in MiB to the pipeline
+$PSObject = [PSCustomObject]@{
+    Files   = $fileCount
+    Deleted = "$sizeMiB MiB"
+}
+Write-Output -InputObject $PSObject
 
 # Stop time recording
 $stopWatch.Stop()
@@ -401,9 +413,5 @@ Write-Verbose -Message "Script took $($stopWatch.Elapsed.TotalMilliseconds) ms t
 $Logs = Get-ChildItem -Path $LogPath -Filter $("$($MyInvocation.MyCommand)-*.log")
 If ($Logs.Count -gt $KeepLog) {
     $Logs | Sort-Object -Property LastWriteTime | Select-Object -First ($Logs.Count - $KeepLog) | Remove-Item -Force
-    Write-Verbose -Message "Removed log files: $($Logs.Count - $KeepLog)."
+    Write-Verbose -Message "$($MyInvocation.MyCommand): Removed log files: $($Logs.Count - $KeepLog)."
 }
-
-# Return the size of the deleted files in MiB to the pipeline
-# Write-Output -InputObject $fileList
-# Write-Output -InputObject "Deleted: $size MiB."

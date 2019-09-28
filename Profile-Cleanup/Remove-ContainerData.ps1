@@ -235,6 +235,8 @@ Function Get-TestPath {
 
 # Measure time taken to gather data
 $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+Write-Verbose -Message "$($MyInvocation.MyCommand): This script requires a custom version of FsLogix.PowerShell.Disk."
+Write-Verbose -Message "$($MyInvocation.MyCommand): Download the module from here: https://github.com/aaronparker/FSLogix/tree/master/Modules/Fslogix.Powershell.Disk"
 
 # Read the specifed XML document
 Try {
@@ -253,13 +255,14 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
     ForEach ($folder in $Path) {
         # Get Profile Containers from the target path; Only select containers over the specified minimum size (default 0)
         $Containers = Get-ChildItem -Path $folder -Recurse -Filter "Profile*.vhdx" | `
-            Where-Object { $_.Length -gt (Convert-Size -From MB -To KB -Value $MinimumSizeInMB) }
+                Where-Object { $_.Length -gt (Convert-Size -From MB -To KB -Value $MinimumSizeInMB) }
 
         # Step through each Container
         ForEach ($container in $Containers) {
 
             # Log file for this container
             $LogFile = Join-Path -Path $LogPath -ChildPath $($(Split-Path -Path $container.FullName -Leaf) + $((Get-Date).ToFileTimeUtc()) + ".log")
+            Write-Verbose -Message "$($MyInvocation.MyCommand): Writing file list to $LogFile."
 
             If ($WhatIfPreference -eq $True) {
                 $WhatIfPreference = $False
@@ -269,27 +272,27 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
             Else {
                 "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Delete mode" | Out-File -FilePath $LogFile -Append
             }
-            Write-Verbose -Message "Writing file list to $LogFile."
         
             # Output array, will contain the list of files/folders removed
             $fileList = New-Object -TypeName System.Collections.ArrayList
 
             # Mount the Container
+            Write-Verbose -Message "$($MyInvocation.MyCommand): Mounting $($container.FullName) with Add-FslDriveLetter."
             $MountPath = Add-FslDriveLetter -Path $container.FullName -Passthru
-            Write-Verbose -Message "Container mounted at: $MountPath."
 
             # Prune the container
             If ($Null -ne $MountPath) {
+                Write-Verbose -Message "$($MyInvocation.MyCommand): Container mounted at: $MountPath."
 
                 # Select each Target XPath; walk through each target to delete files
                 ForEach ($target in (Select-Xml -Xml $xmlDocument -XPath "//Target")) {
 
-                    Write-Verbose -Message "Processing target: [$($target.Node.Name)]"
+                    Write-Verbose -Message "$($MyInvocation.MyCommand): Processing target: [$($target.Node.Name)]"
                     ForEach ($targetPath in $target.Node.Path) {
             
                         # Convert path from XML with environment variable to actual path
                         $thisPath = Join-Path -Path $MountPath -ChildPath $(ConvertTo-Path -Path $targetPath.innerText)
-                        Write-Verbose -Message "Processing folder: $thisPath"
+                        Write-Verbose -Message "$($MyInvocation.MyCommand): Processing folder: $thisPath"
 
                         # Get files to delete from Paths and file age; build output array
                         If (Test-Path -Path $(Get-TestPath -Path $thisPath) -ErrorAction SilentlyContinue) {
@@ -377,7 +380,7 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                                 }
                     
                                 Default {
-                                    Write-Warning -Message "[Unable to determine action for $thisPath]"
+                                    Write-Warning -Message "$($MyInvocation.MyCommand): [Unable to determine action for $thisPath]"
                                 }
                             }
                         }
@@ -386,9 +389,16 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
             }
 
             # Output total size of files deleted
-            If ([bool]($fileList.PSobject.Properties.name -match "FullName")) {
-                $size = ($fileList | Measure-Object -Sum Length).Sum
-                $size = Convert-Size -From B -To MiB -Value $size
+            If ($fileList.FullName.Count -gt 0) {
+                #$fileSize = ($fileList | Measure-Object -Sum Length).Sum
+                # Work around previous approach to calculating size not working
+                ForEach ($item in $fileList) {
+                    ForEach ($file in $item) {
+                        $fileSize += $file.Length
+                        $fileCount += 1
+                    }
+                }
+                $sizeMiB = Convert-Size -From B -To MiB -Value $fileSize
 
                 # Write deleted file list out to the log file
                 If ($WhatIfPreference -eq $True) { $WhatIfPreference = $False }
@@ -397,24 +407,38 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                 "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] File list end" | Out-File -FilePath $LogFile -Append
             }
             Else {
-                $size = 0
+                $sizeMiB = 0
             }
-            Write-Verbose -Message "Total file size deleted: $size MiB"
-
-            # Return the size of the deleted files in MiB to the pipeline
-            Write-Output -InputObject "$(Split-Path -Path $container.FullName -Leaf), Deleted: $size MiB"
+            Write-Verbose -Message "$($MyInvocation.MyCommand): Total file size deleted: $size MiB."
 
             # Dismount the container
-            Dismount-FslDisk -Path $container.FullName -ErrorAction Stop
+            Write-Verbose -Message "$($MyInvocation.MyCommand): Dismounting $($container.FullName) with Dismount-FslDisk."
+            $Dismount = $True
+            Try {
+                Dismount-FslDisk -Path $container.FullName -ErrorAction Stop | Out-Null
+            }
+            Catch [System.Exception] {
+                Write-Warning -Message "$($MyInvocation.MyCommand): failed to dismount $($container.FullName)."
+                $Dismount = $False
+            }
+
+            # Return the size of the deleted files in MiB to the pipeline
+            $PSObject = [PSCustomObject]@{
+                Path       = $container.FullName
+                Dismounted = $Dismount
+                Files      = $fileCount
+                Deleted    = "$sizeMiB MiB"
+            }
+            Write-Output -InputObject $PSObject
         }
     }
 }
 Else {
-    Write-Error -Message "$Targets failed validation."
+    Write-Error -Message "$($MyInvocation.MyCommand): $Targets failed XML validation. Aborting script."
 }
 
 # Stop time recording
 $stopWatch.Stop()
 "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Time to complete $($stopWatch.Elapsed.TotalMilliseconds) ms" | Out-File -FilePath $LogFile -Append
 "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Total file size deleted $size MiB" | Out-File -FilePath $LogFile -Append
-Write-Verbose -Message "Script took $($stopWatch.Elapsed.TotalMilliseconds) ms to complete."
+Write-Verbose -Message "$($MyInvocation.MyCommand): Script took $($stopWatch.Elapsed.TotalMilliseconds) ms to complete."
