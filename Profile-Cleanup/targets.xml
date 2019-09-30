@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Targets>
     <Target Name="Windows">
+        <Path Action="Prune" Days="10" Exclude="desktop.ini">%USERPROFILE%\Downloads</Path>
         <Path Action="Delete">%TEMP%</Path>
+        <Path Action="Delete">%LocalAppData%\Microsoft\Windows\GameExplorer</Path>
+        <Path Action="Delete">%LocalAppData%\Microsoft\Windows\WER</Path>
+        <Path Action="Delete">%LocalAppData%\Microsoft\Windows\CrashReports</Path>
+        <Path Action="Delete">%LocalAppData%\Microsoft\MSOIdentityCRL\Tracing</Path>
+        <Path Action="Delete">%LocalAppData%\CrashDumps</Path>
+        <Path Action="Delete">%LocalAppData%\Package Cache</Path>
+        <Path Action="Delete">%LocalAppData%\D3DSCache</Path>
+        <Path Action="Delete">%LocalAppData%\Microsoft\Windows\WebCache.old</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Apps</Path>
         <Path Action="Prune" Days="1">%LocalAppData%\Microsoft\Windows\Explorer\IconCacheToDelete</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\Explorer\ThumbCacheToDelete</Path>
         <Path Action="Prune" Days="1">%LocalAppData%\Microsoft\Windows\Explorer\*.db</Path>
-        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\Caches</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\Notifications\wpnidm</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\PPBCompatCache</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\PPBCompatUaCache</Path>
@@ -16,22 +24,13 @@
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\INetCache\Low</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\AppCache</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\WebCache</Path>
-        <Path Action="Delete">%LocalAppData%\Microsoft\Windows\WebCache.old</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\History</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\CLR_v4.0_32</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\CLR_v4.0</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\GameDVR</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\GraphicsCache</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\TokenBroker\Cache</Path>
-        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Windows\Caches</Path>
-        <Path Action="Delete">%LocalAppData%\Microsoft\Windows\GameExplorer</Path>
-        <Path Action="Delete">%LocalAppData%\Microsoft\Windows\WER</Path>
-        <Path Action="Delete">%LocalAppData%\Microsoft\Windows\CrashReports</Path>
-        <Path Action="Delete">%LocalAppData%\Microsoft\MSOIdentityCRL\Tracing</Path>
-        <Path Action="Delete">%LocalAppData%\CrashDumps</Path>
-        <Path Action="Delete">%LocalAppData%\Package Cache</Path>
-        <Path Action="Delete">%LocalAppData%\D3DSCache</Path>
-        <Path Action="Delete">%LocalAppData%\Microsoft\TokenBroker\Cache</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Microsoft\Windows\Caches</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\Cookies</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\DNTException</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\IECompatCache</Path>
@@ -42,7 +41,6 @@
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Windows\Recent\*.lnk</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\Network Shortcuts</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\Printer Shortcuts</Path>
-        <Path Action="Prune" Days="10">%USERPROFILE%\Downloads</Path>
         <Path Action="Prune" Days="30">%USERPROFILE%\AppData\LocalLow\Microsoft\Windows\AppCache</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Downloaded Installations</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\assembly</Path>
@@ -52,7 +50,7 @@
     </Target>
     <Target Name="Internet Explorer">
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Internet Explorer\*.log</Path>
-        <Path Action="Prune" Days="30">Microsoft\Internet Explorer\CacheStorage</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Microsoft\Internet Explorer\CacheStorage</Path>
     </Target>
     <Target Name="PowerShell">
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Office365\Powershell</Path>
@@ -93,6 +91,7 @@
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Teams\Cache</Path>
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Teams\GPUCache</Path>
         <Path Action="Prune" Days="7">%AppData%\Microsoft\Teams\DownloadedUpdate</Path>
+        <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Teams\packages</Path>
     </Target>
     <Target Name="Microsoft Visual Studio Code">
         <Path Action="Prune" Days="7">%AppData%\Code\logs</Path>
@@ -137,10 +136,24 @@
         <Path Action="Prune" Days="7">%AppData%\Adobe\SLData</Path>
         <Path Action="Prune" Days="7">%AppData%\Adobe\Common\Media Cache Files</Path>
     </Target>
-    <Target Name="Microsoft Edge">
+    <Target Name="Microsoft Edge UWP">
         <Path Action="Prune" Days="30">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\*\MicrosoftEdge\Cache</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\Temp</Path>
+    </Target>
+    <Target Name="Microsoft Edge Chromium">
+        <Path Action="Prune" Days="30">%LocalAppData%\Microsoft\EdgeUpdate\Download</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Microsoft\EdgeUpdate\Install</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Edge SxS\User Data\*\Cache</Path>        
+        <Path Action="Prune" Days="30">%LocalAppData%\Edge Dev\User Data\*\Cache</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Edge Dev\User Data\*\Local Storage</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Edge Dev\User Data\*\GPUCache</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Edge Beta\User Data\*\Cache</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Edge Beta\User Data\*\Local Storage</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Edge Beta\User Data\*\GPUCache</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Edge SxS\User Data\*\Cache</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Edge SxS\User Data\*\Local Storage</Path>
+        <Path Action="Prune" Days="30">%LocalAppData%\Edge SxS\User Data\*\GPUCache</Path>
     </Target>
     <Target Name="Bing News">
         <Path Action="Prune" Days="30">%LocalAppData%\Packages\Microsoft.BingNews_8wekyb3d8bbwe\AC\Microsoft\CryptnetUrlCache</Path>
@@ -193,11 +206,6 @@
     <Target Name="WhatsApp">
         <Path Action="Prune" Days="10">%LocalAppData%\WhatsApp\*\Resources</Path>
         <Path Action="Prune" Days="10">%LocalAppData%\WhatsApp\*\Locales</Path>
-    </Target>
-    <Target Name="Edge Dev">
-        <Path Action="Prune" Days="30">%AppData%\Edge Dev\User Data\*\Cache</Path>
-        <Path Action="Prune" Days="30">%AppData%\Edge Dev\User Data\*\Local Storage</Path>
-        <Path Action="Prune" Days="30">%AppData%\Edge Dev\User Data\*\GPUCache</Path>
     </Target>
     <Target Name="LogMeIn GoToAssist Remote Support Customer">
         <Path Action="Prune" Days="10">%LocalAppData%\GoToAssist Remote Support Customer</Path>

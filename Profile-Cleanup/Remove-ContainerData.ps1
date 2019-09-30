@@ -1,5 +1,6 @@
 #Requires -Version 2
 #Requires -PSEdition Desktop
+#Requires -RunAsAdministrator
 #Requires -Modules "Hyper-V"
 #Requires -Modules "FsLogix.PowerShell.Disk"
 <#
@@ -308,7 +309,8 @@ If ($xmlDocument -is [System.XML.XMLDocument]) {
                                     }
 
                                     # Construct the file list for this folder and add to the full list for logging
-                                    $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -le $dateFilter }
+                                    $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue -Exclude "desktop.ini" | `
+                                            Where-Object { $_.LastWriteTime -le $dateFilter }
                                     $fileList.Add($files) | Out-Null
 
                                     # Delete files with support for -WhatIf
