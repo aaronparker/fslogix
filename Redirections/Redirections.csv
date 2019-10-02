@@ -10,6 +10,5 @@ Exclude,0,AppData\Local\CrashDumps,Windows application crash dumps,Omit if you d
 Exclude,0,AppData\Local\Microsoft\Terminal Server Client,Microsoft Remote Desktop Client cache,Omit if not using Remote Desktop Connection client inside a remote desktop
 Exclude,0,AppData\Local\Google\Chrome\User Data\Default\Cache,Google Chrome cache,Google Chrome brower cache
 Exclude,0,AppData\Local\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache,Microsoft Edge cache,Microsoft Edge UWP browser cache
-Exclude,0,AppData\Local\Microsoft\Edge Dev\User Data\Default\Cache,Microsoft Edge Dev (Chromium) cache,Path with change with final Edge release
-Exclude,0,AppData\Local\Microsoft\Edge Dev\User\Default\Cache,Microsoft Edge (Chromium) cache,Shoul be the cache path in the final Edge release
+Exclude,0,AppData\Local\Microsoft\Edge SxS\User Data\Default\Cache,Microsoft Edge (Chromium) cache,Microsoft Edge (Chromium) cache
 Exclude,0,AppData\Roaming\Sun\Java\Deployment\cache,Oracle JRE cache folder,Only include if the JRE is in the environment. May impact performance of Java apps
