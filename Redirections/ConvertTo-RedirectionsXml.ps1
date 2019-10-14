@@ -12,8 +12,6 @@
 
 .TAGS FSLogix Profile-Containers Profile
 
-.DESCRIPTION Converts a correctly formatted input CSV file into an FSLogix Redirections.xml for use with FSLogix Profile Containers. Downloads the redirections data from the source repo hosted on GitHub and converts the input CSV file into an FSLogix Redirections.xml.
-
 .LICENSEURI https://github.com/aaronparker/FSLogix/blob/master/LICENSE
 
 .PROJECTURI https://github.com/aaronparker/FSLogix/tree/master/Redirections
@@ -27,13 +25,16 @@
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-    - 1.0.1, Initial version, April 2019
-    - 1.0.2, Support local Redirections.csv as input
-    - 1.0.3, Convert-CsvContent function, code cleanup
-    - 1.0.4, Additional error checking
+- 1.0.1, Initial version, April 2019
+- 1.0.2, Support local Redirections.csv as input
+- 1.0.3, Convert-CsvContent function, code cleanup
+- 1.0.4, Additional error checking
+- 1.0.5, Run Update-ScriptFileInfo on script to fix issues on Windows Server 2012/R2
 
 .PRIVATEDATA
+
 #>
+ 
 <#
     .SYNOPSIS
         Converts a correctly formatted input CSV file into an FSLogix Redirections.xml for use with Profile Container.
