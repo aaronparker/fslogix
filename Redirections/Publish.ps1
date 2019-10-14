@@ -1,6 +1,11 @@
 <#
     Publish ConvertTo-RedirectionsXml.ps1 to the PowerShell Gallery
 #>
+[CmdletBinding()]
+Param (
+    [Parameter(Mandatory = $true)]
+    [System.String] $ApiKey
+)
 
 #region Setup
 If (Test-Path 'env:APPVEYOR_BUILD_FOLDER') {
@@ -22,7 +27,7 @@ Write-Host "Script location is: $script."
 # Publish the script
 $PS = @{
     Path        = $script
-    NuGetApiKey = $env:NuGetApiKey
+    NuGetApiKey = $ApiKey
     Repository  = "PSGallery"
     ErrorAction = 'Stop'
 }
