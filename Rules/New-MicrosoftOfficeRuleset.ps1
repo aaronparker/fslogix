@@ -1,6 +1,23 @@
 #Requires -RunAsAdministrator
 <#
+    .SYNOPSIS    
     Creates FSLogix App Masking rulesets for Microsoft Office applications.
+    Outputs files in "Documents\FSLogix Rule Sets". Rule sets will require manual validation.
+
+    .EXAMPLE
+    To create an FSLogix App Masking ruleset for Visio:
+
+    C:\> .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Visio"
+
+    .EXAMPLE
+    To create an FSLogix App Masking ruleset for Project:
+
+    C:\> .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Project", "WinProj"
+
+    .EXAMPLE
+    To create an FSLogix App Masking ruleset for Access:
+
+    C:\> .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Access"
 #>
 [CmdletBinding()]
 Param (
