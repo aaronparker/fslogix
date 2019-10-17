@@ -43,33 +43,34 @@ Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.208
 If (Get-PSRepository -Name PSGallery | Where-Object { $_.InstallationPolicy -ne "Trusted" }) {
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 }
-Install-Module -Name FSLogix.Powershell.Rules
-Install-Script -Name Get-ApplicationRegistryKey
+Install-Module -Name FSLogix.Powershell.Rules -Force
+Install-Script -Name Get-ApplicationRegistryKey -Force
 
 # Set up the ruleset file
 $Documents = [Environment]::GetFolderPath('MyDocuments')
 $RulesetsFolder = "$Documents\FSLogix Rule Sets"
-$Ruleset = "$RulesetsFolder\Microsoft$SearchString.fxr"
+$Ruleset = "$RulesetsFolder\Microsoft$($SearchString[0]).fxr"
 New-Item -Path $RulesetsFolder -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
-# Grab registry keys related to this application
-$Keys = Get-ApplicationRegistryKey.ps1 -SearchString $SearchString
+$Keys = @(); $Files = @(); $Dirs = @()
+ForEach ($string in $SearchString) {
+    # Grab registry keys related to this application
+    $Keys += Get-ApplicationRegistryKey.ps1 -SearchString $string
 
-# Grab files related to this application
-$Files = @()
-ForEach ($folder in $Folders) {
-    $Files += Get-ChildItem -Path $folder -Filter "$SearchString*" -File -ErrorAction SilentlyContinue
-}
+    # Grab files related to this application
+    ForEach ($folder in $Folders) {
+        $Files += Get-ChildItem -Path $folder -Filter "$string*" -File -ErrorAction SilentlyContinue
+    }
 
-# Grab folders related to this application
-$Dirs = @()
-ForEach ($folder in $Folders) {
-    $Dirs = Get-ChildItem -Path $folder -Filter "$SearchString*" -Directory -ErrorAction SilentlyContinue
+    # Grab folders related to this application
+    ForEach ($folder in $Folders) {
+        $Dirs = Get-ChildItem -Path $folder -Filter "$string*" -Directory -ErrorAction SilentlyContinue
+    }
 }
 
 # Write paths to the App Masking ruleset file
-ForEach ($item in $Keys) {
-    Add-FslRule -Path $Ruleset -FullName (Convert-Path -Path $item) -HidingType FolderOrKey -Comment "Added by $($MyInvocation.MyCommand)."
+ForEach ($key in $Keys) {
+    Add-FslRule -Path $Ruleset -FullName (Convert-Path -Path $key) -HidingType FolderOrKey -Comment "Added by $($MyInvocation.MyCommand)."
 }
 ForEach ($file in $Files) {
     Add-FslRule -Path $Ruleset -FullName (Convert-Path -Path $file.FullName) -HidingType FileOrValue -Comment "Added by $($MyInvocation.MyCommand)."

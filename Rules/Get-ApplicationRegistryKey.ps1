@@ -1,5 +1,5 @@
 <#PSScriptInfo
-    .VERSION 1.0.3
+    .VERSION 1.0.5
     .GUID 9c53a0e5-1cb3-4b35-90f0-372bc7665f4f
     .AUTHOR Aaron Parker, @stealthpuppy
     .COMPANYNAME stealthpuppy
@@ -16,6 +16,8 @@
     - 1.0.1, First version pushed to the PowerShell Gallery, June 2019
     - 1.0.2, Fix -Key parameter in ForEach loop, Add Process block for pipeline support
     - 1.0.3, Change parameter position & pipeline support for SearchString & Key
+    - 1.0.4, Update with additional keys
+    - 1.0.5, Update output in Try/Catch
     .PRIVATEDATA 
 #>
 <# 
@@ -61,8 +63,11 @@ Param (
     [Parameter(Mandatory = $False, Position = 1, ValueFromPipelineByPropertyName)]
     [ValidateNotNull()]
     [System.String[]] $Key = @("HKLM:\SOFTWARE\Classes\CLSID", "HKLM:\SOFTWARE\Classes", "HKLM:\SOFTWARE\Wow6432Node\Classes", `
-            "HKLM:\SOFTWARE\Wow6432Node\Classes\CLSID", "HKLM:\Software\Microsoft\Office\Outlook\Addins", `
-            "HKCU:\Software\Microsoft\Office\Outlook\Addins")
+            "HKLM:\SOFTWARE\Wow6432Node\Classes\CLSID", "HKLM:\Software\Microsoft\Office\Outlook\Addins", "HKCU:\Software\Microsoft\Office\Outlook\Addins", `
+            "HKLM:\Software\Microsoft\Office\Word\Addins", "HKCU:\Software\Microsoft\Office\Word\Addins", "HKLM:\Software\Microsoft\Office\Excel\Addins", `
+            "HKCU:\Software\Microsoft\Office\Excel\Addins", "HKLM:\Software\Microsoft\Office\PowerPoint\Addins", "HKCU:\Software\Microsoft\Office\PowerPoint\Addins", `
+            "HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\REGISTRY\MACHINE\Software\Classes", "HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\REGISTRY\MACHINE\Software\Clients", `
+            "HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\REGISTRY\MACHINE\Software\RegisteredApplications")
 )
 begin {
     # Get current location
@@ -79,11 +84,10 @@ process {
                 $result = Push-Location -Path $path -ErrorAction SilentlyContinue -PassThru
             }
             catch [System.Management.Automation.ItemNotFoundException] {
-                Write-Warning -Message "$($MyInvocation.MyCommand): Unable to change location to $path."
-                Throw $_.Exception.Message        
+                Write-Warning -Message "$($MyInvocation.MyCommand): Item not found when changing location to $path."
             }
             catch [System.Exception] {
-                Throw $_
+                Write-Warning -Message "$($MyInvocation.MyCommand): Exception when changing location to $path."
             }
             # If successfully changed to the target key, get child keys and match against data in the default values
             If ($result.Length -gt 0) {

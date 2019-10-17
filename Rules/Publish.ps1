@@ -1,6 +1,19 @@
 <#
     Publish Get-ApplicationRegistryKey.ps1 to the PowerShell Gallery
 #>
+[CmdletBinding()]
+Param (
+    [Parameter(Mandatory = $true)]
+    [System.String] $ApiKey
+)
+
+#region NuGet
+Install-PackageProvider -Name NuGet -Force
+Install-Module -Name PowerShellGet -Force
+If (Get-PSRepository -Name PSGallery | Where-Object { $_.InstallationPolicy -ne "Trusted" }) {
+    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+}
+#region
 
 #region Setup
 If (Test-Path 'env:APPVEYOR_BUILD_FOLDER') {
@@ -22,7 +35,7 @@ Write-Host "Script location is: $script."
 # Publish the script
 $PS = @{
     Path        = $script
-    NuGetApiKey = $env:NuGetApiKey
+    NuGetApiKey = $ApiKey
     Repository  = "PSGallery"
     ErrorAction = 'Stop'
 }
