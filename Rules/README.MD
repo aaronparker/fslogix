@@ -14,21 +14,21 @@ This script will create an FSLogix App Masking ruleset for Office applications. 
 
 To create an FSLogix App Masking ruleset for Visio:
 
-    ```powershell
-    .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Visio"
-    ```
+```powershell
+.\New-MicrosoftOfficeRuleset.ps1 -SearchString "Visio"
+```
 
 To create an FSLogix App Masking ruleset for Project:
 
-    ```powershell
-    .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Project", "WinProj"
-    ```
+```powershell
+.\New-MicrosoftOfficeRuleset.ps1 -SearchString "Project", "WinProj"
+```
 
 To create an FSLogix App Masking ruleset for Access:
 
-    ```powershell
-    .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Access"
-    ```
+```powershell
+.\New-MicrosoftOfficeRuleset.ps1 -SearchString "Access"
+```
 
 ## Get-ApplicationRegistryKey.ps1
 
@@ -38,69 +38,69 @@ Returns Registry keys from well known locations that contain application informa
 
 `Get-ApplicationRegistryKey.ps1` can be installed from the [PowerShell Gallery](https://www.powershellgallery.com/packages/Get-ApplicationRegistryKey/) with the following command:
 
-    ```powershell
-    Install-Script -Name Get-ApplicationRegistryKey
-    ```
+```powershell
+Install-Script -Name Get-ApplicationRegistryKey
+```
 
 If you encouter issues installing the script, ensure that [PowerShellGet](https://docs.microsoft.com/en-us/powershell/scripting/gallery/installing-psget) is up to date. On Windows 10 and Windows Server 2016 / 2019 the following commands can be used to update PowerShellGet.
 
-    ```powershell
-    Install-Module -Name PowerShellGet -Force
-    Update-Module -Name PowerShellGet
-    ```
+```powershell
+Install-Module -Name PowerShellGet -Force
+Update-Module -Name PowerShellGet
+```
 
 ### Usage
 
 The following example will find keys related to Microsoft Visio
 
-    ```powershell
-    .\Get-ApplicationRegistryKey.ps1 -SeachString "Visio"
-    ```
+```powershell
+.\Get-ApplicationRegistryKey.ps1 -SeachString "Visio"
+```
 
 The script will output a list of keys, similar to the list below, that can then be validated and used in an App Masking ruleset for Visio:
 
-    ```text
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Icad.ViewerDrawing
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\ms-visio
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\ShapewareVISIO10
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\ShapewareVISIO20
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application.11
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application.3
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application.4
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application.5
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application.6
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.CustomUI.11
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.11
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.15
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.3
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.4
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.5
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.6
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.DrawingMacroEnabled
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.DrawingMacroEnabled.15
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.ExtendedData
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.InvisibleApp
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.InvisibleApp.11
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Stencil.11
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Stencil.15
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.StencilMacroEnabled.15
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Template.11
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Template.15
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.TemplateMacroEnabled.15
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.TemplatePackage.16
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.WebDrawing.14
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Workspace.11
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioBridger.Loader
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioSGFS.Engine
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioSGProv.Provider
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewer.Viewer
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewer.Viewer.1
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewerDWGDisplay.VisioViewerDWGDisplay
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewerDWGDisplay.VisioViewerDWGDisplay.1
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewerDWGDisplayCreator.VisioViewerDWGDisplayCreator
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewerDWGDisplayCreator.VisioViewerDWGDisplayCreator.1
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisOcx.DrawingControl
-    HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisOcx.DrawingControl.1
-    ```
+```text
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Icad.ViewerDrawing
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\ms-visio
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\ShapewareVISIO10
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\ShapewareVISIO20
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application.11
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application.3
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application.4
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application.5
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Application.6
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.CustomUI.11
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.11
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.15
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.3
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.4
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.5
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Drawing.6
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.DrawingMacroEnabled
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.DrawingMacroEnabled.15
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.ExtendedData
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.InvisibleApp
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.InvisibleApp.11
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Stencil.11
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Stencil.15
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.StencilMacroEnabled.15
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Template.11
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Template.15
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.TemplateMacroEnabled.15
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.TemplatePackage.16
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.WebDrawing.14
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Visio.Workspace.11
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioBridger.Loader
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioSGFS.Engine
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioSGProv.Provider
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewer.Viewer
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewer.Viewer.1
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewerDWGDisplay.VisioViewerDWGDisplay
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewerDWGDisplay.VisioViewerDWGDisplay.1
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewerDWGDisplayCreator.VisioViewerDWGDisplayCreator
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewerDWGDisplayCreator.VisioViewerDWGDisplayCreator.1
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisOcx.DrawingControl
+HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisOcx.DrawingControl.1
+```
