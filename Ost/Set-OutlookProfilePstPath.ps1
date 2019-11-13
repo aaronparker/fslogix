@@ -42,7 +42,7 @@ Function Set-RegValue {
 }
 #endregion
 
-# find key that has the 001f6700 property that holds the PST file path - one key per outlook profile.
+# Find key that has the 001f6700 property that holds the PST file path - one key per Outlook profile.
 $pstRegValue = "001f6700"
 $keyPath = "HKCU:\Software\Microsoft\Office\16.0\Outlook\Profiles"
 $keys = (Get-ChildItem $keyPath -Recurse | `
@@ -58,13 +58,14 @@ ForEach ($key in $keys) {
     Write-Verbose -Message "Old PST path: $pstOldPath"
     $oldPstFile = Split-Path -Path $pstOldPath -Leaf
      
-    # make sure it is an PST in this field
+    # Make sure it is an PST in this field
     If ([IO.Path]::GetExtension($oldPstFile) -match ".pst") {
 
+        # Build a path to the new file and encode in Hex
         $oldPstFileName = Split-Path -Path $pstOldPath -Leaf
-        $newPstPath = Join-Path $TargetPath $oldPstFileName
+        $newPstPath = Join-Path -Path $Path -ChildPath $oldPstFileName
         $newPstPathHex = [System.Text.Encoding]::Unicode.GetBytes($newPstPath + "`0")
-        $newPstPathStr = ConvertFrom-Hex ($newPstPathHex -join ',')
+        $newPstPathStr = ConvertFrom-Hex -String ($newPstPathHex -join ',')
         Write-Verbose -Message "New PST path: $newPstPathStr"
 
         # Set registry value with new PST file path

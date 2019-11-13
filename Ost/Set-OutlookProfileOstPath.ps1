@@ -42,7 +42,7 @@ Function Set-RegValue {
 }
 #endregion
 
-# find key that has the 001f6610 property that holds the OST file path - one key per outlook profile.
+# Find key that has the 001f6610 property that holds the OST file path - one key per Outlook profile.
 $ostRegValue = "001f6610"
 $keyPath = "HKCU:\Software\Microsoft\Office\16.0\Outlook\Profiles"
 $keys = (Get-ChildItem $keyPath -Recurse | `
@@ -61,10 +61,11 @@ ForEach ($key in $keys) {
     # make sure it is an OST in this field
     If ([IO.Path]::GetExtension($oldOstFile) -match ".ost") {
 
+        # Build a path to the new file and encode in Hex
         $oldOstFileName = Split-Path -Path $ostOldPath -Leaf
-        $newOstPath = Join-Path $TargetPath $oldOstFileName
+        $newOstPath = Join-Path -Path $Path -ChildPath $oldOstFileName
         $newOstPathHex = [System.Text.Encoding]::Unicode.GetBytes($newOstPath + "`0")
-        $newOstPathStr = ConvertFrom-Hex ($newOstPathHex -join ',')
+        $newOstPathStr = ConvertFrom-Hex -String ($newOstPathHex -join ',')
         Write-Verbose -Message "New OST path: $newOstPathStr"
 
         # Set registry value with new OST file path
