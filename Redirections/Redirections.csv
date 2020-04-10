@@ -1,7 +1,5 @@
 Action,Copy,Path,Description,Notes
 Exclude,0,Downloads,Downloads folder,Omit if folder is redirected to the network
-Exclude,0,$Recycle.Bin,User's Recycle bin folder,Omit if GPO manages Recycle Bin or folder redirection manages other folders
-Exclude,0,Tracing,Skype for Business debug logs,Path can be pointed to %TEMP% via Registry to avoid redirection
 Exclude,0,AppData\Local\Apps,Microsoft Windows,Office add-ins and other apps. May impact performance of some apps
 Exclude,0,AppData\Local\Downloaded Installations,Microsoft Windows,May break per-user installed apps
 Exclude,0,AppData\Local\Assembly,.NET Framework Shadow Copies,May impact performance of .NET apps

@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.5
+.VERSION 1.0.6
 
 .GUID 118b1874-d4b2-45bc-a698-f91f9568416c
 
@@ -8,7 +8,7 @@
 
 .COMPANYNAME stealthpuppy
 
-.COPYRIGHT 2019, Aaron Parker. All rights reserved.
+.COPYRIGHT 2020, Aaron Parker. All rights reserved.
 
 .TAGS FSLogix Profile-Containers Profile
 
@@ -30,6 +30,7 @@
 - 1.0.3, Convert-CsvContent function, code cleanup
 - 1.0.4, Additional error checking
 - 1.0.5, Run Update-ScriptFileInfo on script to fix issues on Windows Server 2012/R2
+- 1.0.6, Update to include Notes as comments in the XML; Minor code updates
 
 .PRIVATEDATA
 
@@ -83,7 +84,7 @@ Function Convert-CsvContent {
         [System.String] $Content
     )
     try {
-        $convertedContent = $Content | ConvertFrom-Csv -ErrorAction SilentlyContinue
+        $convertedContent = $Content | ConvertFrom-Csv -ErrorAction "SilentlyContinue"
     }
     catch [System.Exception] {
         Write-Warning -Message "$($MyInvocation.MyCommand): Failed to convert content."
@@ -103,7 +104,13 @@ Function Get-WebRequest {
         [System.String] $Uri
     )
     try {
-        $content = Invoke-WebRequest -Uri $Uri -UseBasicParsing -ErrorAction SilentlyContinue
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        $params = @{
+            Uri             = $Uri
+            UseBasicParsing = $True
+            ErrorAction     = "SilentlyContinue"
+        }
+        $content = Invoke-WebRequest @params
     }
     catch [System.Net.Http.HttpResponseException] {
         Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file at $Redirections."
@@ -132,7 +139,12 @@ Function Get-FileContent {
     )
     $Path = Resolve-Path -Path $Path
     try {
-        $content = Get-Content -Path $Path -Raw -ErrorAction SilentlyContinue
+        $params = @{
+            Path        = $Path
+            Raw         = $True
+            ErrorAction = "SilentlyContinue"
+        }
+        $content = Get-Content @params
     }
     catch [System.IO.FileNotFoundException] {
         Write-Warning -Message "$($MyInvocation.MyCommand): Cannot find file: $Path."
@@ -200,6 +212,7 @@ Else {
         $node = $xmlDoc.CreateElement($xmlExcludeNodeElement)
         $node.SetAttribute($xmlNodeAttribute1, $path.Copy)
         $node.InnerText = $path.Path
+        $excludes.AppendChild($xmlDoc.CreateComment($path.Notes)) | Out-Null
         $excludes.AppendChild($node) | Out-Null
     }
     $root.AppendChild($excludes) | Out-Null
