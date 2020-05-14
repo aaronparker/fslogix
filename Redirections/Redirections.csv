@@ -9,4 +9,5 @@ Exclude,0,AppData\Local\Microsoft\Terminal Server Client,Microsoft Remote Deskto
 Exclude,0,AppData\Local\Google\Chrome\User Data\Default\Cache,Google Chrome cache,Google Chrome brower cache
 Exclude,0,AppData\Local\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\Cache,Microsoft Edge cache,Microsoft Edge UWP browser cache
 Exclude,0,AppData\Local\Microsoft\Edge SxS\User Data\Default\Cache,Microsoft Edge (Chromium) cache,Microsoft Edge (Chromium) cache
+Exclude,0,AppData\Roaming\Microsoft\Teams\media-stack,Microsoft Teams stack tracing folder, Details here https://docs.microsoft.com/en-us/microsoftteams/teams-for-vdi#teams-cached-content-exclusion-list-for-non-persistent-setup
 Exclude,0,AppData\Roaming\Sun\Java\Deployment\cache,Oracle JRE cache folder,Only include if the JRE is in the environment. May impact performance of Java apps
