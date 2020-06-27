@@ -30,7 +30,6 @@
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\GameDVR</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\GraphicsCache</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\TokenBroker\Cache</Path>
-        <Path Action="Prune" Days="30">%LocalAppData%\Microsoft\Windows\Caches</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\Cookies</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\DNTException</Path>
         <Path Action="Prune" Days="60">%AppData%\Microsoft\Windows\IECompatCache</Path>
