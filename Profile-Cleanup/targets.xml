@@ -89,6 +89,9 @@
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Teams\Application Cache</Path>
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Teams\Cache</Path>
         <Path Action="Prune" Days="30">%AppData%\Microsoft\Teams\GPUCache</Path>
+        <Path Action="Prune" Days="1">%AppData%\Microsoft\Teams\media-stack</Path>
+        <Path Action="Prune" Days="1">%AppData%\Microsoft\Teams\Service Worker</Path>
+        <Path Action="Prune" Days="1">%AppData%\Microsoft\Teams\meeting-addin\Cache</Path>
         <Path Action="Prune" Days="7">%AppData%\Microsoft\Teams\DownloadedUpdate</Path>
         <Path Action="Prune" Days="7">%LocalAppData%\Microsoft\Teams\packages</Path>
     </Target>
