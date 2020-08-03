@@ -12,9 +12,9 @@
 
 .TAGS FSLogix Profile-Containers Profile
 
-.LICENSEURI https://github.com/aaronparker/FSLogix/blob/master/LICENSE
+.LICENSEURI https://github.com/aaronparker/FSLogix/blob/main/LICENSE
 
-.PROJECTURI https://github.com/aaronparker/FSLogix/tree/master/Redirections
+.PROJECTURI https://github.com/aaronparker/FSLogix/tree/main/Redirections
 
 .ICONURI
 
@@ -66,11 +66,11 @@
 
         Output Redirections.xml to the C:\Temp\Redirections.xml.
 #>
-[CmdletBinding(SupportsShouldProcess = $True, HelpURI = "https://github.com/aaronparker/FSLogix/blob/master/Redirections/README.MD")]
+[CmdletBinding(SupportsShouldProcess = $True, HelpURI = "https://github.com/aaronparker/FSLogix/blob/main/Redirections/README.MD")]
 [OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $false)]
-    [System.String] $Redirections = "https://raw.githubusercontent.com/aaronparker/FSLogix/master/Redirections/Redirections.csv",
+    [System.String] $Redirections = "https://raw.githubusercontent.com/aaronparker/FSLogix/main/Redirections/Redirections.csv",
 
     [Parameter(Mandatory = $false)]
     [System.String] $OutFile = "Redirections.xml"

@@ -3,8 +3,8 @@
         Create a container and copy in target OST/PST file
 
     .NOTES
-        Original: https://github.com/FSLogix/Fslogix.Powershell.Disk/tree/master/Dave%20Young/Ost%20Migration/Release
-        Use FsLogix.PowerShell.Disk from: https://github.com/aaronparker/FSLogix/tree/master/Modules/Fslogix.Powershell.Disk
+        Original: https://github.com/FSLogix/Fslogix.Powershell.Disk/tree/main/Dave%20Young/Ost%20Migration/Release
+        Use FsLogix.PowerShell.Disk from: https://github.com/aaronparker/FSLogix/tree/main/Modules/Fslogix.Powershell.Disk
 #>
 
 [CmdletBinding(SupportsShouldProcess = $True)]

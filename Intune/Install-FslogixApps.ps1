@@ -20,7 +20,7 @@
 Param (
     [Parameter()]$LogFile = "$env:ProgramData\stealthpuppy\Logs\$($MyInvocation.MyCommand.Name).log",
     [Parameter()]$Target = "$env:ProgramData\stealthpuppy\Scripts",
-    [Parameter()]$ScriptUrl = "https://raw.githubusercontent.com/aaronparker/intune/master/FSLogix/Get-FslogixRuleset.ps1",
+    [Parameter()]$ScriptUrl = "https://raw.githubusercontent.com/aaronparker/intune/main/FSLogix/Get-FslogixRuleset.ps1",
     [Parameter()]$Script = (Split-Path -Path $ScriptUrl -Leaf),
     [Parameter()]$TaskName = "Get FSLogix Ruleset",
     [Parameter()]$Group = "NT AUTHORITY\SYSTEM",
