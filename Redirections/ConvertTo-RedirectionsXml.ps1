@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.6
+.VERSION 1.0.7
 
 .GUID 118b1874-d4b2-45bc-a698-f91f9568416c
 
@@ -31,6 +31,7 @@
 - 1.0.4, Additional error checking
 - 1.0.5, Run Update-ScriptFileInfo on script to fix issues on Windows Server 2012/R2
 - 1.0.6, Update to include Notes as comments in the XML; Minor code updates
+- 1.0.7, Update default $Redirections value due to changes in repositiry path
 
 .PRIVATEDATA
 
