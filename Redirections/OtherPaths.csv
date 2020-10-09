@@ -1,0 +1,73 @@
+Path,Description,Notes
+Videos,Videos folder,Omit if redirected to the network
+Saved Games,Saved Games folder,Omit if redirected to the network
+Contacts,Windows Contacts,Omit if redirected to the network
+Music,Music folder,Omit if redirected to the network
+Downloads,Downloads folder,Omit if redirected to the network
+$Recycle.Bin,User's Recycle bin folder,Omit if GPO manages Recycle Bin or folder redirection manages other folders
+Tracing,Skype for Business debug logs,Path can be pointed to %TEMP% via Registry
+AppData\Local\Apps,Microsoft Windows,May be required for UWP and other apps
+AppData\Local\Downloaded Installations,Microsoft Windows,May break per-user installed apps
+AppData\Local\assembly,.NET Framework Shadow Copies,May impact performance of .NET apps
+AppData\Local\CEF,Microsoft Windows,
+AppData\Local\Deployment,Microsoft Windows,
+AppData\Local\GroupPolicy,Group Policy,
+AppData\Local\Microsoft Help,Microsoft Help,
+AppData\Local\Sun,Sun Java cache,
+AppData\Local\VirtualStore,UAC redirection,
+AppData\Local\CrashDumps, Windows application crash dumps,
+AppData\Local\Package Cache,Package cache,
+AppData\Local\D3DSCache,D3DSCache,
+AppData\Local\Microsoft\TokenBroker\Cache, Token Broker cache,
+AppData\Local\Microsoft\Notifications,Windows 10 notifications & live tiles,
+AppData\Local\Microsoft\Internet Explorer\DOMStore,Internet Explorer persistent client-side data,
+AppData\Local\Microsoft\MSOIdentityCRL\Tracing,Microsoft Online Services Sign-in Assistant debug logs,
+AppData\Local\Microsoft\Messenger,Microsoft Messenger,
+AppData\Local\Microsoft\Terminal Server Client,Microsoft Remote Desktop Client cache,
+AppData\Local\Microsoft\UEV,Microsoft UEV,
+AppData\Local\Microsoft\Windows\Mail,Microsoft Mail,
+AppData\Local\Microsoft\Windows\WebCache.old,Microsoft Windows,
+AppData\Local\Microsoft\Windows\AppCache,Microsoft Windows,
+AppData\Local\Microsoft\Windows\Explorer,Windows Explorer cache,May impact Explorer performance for thumbnails
+AppData\Local\Microsoft\Windows\GameExplorer,Windows Game Explorer cache,
+AppData\Local\Microsoft\Windows\DNTException,Microsoft Windows,
+AppData\Local\Microsoft\Windows\IECompatCache,Internet Explorer,Internet Explorer compatibility list
+AppData\Local\Microsoft\Windows\IECompatUACache,Internet Explorer,
+AppData\Local\Microsoft\Windows\Notifications,Microsoft Windows,
+AppData\Local\Microsoft\Windows\PRICache,Microsoft Windows,
+AppData\Local\Microsoft\Windows\PrivacIE,Microsoft Windows,
+AppData\Local\Microsoft\Windows\RoamingTiles,Microsoft Windows,
+AppData\Local\Microsoft\Windows\SchCache,Microsoft Windows,
+AppData\Local\Microsoft\Windows\WebCache,Microsoft Windows,
+AppData\Local\Microsoft\Windows\1031,Microsoft Windows,
+AppData\Roaming\Google\Chrome\UserData\BrowserMetrics,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\Default\Code Cache\js,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\CertificateRevocation,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\CertificateTransparency,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\Crashpad,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\FileTypePolicies,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\InterventionPolicyDatabase,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\MEIPreload,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\PepperFlash,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\pnacl,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\Safe Browsing,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\ShaderCache,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\SSLErrorAssistant,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\Subresource Filter,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\SwReporter,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\Default\JumpListIcons,Google Chrome,
+AppData\Roaming\Google\Chrome\UserData\Default\JumpListIconsOld,Google Chrome,
+AppData\Roaming\com.adobe.formscentral.FormsCentralForAcrobat,Adobe Acrobat Forms Central,
+AppData\Roaming\Adobe\SLData,Adobe Acrobat,
+AppData\Roaming\Sun\Java\Deployment\cache,Oracle JRE cache folder,May impact performance of Java apps
+AppData\Roaming\Sun\Java\Deployment\log,Oracle JRE log folder,
+AppData\Roaming\Sun\Java\Deployment\tmp,Oracle JRE temp folder,
+AppData\Roaming\Citrix\PNAgent\AppCache,Citrix Workspace app cache,
+AppData\Roaming\Citrix\PNAgent\IconCache,Citrix Workspace app cache,
+AppData\Roaming\Citrix\PNAgent\ResourceCache,Citrix Workspace app cache,
+AppData\Roaming\ICAClient\Cache,Citrix Workspace app cache,
+AppData\Roaming\Macromedia\Flash Player\macromedia.com\support\flashplayer\sys,Adobe Flash Player,
+AppData\Roaming\Macromedia\Flash Player\macromedia.com\support\flashplayer\flashplayer\#SharedObjects,Adobe Flash Player cookies and cache,
+AppData\Roaming\ConnectWise\CrashDumps,ConnectWise crash dumps,
+AppData\Roaming\ConnectWise\cache,ConnectWise cache,
+TOSHIBA\eSTUDIOX\UNIDRV\Cache,Toshiba printer drivers,
