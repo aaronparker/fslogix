@@ -4,6 +4,8 @@ A list of folder redirections for use with FSLogix Profile Containers and a meth
 
 The list of redirections (`Redirections.csv`) is hosted here in CSV format so that it can be [rendered in a table when viewed on GitHub](https://help.github.com/en/articles/rendering-csv-and-tsv-data) and to simplify adding to or updating the list.
 
+Some additional paths are included in `OtherPaths.csv`. These are included for reference only and should not be blindly included in your `redirections.xml` without rigorous testing.
+
 ## Test Before Implementing in Production
 
 `Redirections.csv` is not a definitive list of paths to exclude or include in the Profile Container. You should assess each of the paths included in these lists for your environment and understand the impacts of excluding the path or whether it should instead be [cleaned up with alternative methods](https://github.com/aaronparker/FSLogix/tree/main/Profile-Cleanup). With community feedback, this list can be improved.
