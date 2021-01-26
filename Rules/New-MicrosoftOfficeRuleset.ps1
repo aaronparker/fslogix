@@ -46,7 +46,7 @@ Function Convert-Path {
     )
     Switch ($Path) {
         { $_ -match "HKEY_LOCAL_MACHINE" } { $Path = $Path -replace "HKEY_LOCAL_MACHINE", "HKLM" }
-        { $_ -match "C:\\Program Files (x86)" } { $Path = $Path -replace "C:\\Program Files (x86)", "%ProgramFilesFolder32%" }
+        { $_ -match "C:\\Program Files \(x86\)" } { $Path = $Path -replace "C:\\Program Files (x86)", "%ProgramFilesFolder32%" }
         { $_ -match "C:\\Program Files" } { $Path = $Path -replace "C:\\Program Files", "%ProgramFilesFolder64%" }
         { $_ -match "C:\\ProgramData\\Microsoft\\Windows\\Start Menu" } { $Path = $Path -replace "C:\\ProgramData\\Microsoft\\Windows\\Start Menu", "%CommonStartMenuFolder%" }
         { $_ -match "C:\\ProgramData" } { $Path = $Path -replace "C:\\ProgramData", "%CommonAppDataFolder%" }
