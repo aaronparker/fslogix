@@ -146,11 +146,8 @@ Begin {
     }
     #endregion
 
-    # Measure time taken to gather data
-    $StopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
     Write-Verbose -Message "Beginning file stats trawling."
-    $fileList = New-Object -TypeName System.Collections.ArrayList
+    $fileList = New-Object -TypeName "System.Collections.ArrayList"
 }
 Process {
     ForEach ($folder in $Path) {
@@ -200,10 +197,7 @@ Process {
     }
 }
 End {
-    # Return the array of file paths and metadata
-    $StopWatch.Stop()
-    Write-Verbose -Message "File stats trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
-    
+    # Return the array of file paths and metadata    
     $sortedFiles = $fileList | Sort-Object -Property @{Expression = "LastWriteTime"; Descending = $True }, @{Expression = "Name"; Descending = $False }
     Write-Output -InputObject $sortedFiles
 }
