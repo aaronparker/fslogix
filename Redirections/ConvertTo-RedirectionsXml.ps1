@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.7
+.VERSION 1.0.8
 
 .GUID 118b1874-d4b2-45bc-a698-f91f9568416c
 
@@ -31,7 +31,8 @@
 - 1.0.4, Additional error checking
 - 1.0.5, Run Update-ScriptFileInfo on script to fix issues on Windows Server 2012/R2
 - 1.0.6, Update to include Notes as comments in the XML; Minor code updates
-- 1.0.7, Update default $Redirections value due to changes in repositiry path
+- 1.0.7, Update default $Redirections value due to changes in repository path
+- 1.0.8, Update references to repo name, help URL
 
 .PRIVATEDATA
 
@@ -67,7 +68,7 @@
 
         Output Redirections.xml to the C:\Temp\Redirections.xml.
 #>
-[CmdletBinding(SupportsShouldProcess = $True, HelpURI = "https://github.com/aaronparker/fslogix/blob/main/Redirections/README.MD")]
+[CmdletBinding(SupportsShouldProcess = $True, HelpURI = "https://stealthpuppy.com/fslogix/profile.html")]
 [OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $false)]
