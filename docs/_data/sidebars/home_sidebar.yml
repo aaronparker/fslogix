@@ -13,8 +13,8 @@ entries:
       output: web
     - title: Profile Cleanup
       url: /profile.html
-      output: Container Cleanup
-    - title: Use
+      output: web
+    - title: Container Cleanup
       url: /container.html
       output: web
     - title: Redirections
