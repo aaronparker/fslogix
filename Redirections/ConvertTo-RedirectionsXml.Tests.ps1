@@ -16,7 +16,7 @@ Else {
 
 # Get variables
 $scripts = Get-ChildItem "$projectRoot" -Recurse -Include "ConvertTo-RedirectionsXml.ps1"
-$RedirectionsUri = "https://raw.githubusercontent.com/aaronparker/FSLogix/main/Redirections/Redirections.csv"
+$RedirectionsUri = "https://raw.githubusercontent.com/aaronparker/fslogix/main/Redirections/Redirections.csv"
 #endregion
 
 #region Tests

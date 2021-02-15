@@ -20,7 +20,7 @@ There are two methods for installing the script:
     Install-Script -Name Get-ApplicationRegistryKey
     ```
 
-2. Download from the [repository](https://github.com/aaronparker/FSLogix). `Get-ApplicationRegistryKey.ps1` can be downloaded directly from this repository and saved to a preferred location.
+2. Download from the [repository](https://github.com/aaronparker/fslogix). `Get-ApplicationRegistryKey.ps1` can be downloaded directly from this repository and saved to a preferred location.
 
 ## Usage
 
@@ -30,7 +30,7 @@ The following example will find keys related to Microsoft Visio
 . .\Get-ApplicationRegistryKey.ps1 -SeachString "Visio"
 ```
 
-The value for SearchString can be passed to `Get-ApplicationRegistryKey.ps1` via the pipeline. To search for Registry keys specific to Visio and Project by passing strings to Get-ApplicationRegistryKey.ps1 via the pilpeline, use:
+The value for SearchString can be passed to `Get-ApplicationRegistryKey.ps1` via the pipeline. To search for Registry keys specific to Visio and Project by passing strings to Get-ApplicationRegistryKey.ps1 via the pipeline, use:
 
 ```powershell
 C:\> "Visio", "Project" | .\Get-ApplicationRegistryKey.ps1

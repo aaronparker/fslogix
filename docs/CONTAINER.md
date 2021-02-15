@@ -28,9 +28,9 @@ This script depends on the following PowerShell modules:
 
 * `ActiveDirectory` - Installed as a feature in Windows Server or via [RSAT](https://support.microsoft.com/en-us/help/2693643/remote-server-administration-tools-rsat-for-windows-operating-systems)
 * `Hyper-V` - Installed as a feature in Windows Server or via [RSAT](https://support.microsoft.com/en-us/help/2693643/remote-server-administration-tools-rsat-for-windows-operating-systems)
-* `Fslogix.Powershell.Disk` - this module is found here: [https://github.com/aaronparker/FSLogix/tree/main/Modules/Fslogix.Powershell.Disk](https://github.com/aaronparker/FSLogix/tree/main/Modules/Fslogix.Powershell.Disk)
+* `Fslogix.Powershell.Disk` - this module is found here: [https://github.com/aaronparker/fslogix/tree/main/Modules/Fslogix.Powershell.Disk](https://github.com/aaronparker/fslogix/tree/main/Modules/Fslogix.Powershell.Disk)
 
-`Remove-ContainerData.ps1` and supporting files are available on in [the repository on GitHub](https://github.com/aaronparker/FSLogix/tree/main/Profile-Cleanup).
+`Remove-ContainerData.ps1` and supporting files are available on in [the repository on GitHub](https://github.com/aaronparker/fslogix/tree/main/Profile-Cleanup).
 
 ### Usage
 

@@ -3,7 +3,7 @@
         Create a container and copy in target OST/PST files
 
     .NOTES
-        Use FsLogix.PowerShell.Disk from: https://github.com/aaronparker/FSLogix/tree/main/Modules/Fslogix.Powershell.Disk
+        Use FsLogix.PowerShell.Disk from: https://github.com/aaronparker/fslogix/tree/main/Modules/Fslogix.Powershell.Disk
 #>
 
 [CmdletBinding(SupportsShouldProcess = $True)]

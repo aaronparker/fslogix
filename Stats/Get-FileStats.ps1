@@ -38,7 +38,7 @@
         Description:
         Scans the specified path returns the age and owner for each .vhdx file.
 #>
-[CmdletBinding(HelpUri = 'https://github.com/aaronparker/FSLogix/Stats/README.MD')]
+[CmdletBinding(HelpUri = 'https://github.com/aaronparker/fslogix/Stats/README.MD')]
 [OutputType([System.Array])]
 Param (
     [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `

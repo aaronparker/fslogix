@@ -8,7 +8,7 @@ Some additional paths are included in `OtherPaths.csv`. These are included for r
 
 ## Test Before Implementing in Production
 
-`Redirections.csv` is not a definitive list of paths to exclude or include in the Profile Container. You should assess each of the paths included in these lists for your environment and understand the impacts of excluding the path or whether it should instead be [cleaned up with alternative methods](https://github.com/aaronparker/FSLogix/tree/main/Profile-Cleanup). With community feedback, this list can be improved.
+`Redirections.csv` is not a definitive list of paths to exclude or include in the Profile Container. You should assess each of the paths included in these lists for your environment and understand the impacts of excluding the path or whether it should instead be [cleaned up with alternative methods](https://github.com/aaronparker/fslogix/tree/main/Profile-Cleanup). With community feedback, this list can be improved.
 
 It is also important to understand the performance impacts of implementing exclusions for Profile Containers. Ensure that the `Redirections.xml` that you implement in your environment is well tested before moving into production.
 

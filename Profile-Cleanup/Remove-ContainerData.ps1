@@ -237,7 +237,7 @@ Function Get-TestPath {
 # Measure time taken to gather data
 $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 Write-Verbose -Message "$($MyInvocation.MyCommand): This script requires a custom version of FsLogix.PowerShell.Disk."
-Write-Verbose -Message "$($MyInvocation.MyCommand): Download the module from here: https://github.com/aaronparker/FSLogix/tree/main/Modules/Fslogix.Powershell.Disk"
+Write-Verbose -Message "$($MyInvocation.MyCommand): Download the module from here: https://github.com/aaronparker/fslogix/tree/main/Modules/Fslogix.Powershell.Disk"
 
 # Read the specifed XML document
 Try {

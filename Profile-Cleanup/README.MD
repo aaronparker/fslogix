@@ -26,7 +26,7 @@ Deleting files from the profile can potentially result in data loss, so testing 
 .\Remove-ProfileData.ps1 -Targets .\targets.xml
 ```
 
-![Output from Remove-ProfileData.png](https://raw.githubusercontent.com/aaronparker/FSLogix/main/img/ProfileDataOutput.png "Output from Remove-ProfileData.png")
+![Output from Remove-ProfileData.png](https://raw.githubusercontent.com/aaronparker/fslogix/main/img/ProfileDataOutput.png "Output from Remove-ProfileData.png")
 
 ## About Remove-ContainerData.ps1
 
@@ -44,7 +44,7 @@ This script depends on the following PowerShell modules:
 
 * `ActiveDirectory` - Installed as a feature in Windows Server or via [RSAT](https://support.microsoft.com/en-us/help/2693643/remote-server-administration-tools-rsat-for-windows-operating-systems)
 * `Hyper-V` - Installed as a feature in Windows Server or via [RSAT](https://support.microsoft.com/en-us/help/2693643/remote-server-administration-tools-rsat-for-windows-operating-systems)
-* `Fslogix.Powershell.Disk` - this module is found here: [https://github.com/aaronparker/FSLogix/tree/main/Modules/Fslogix.Powershell.Disk](https://github.com/aaronparker/FSLogix/tree/main/Modules/Fslogix.Powershell.Disk)
+* `Fslogix.Powershell.Disk` - this module is found here: [https://github.com/aaronparker/fslogix/tree/main/Modules/Fslogix.Powershell.Disk](https://github.com/aaronparker/fslogix/tree/main/Modules/Fslogix.Powershell.Disk)
 
 ### Usage
 

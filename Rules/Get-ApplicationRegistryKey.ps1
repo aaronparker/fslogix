@@ -12,9 +12,9 @@
 
 .TAGS FSLogix App-Masking
 
-.LICENSEURI https://github.com/aaronparker/FSLogix/blob/main/LICENSE
+.LICENSEURI https://github.com/aaronparker/fslogix/blob/main/LICENSE
 
-.PROJECTURI https://github.com/aaronparker/FSLogix
+.PROJECTURI https://github.com/aaronparker/fslogix
 
 .ICONURI
 

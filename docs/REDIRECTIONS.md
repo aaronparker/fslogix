@@ -12,7 +12,7 @@ The list of redirections (`Redirections.csv`) is hosted here in CSV format so th
 
 ## Test Before Implementing in Production
 
-`Redirections.csv` is not a definitive list of paths to exclude or include in the Profile Container. You should assess each of the paths included in this list for your environment and understand whether a path should be excluded or [cleaned up with alternative methods](https://github.com/aaronparker/FSLogix/tree/main/Profile-Cleanup). It is likely that additional paths can be added to the list. With community feedback, this list can be improved.
+`Redirections.csv` is not a definitive list of paths to exclude or include in the Profile Container. You should assess each of the paths included in this list for your environment and understand whether a path should be excluded or [cleaned up with alternative methods](https://github.com/aaronparker/fslogix/tree/main/Profile-Cleanup). It is likely that additional paths can be added to the list. With community feedback, this list can be improved.
 
 It is also important to understand the performance impacts of implementing exclusions for Profile Containers. Ensure that the `redirections.xml` that you implement in your environment is well tested before moving into production.
 
@@ -26,7 +26,7 @@ There are two methods for installing the script:
     Install-Script -Name ConvertTo-RedirectionsXml
     ```
 
-2. Download from the [repository](https://github.com/aaronparker/FSLogix). `ConvertTo-RedirectionsXml.ps1` can be downloaded directly from this repository and saved to a preferred location.
+2. Download from the [repository](https://github.com/aaronparker/fslogix). `ConvertTo-RedirectionsXml.ps1` can be downloaded directly from this repository and saved to a preferred location.
 
 ## Usage
 
@@ -55,6 +55,6 @@ If you have saved the script locally instead of installing from the PowerShell G
 Contributions to the list of folders to exclude or include from the Profile Container is needed to improve the list. There are two ways to contribute:
 
 1. [Fork the repo](https://help.github.com/en/articles/fork-a-repo), update `redirections.csv` and create a [Pull Request](https://help.github.com/en/desktop/contributing-to-projects/creating-a-pull-request)
-2. If would prefer not to create a pull request, you can instead [create a new issue to request an addition or improvement](https://github.com/aaronparker/FSLogix/issues/new?assignees=&labels=&template=custom.md&title=)
+2. If would prefer not to create a pull request, you can instead [create a new issue to request an addition or improvement](https://github.com/aaronparker/fslogix/issues/new?assignees=&labels=&template=custom.md&title=)
 
 {% include links.html %}
