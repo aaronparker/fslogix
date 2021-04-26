@@ -4,27 +4,31 @@ Scripts here can be used to gather information on applications for creating rule
 
 ## New-MicrosoftOfficeRuleset.ps1
 
-This script will create an FSLogix App Masking ruleset for Office applications. The script relies on `New-MicrosoftOfficeRuleset.ps1` and the [`FSLogix.PowerShell.Rules`](https://www.powershellgallery.com/packages/FSLogix.PowerShell.Rules/) PowerShell module.
+This script will create an FSLogix App Masking rule set for Office applications. The script requires the [`FSLogix.PowerShell.Rules`](https://www.powershellgallery.com/packages/FSLogix.PowerShell.Rules/) PowerShell module. Install this module first with:
 
-`New-MicrosoftOfficeRuleset.ps1` has been tested with Office 365 ProPlus and should also work with Office 2019. It may work for Office 2013/2016, but testing has not been completed yet.
+```powershell
+Install-Module -Name "FSLogix.PowerShell.Rules" 
+```
+
+`New-MicrosoftOfficeRuleset.ps1` has been tested with the Microsoft 365 Apps / Office 365 ProPlus and should also work with Office 2019. It may work for Office 2013 /2016, but testing has not been completed yet.
 
 ### Usage
 
-`New-MicrosoftOfficeRuleset.ps1` should be used to create an App Masking ruleset for one application at a time. It will output a rule set files in the default `Documents\FSLogix Rulesets`. Example usage is below:
+`New-MicrosoftOfficeRuleset.ps1` should be used to create an App Masking rule set for one application at a time. It will output a rule set files in the default `Documents\FSLogix Rulesets`. Adding the `-Verbose` parameter is recommended to print registry and folder search information to the screen during execution.
 
-To create an FSLogix App Masking ruleset for Visio:
+For example, to create an FSLogix App Masking rule set for Visio:
 
 ```powershell
 .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Visio"
 ```
 
-To create an FSLogix App Masking ruleset for Project:
+To create an FSLogix App Masking rule set for Project use the following syntax. Note that the word `Project` is a generic word and therefore the generated rule set file may also include Registry keys and folders that are not specific to Microsoft Project. Manually edit the rule set file once the script completes.
 
 ```powershell
 .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Project", "WinProj"
 ```
 
-To create an FSLogix App Masking ruleset for Access:
+To create an FSLogix App Masking rule set for Access. Note that the word `Access` is a generic word and therefore the generated rule set file may also include Registry keys and folders that are not specific to Microsoft Access. Manually edit the rule set file once the script completes.
 
 ```powershell
 .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Access"
@@ -42,7 +46,7 @@ Returns Registry keys from well known locations that contain application informa
 Install-Script -Name Get-ApplicationRegistryKey
 ```
 
-If you encouter issues installing the script, ensure that [PowerShellGet](https://docs.microsoft.com/en-us/powershell/scripting/gallery/installing-psget) is up to date. On Windows 10 and Windows Server 2016 / 2019 the following commands can be used to update PowerShellGet.
+If you encounter issues installing the script, ensure that [PowerShellGet](https://docs.microsoft.com/en-us/powershell/scripting/gallery/installing-psget) is up to date. On Windows 10 and Windows Server 2016 / 2019 the following commands can be used to update PowerShellGet.
 
 ```powershell
 Install-Module -Name PowerShellGet -Force
@@ -54,10 +58,10 @@ Update-Module -Name PowerShellGet
 The following example will find keys related to Microsoft Visio
 
 ```powershell
-.\Get-ApplicationRegistryKey.ps1 -SeachString "Visio"
+.\Get-ApplicationRegistryKey.ps1 -SearchString "Visio"
 ```
 
-The script will output a list of keys, similar to the list below, that can then be validated and used in an App Masking ruleset for Visio:
+The script will output a list of keys, similar to the list below, that can then be validated and used in an App Masking rule set for Visio:
 
 ```text
 HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Icad.ViewerDrawing

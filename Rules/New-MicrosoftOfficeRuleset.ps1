@@ -188,7 +188,10 @@ If (!(Test-Path -Path (Split-Path -Path $RulesetFile -Parent))) {
 }
 
 If (Test-Path -Path $(Split-Path -Path $RulesetFile -Parent)) {
-    Write-Host -ForegroundColor "Cyan" "Using rule set file: $RulesetFile."
+    If (Test-Path -Path $RulesetFile) {
+        Write-Warning -Message "File exists: $RulesetFile. Rules will be added to the existing file."
+    }
+    Write-Information -MessageData "INFO: Using rule set file: $RulesetFile." -InformationAction "Continue"
 
     # Initialise the array objects
     $Keys = [System.Collections.ArrayList] @()
@@ -198,7 +201,9 @@ If (Test-Path -Path $(Split-Path -Path $RulesetFile -Parent)) {
     ForEach ($string in $SearchString) {
         
         # Grab registry keys related to this application
-        $Keys.Add((Get-ApplicationRegistryKey -SearchString $string))
+        Get-ApplicationRegistryKey -SearchString $string | ForEach-Object {
+            $Keys.Add($_) > $Null
+        }
 
         # Grab files related to this application
         ForEach ($folder in $Folders) {
@@ -208,7 +213,8 @@ If (Test-Path -Path $(Split-Path -Path $RulesetFile -Parent)) {
                 File        = $True
                 ErrorAction = "SilentlyContinue"
             }
-            $Files.Add((Get-ChildItem @params))
+            Write-Verbose -Message "Searching for files in: $folder."
+            Get-ChildItem @params | ForEach-Object { $Files.Add($_) > $Null }
         }
 
         # Grab folders related to this application
@@ -219,11 +225,13 @@ If (Test-Path -Path $(Split-Path -Path $RulesetFile -Parent)) {
                 Directory   = $True
                 ErrorAction = "SilentlyContinue"
             }
-            $Dirs.Add((Get-ChildItem @params))
+            Write-Verbose -Message "Searching for folders in: $folder."
+            Get-ChildItem @params | ForEach-Object { $Dirs.Add($_) > $Null }
         }
     }
 
     # Write paths to the App Masking rule set file
+    Write-Verbose -Message "Add registry key rules to: $RulesetFile."
     ForEach ($key in $Keys) {
         $params = @{
             Path       = $RulesetFile
@@ -233,6 +241,7 @@ If (Test-Path -Path $(Split-Path -Path $RulesetFile -Parent)) {
         }
         Add-FslRule @params
     }
+    Write-Verbose -Message "Add file rules to: $RulesetFile."
     ForEach ($file in $Files) {
         $params = @{
             Path       = $RulesetFile
@@ -242,6 +251,7 @@ If (Test-Path -Path $(Split-Path -Path $RulesetFile -Parent)) {
         }
         Add-FslRule @params
     }
+    Write-Verbose -Message "Add folder rules to: $RulesetFile."
     ForEach ($dir in $Dirs) {
         $params = @{
             Path       = $RulesetFile
