@@ -1,23 +1,26 @@
 #Requires -RunAsAdministrator
+#Requires -Module FSLogix.Powershell.Rules
+#Requires -PSEdition Desktop
 <#
     .SYNOPSIS    
-    Creates FSLogix App Masking rulesets for Microsoft Office applications.
-    Outputs files in "Documents\FSLogix Rule Sets". Rule sets will require manual validation.
+        Creates FSLogix App Masking rule sets for Microsoft Office applications using the FSLogix.Powershell.Rules module.
+        
+        Outputs files in "Documents\FSLogix Rule Sets". Rule sets will require manual validation.
 
     .EXAMPLE
-    To create an FSLogix App Masking ruleset for Visio:
+        To create an FSLogix App Masking rule set for Visio:
 
-    C:\> .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Visio"
-
-    .EXAMPLE
-    To create an FSLogix App Masking ruleset for Project:
-
-    C:\> .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Project", "WinProj"
+        C:\> .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Visio"
 
     .EXAMPLE
-    To create an FSLogix App Masking ruleset for Access:
+        To create an FSLogix App Masking rule set for Project:
 
-    C:\> .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Access"
+        C:\> .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Project", "WinProj"
+
+    .EXAMPLE
+        To create an FSLogix App Masking rule set for Access:
+
+        C:\> .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Access"
 #>
 [CmdletBinding()]
 Param (
@@ -25,7 +28,7 @@ Param (
     [ValidateNotNull()]
     [System.String[]] $SearchString,
 
-    [Parameter(Mandatory = $False, Position = 2)]
+    [Parameter(Mandatory = $False, Position = 1)]
     [ValidateNotNull()]
     [System.String[]] $Folders = @("$env:ProgramData\Microsoft\Windows\Start Menu\Programs",
         "$env:ProgramFiles\Microsoft Office\root\Office16", "$env:ProgramFiles\Microsoft Office\root\Integration",
@@ -35,6 +38,104 @@ Param (
 )
 
 #region Functions
+Function Get-ApplicationRegistryKey {
+    <#
+        .DESCRIPTION
+        Returns strings from well known Registry keys that define a Windows application. Used to assist in defining an FSLogix App Masking rule set.
+
+        .SYNOPSIS
+        Returns strings from well known Registry keys that define a Windows application.
+
+        .PARAMETER SearchString
+        An array of strings to check for application names. Defaults to "Visio", "Project".
+
+        .PARAMETER Key
+        A single key or array of Registry keys to check child keys for application details. The script includes the keys typically needed for most applications.
+
+        .EXAMPLE
+        To search for Registry keys specific to Adobe Reader or Acrobat:
+
+        C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Adobe"
+
+        .EXAMPLE
+        To search for Registry keys specific to Visio and Project:
+
+        C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Visio", "Project"
+
+        .EXAMPLE
+        To search for Registry keys specific to Skype for Business:
+
+        C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Skype"
+
+        .EXAMPLE
+        To search for Registry keys specific to Visio and Project by passing strings to Get-ApplicationRegistryKey.ps1 via the pilpeline, use:
+
+        C:\> "Visio", "Project" | .\Get-ApplicationRegistryKey.ps1
+    #>
+    [OutputType([System.Array])]
+    [CmdletBinding(SupportsShouldProcess = $False, HelpUri = "https://docs.stealthpuppy.com/docs/fslogix/appkeys")]
+    Param (
+        [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline)]
+        [ValidateNotNull()]
+        [System.String[]] $SearchString = @("Visio", "Project"),
+
+        [Parameter(Mandatory = $False, Position = 1, ValueFromPipelineByPropertyName)]
+        [ValidateNotNull()]
+        [System.String[]] $Key = @("HKLM:\SOFTWARE\Classes\CLSID", "HKLM:\SOFTWARE\Classes", "HKLM:\SOFTWARE\Wow6432Node\Classes", `
+                "HKLM:\SOFTWARE\Wow6432Node\Classes\CLSID", "HKLM:\Software\Microsoft\Office\Outlook\Addins", "HKCU:\Software\Microsoft\Office\Outlook\Addins", `
+                "HKLM:\Software\Microsoft\Office\Word\Addins", "HKCU:\Software\Microsoft\Office\Word\Addins", "HKLM:\Software\Microsoft\Office\Excel\Addins", `
+                "HKCU:\Software\Microsoft\Office\Excel\Addins", "HKLM:\Software\Microsoft\Office\PowerPoint\Addins", "HKCU:\Software\Microsoft\Office\PowerPoint\Addins", `
+                "HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\REGISTRY\MACHINE\Software\Classes", "HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\REGISTRY\MACHINE\Software\Clients", `
+                "HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\REGISTRY\MACHINE\Software\RegisteredApplications")
+    )
+
+    begin {
+        # Get current location
+        $location = Get-Location
+    }
+    process {
+        try {
+            # Walk through $Key
+            ForEach ($path in $Key) {
+                Write-Verbose -Message "Searching: $path."
+
+                try {
+                    # Attempt change location to $key
+                    $result = Push-Location -Path $path -ErrorAction SilentlyContinue -PassThru
+                }
+                catch [System.Management.Automation.ItemNotFoundException] {
+                    Write-Warning -Message "Item not found when changing location to [$path]."
+                }
+                catch [System.Exception] {
+                    Write-Warning -Message "Exception when changing location to [$path]."
+                }
+                # If successfully changed to the target key, get child keys and match against data in the default values
+                If ($result.Length -gt 0) {
+                    $regItems = Get-ChildItem
+                    ForEach ($item in $regItems) {
+                        ForEach ($string in $SearchString) {
+                            If (($item | Get-ItemProperty).'(default)' | Where-Object { $_ -like "*$string*" }) {
+                                Write-Verbose -Message "Found '$(($item | Get-ItemProperty).'(default)')'."
+                                Write-Output -InputObject $item.Name
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch [System.Exception] {
+            Write-Warning -Message "Exception accessing registry."
+            Throw $_.Exception
+        }
+        finally {
+            # Change back to original location
+            Set-Location -Path $location
+        }
+    }
+    end {
+    }
+}
+
 Function Convert-Path {
     <#
         .SYNOPSIS
@@ -53,47 +154,107 @@ Function Convert-Path {
     }
     Write-Output -InputObject $Path
 }
+
+Function Remove-InvalidFileNameChars {
+    param(
+        [System.String] $Name
+    )
+    $invalidChars = [IO.Path]::GetInvalidFileNameChars() -join ''
+    $replaceChars = "[{0}]" -f [RegEx]::Escape($invalidChars)
+    Write-Output -InputObject ($Name -replace $replaceChars)
+}
 #endregion
 
-# Install required scripts and modules from the PowerShell Gallery
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.208
-If (Get-PSRepository -Name PSGallery | Where-Object { $_.InstallationPolicy -ne "Trusted" }) {
-    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-}
-Install-Module -Name FSLogix.Powershell.Rules -Force
-Install-Script -Name Get-ApplicationRegistryKey -Force
 
-# Set up the ruleset file
+# Set up the rule set file paths
 $Documents = [Environment]::GetFolderPath('MyDocuments')
-$RulesetsFolder = "$Documents\FSLogix Rule Sets"
-$Ruleset = "$RulesetsFolder\Microsoft$($SearchString[0]).fxr"
-New-Item -Path $RulesetsFolder -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+$FileName = Remove-InvalidFileNameChars -Name $SearchString[0]
+$RulesetFile = [System.IO.Path]::Combine($Documents, "FSLogix Rule Sets", "Microsoft$FileName.fxr")
 
-$Keys = @(); $Files = @(); $Dirs = @()
-ForEach ($string in $SearchString) {
-    # Grab registry keys related to this application
-    $Keys += Get-ApplicationRegistryKey.ps1 -SearchString $string
+# Create the 'FSLogix Rule Sets'
+If (!(Test-Path -Path (Split-Path -Path $RulesetFile -Parent))) {
+    try {
+        $params = @{
+            Path        = (Split-Path -Path $RulesetFile -Parent)
+            ItemType    = "Directory"
+            Force       = $True
+            ErrorAction = "SilentlyContinue"
+        }
+        New-Item @params > $Null
+    }
+    catch {
+        Throw "Failed to create the 'FSLogix Rule Sets' folder in: $Documents."
+    }
+}
 
-    # Grab files related to this application
-    ForEach ($folder in $Folders) {
-        $Files += Get-ChildItem -Path $folder -Filter "$string*" -File -ErrorAction SilentlyContinue
+If (Test-Path -Path $(Split-Path -Path $RulesetFile -Parent)) {
+    Write-Host -ForegroundColor "Cyan" "Using rule set file: $RulesetFile."
+
+    # Initialise the array objects
+    $Keys = [System.Collections.ArrayList] @()
+    $Files = [System.Collections.ArrayList] @()
+    $Dirs = [System.Collections.ArrayList] @()
+
+    ForEach ($string in $SearchString) {
+        
+        # Grab registry keys related to this application
+        $Keys.Add((Get-ApplicationRegistryKey -SearchString $string))
+
+        # Grab files related to this application
+        ForEach ($folder in $Folders) {
+            $params = @{
+                Path        = $folder
+                Filter      = "$string*"
+                File        = $True
+                ErrorAction = "SilentlyContinue"
+            }
+            $Files.Add((Get-ChildItem @params))
+        }
+
+        # Grab folders related to this application
+        ForEach ($folder in $Folders) {
+            $params = @{
+                Path        = $folder
+                Filter      = "$string*"
+                Directory   = $True
+                ErrorAction = "SilentlyContinue"
+            }
+            $Dirs.Add((Get-ChildItem @params))
+        }
     }
 
-    # Grab folders related to this application
-    ForEach ($folder in $Folders) {
-        $Dirs = Get-ChildItem -Path $folder -Filter "$string*" -Directory -ErrorAction SilentlyContinue
+    # Write paths to the App Masking rule set file
+    ForEach ($key in $Keys) {
+        $params = @{
+            Path       = $RulesetFile
+            FullName   = (Convert-Path -Path $key)
+            HidingType = "FolderOrKey"
+            Comment    = "Added by $($MyInvocation.MyCommand)."
+        }
+        Add-FslRule @params
     }
-}
+    ForEach ($file in $Files) {
+        $params = @{
+            Path       = $RulesetFile
+            FullName   = (Convert-Path -Path $file.FullName)
+            HidingType = "FileOrValue"
+            Comment    = "Added by $($MyInvocation.MyCommand)."
+        }
+        Add-FslRule @params
+    }
+    ForEach ($dir in $Dirs) {
+        $params = @{
+            Path       = $RulesetFile
+            FullName   = (Convert-Path -Path $dir.FullName)
+            HidingType = "FolderOrKey"
+            Comment    = "Added by $($MyInvocation.MyCommand)."
+        }
+        Add-FslRule @params
+    }
 
-# Write paths to the App Masking ruleset file
-ForEach ($key in $Keys) {
-    Add-FslRule -Path $Ruleset -FullName (Convert-Path -Path $key) -HidingType FolderOrKey -Comment "Added by $($MyInvocation.MyCommand)."
+    # Output the location of the rule set file
+    Write-Output -InputObject $RulesetFile
 }
-ForEach ($file in $Files) {
-    Add-FslRule -Path $Ruleset -FullName (Convert-Path -Path $file.FullName) -HidingType FileOrValue -Comment "Added by $($MyInvocation.MyCommand)."
+Else {
+    Write-Error -Message "Path does not exist: $(Split-Path -Path $RulesetFile -Parent)."
 }
-ForEach ($dir in $Dirs) {
-    Add-FslRule -Path $Ruleset -FullName (Convert-Path -Path $dir.FullName) -HidingType FolderOrKey -Comment "Added by $($MyInvocation.MyCommand)."
-}
-
-Write-Host -ForegroundColor Cyan "Ruleset file: $Ruleset."
