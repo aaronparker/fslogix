@@ -1,4 +1,4 @@
-# Creating FSLogix App Masking, Java Control Rules
+# Creating FSLogix App Masking rule sets
 
 Scripts here can be used to gather information on applications for creating rule sets for App Masking & Java Control.
 
@@ -16,22 +16,28 @@ Install-Module -Name "FSLogix.PowerShell.Rules"
 
 `New-MicrosoftOfficeRuleset.ps1` should be used to create an App Masking rule set for one application at a time. It will output a rule set files in the default `Documents\FSLogix Rulesets`. Adding the `-Verbose` parameter is recommended to print registry and folder search information to the screen during execution.
 
-For example, to create an FSLogix App Masking rule set for Visio:
+For example, to create an FSLogix App Masking rule set for Microsoft Visio:
 
 ```powershell
 .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Visio"
 ```
 
-To create an FSLogix App Masking rule set for Project use the following syntax. Note that the word `Project` is a generic word and therefore the generated rule set file may also include Registry keys and folders that are not specific to Microsoft Project. Manually edit the rule set file once the script completes.
+To create an FSLogix App Masking rule set for Microsoft Project use the following syntax. Note that the word `Project` is a generic word and therefore the generated rule set file may also include Registry keys and folders that are not specific to Microsoft Project. Manually edit the rule set file once the script completes and remove any items that do not relate directly to Project.
 
 ```powershell
 .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Project", "WinProj"
 ```
 
-To create an FSLogix App Masking rule set for Access. Note that the word `Access` is a generic word and therefore the generated rule set file may also include Registry keys and folders that are not specific to Microsoft Access. Manually edit the rule set file once the script completes.
+To create an FSLogix App Masking rule set for Microsoft Access. Note that the word `Access` is a generic word and therefore the generated rule set file may also include Registry keys and folders that are not specific to Microsoft Access. Manually edit the rule set file once the script completes and remove any items that do not relate directly to Access.
 
 ```powershell
 .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Access"
+```
+
+To create an FSLogix App Masking rule set for Microsoft Publisher. Note that the word `Publisher` is a generic word and therefore the generated rule set file may also include Registry keys and folders that are not specific to Microsoft Publisher. Manually edit the rule set file once the script completes and remove any items that do not relate directly to Publisher.
+
+```powershell
+.\New-MicrosoftOfficeRuleset.ps1 -SearchString "Publisher"
 ```
 
 ## Get-ApplicationRegistryKey.ps1
