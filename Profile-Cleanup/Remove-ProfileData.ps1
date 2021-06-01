@@ -1,4 +1,4 @@
-#Requires -Version 2
+﻿#Requires -Version 2
 #Requires -PSEdition Desktop
 <#
     .SYNOPSIS
@@ -46,17 +46,17 @@
         Windows profiles can be cleaned up to reduce profile size and bloat.
         Use with traditional profile solutions to clean up profiles or with Container-based solution to keep Container sizes to minimum.
 #>
-[CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High', HelpUri = 'https://docs.stealthpuppy.com/docs/fslogix/profile')]
+[CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High", HelpUri = "https://docs.stealthpuppy.com/docs/fslogix/profile")]
 [OutputType([System.String])]
 Param (
-    [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+    [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline)]
     [ValidateNotNullOrEmpty()]
-    [ValidateScript( { If (Test-Path $_ -PathType 'Leaf') { $True } Else { Throw "Cannot find targets file: $_." } })]
+    [ValidateScript( { If (Test-Path $_ -PathType "Leaf") { $True } Else { Throw "Cannot find targets file: $_." } })]
     [Alias("Path", "Xml")]
     [System.String] $Targets,
 
     [Parameter(Mandatory = $False, Position = 1)]
-    [ValidateScript( { If (Test-Path -Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find log file directory: $_." } })]
+    [ValidateScript( { If (Test-Path -Path $_ -PathType "Container") { $True } Else { Throw "Cannot find log file directory: $_." } })]
     [System.String] $LogPath = (Resolve-Path -Path $env:LocalAppData),
 
     [Parameter(Mandatory = $False)]
