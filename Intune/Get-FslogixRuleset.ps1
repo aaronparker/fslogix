@@ -14,7 +14,7 @@
     .LINK
         https://stealthpuppy.com
 #>
-[CmdletBinding(ConfirmImpact='Low', HelpURI='https://stealthpuppy.com/', SupportsPaging=$False,
+[CmdletBinding(ConfirmImpact='Low', HelpURI='https://stealthpuppy.com/fslogix/', SupportsPaging=$False,
     SupportsShouldProcess=$False, PositionalBinding=$False)]
 Param (
     [Parameter()]$LogFile = "$env:ProgramData\stealthpuppy\Logs\$($MyInvocation.MyCommand.Name).log",

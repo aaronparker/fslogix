@@ -68,7 +68,7 @@
 
         Output Redirections.xml to the C:\Temp\Redirections.xml.
 #>
-[CmdletBinding(SupportsShouldProcess = $True, HelpURI = "https://stealthpuppy.com/fslogix/profile.html")]
+[CmdletBinding(SupportsShouldProcess = $True, HelpURI = "https://stealthpuppy.com/fslogix/redirections/")]
 [OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $false)]

@@ -26,7 +26,7 @@ Deleting files from the profile can potentially result in data loss, so testing 
 .\Remove-ProfileData.ps1 -Targets .\targets.xml
 ```
 
-![Output from Remove-ProfileData.png](https://raw.githubusercontent.com/aaronparker/fslogix/main/img/ProfileDataOutput.png "Output from Remove-ProfileData.png")
+![Output from Remove-ProfileData.png](assets/images/ProfileDataOutput.png "Output from Remove-ProfileData.png")
 
 ## About Remove-ContainerData.ps1
 

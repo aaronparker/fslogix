@@ -1,12 +1,7 @@
----
-title: "Profile Cleanup script"
-keywords: fslogix
-tags: [containers]
-sidebar: home_sidebar
-permalink: profile.html
-summary: Script to cleanup the contents of FSLogix Profile Containers.
----
-{% include important.html content="Caveat Emptor - this script will **DELETE** target files and folders. Be certain that the targets listed in the XML are OK to be removed. Test and test again before putting the script into production." %}
+# Profile Cleanup script"
+
+!!! warning "Warning"
+  This script will **DELETE** target files and folders. Be certain that the targets listed in the XML are OK to be removed. Test and test again before putting the script into production.
 
 ## Profile Capacity Management
 
@@ -42,7 +37,7 @@ To enable the script to clean up the user's profile, the following example comma
 .\Remove-ProfileData.ps1 -Targets .\targets.xml -Confirm:$False
 ```
 
-![Output from Remove-ProfileData](https://raw.githubusercontent.com/aaronparker/fslogix/main/img/ProfileDataOutput.png "Output from Remove-ProfileData")
+![Output from Remove-ProfileData](assets/images/ProfileDataOutput.png "Output from Remove-ProfileData")
 
 The age of files specified in the XML can be overridden with the `-Override` switch. This will remove files of any ages as specificed in the XML targets file.
 
@@ -71,7 +66,7 @@ To run `Remove-ProfileData.ps1` in a Group Policy login or logoff script action,
 * Open the *User Configuration / Policies / Windows Settings / Scripts (Logon/Logoff)* node. Edit either Logon or Logoff
 * Click the `PowerShell Scripts` tab and click the *Show Files* button. Copy `Remove-ProfileData.ps1` into the location displayed in Explorer.
 
-![Group Policy object scripts folder](https://raw.githubusercontent.com/aaronparker/fslogix/main/img/GroupPolicyScripts.png "Group Policy object scripts folder")
+![Group Policy object scripts folder](assets/images/GroupPolicyScripts.png "Group Policy object scripts folder")
 
 * Edit `Remove-ProfileData.ps1` and make the following changes:
   * Remove `ConfirmImpact = 'High'` (approximately line 49, starting with `CmdletBinding`)
@@ -79,12 +74,10 @@ To run `Remove-ProfileData.ps1` in a Group Policy login or logoff script action,
 
 * Copy `Targets.xml` to a central location. The `NETLOGON` share is a good candidate to ensure that the file is available centrally
 
-![Targets.xml in the NETLOGON share](https://raw.githubusercontent.com/aaronparker/fslogix/main/img/GroupPolicyNetlogon.png "Targets.xml in the NETLOGON share")
+![Targets.xml in the NETLOGON share](assets/images/GroupPolicyNetlogon.png "Targets.xml in the NETLOGON share")
 
 * Add `Remove-ProfileData.ps1` as a script with the `-Targets` parameter (e.g. `-Targets "\\home.stealthpuppy.com\NETLOGON\ProfileTargets.xml"`)
 
-![Adding the script](https://raw.githubusercontent.com/aaronparker/fslogix/main/img/GroupPolicyPowerShell.png "Adding the script")
+![Adding the script](assets/images/GroupPolicyPowerShell.png "Adding the script")
 
 Link the GPO to an organisational unit containing target user accounts (or use where the GPO is linked to a computer OU with [Loopback](https://support.microsoft.com/en-au/help/231287/loopback-processing-of-group-policy) enabled).
-
-{% include links.html %}

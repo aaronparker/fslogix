@@ -1,12 +1,7 @@
----
-title: "Container Cleanup script"
-keywords: fslogix
-tags: [containers]
-sidebar: home_sidebar
-permalink: container.html
-summary: Script to cleanup the contents of offline FSLogix Containers.
----
-{% include important.html content="Caveat Emptor - this script will **DELETE** target files and folders. Be certain that the targets listed in the XML are OK to be removed. Test and test again before putting the script into production." %}
+# Container Cleanup script"
+
+!!! warning "Warning"
+    This script will **DELETE** target files and folders. Be certain that the targets listed in the XML are OK to be removed. Test and test again before putting the script into production.
 
 ## Profile Capacity Management
 
@@ -41,5 +36,3 @@ This script depends on the following PowerShell modules:
 ### Running Remove-ContainerData.ps1
 
 `Remove-ContainerData.ps1` must be run outside the user session when Profile Containers are not in use. The script will require exclusive access to the Container to mount it with read/write access. `Remove-ContainerData.ps1` could be run as a schedule task outside of business hours from a management host.
-
-{% include links.html %}

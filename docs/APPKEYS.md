@@ -1,11 +1,5 @@
----
-title: "Creating FSLogix App Masking, Java Control Rules"
-keywords: fslogix
-tags: [app_masking]
-sidebar: home_sidebar
-permalink: appkeys.html
-summary: Scripts to gather information on applications for creating rule sets for App Masking & Java Control.
----
+# Creating FSLogix App Masking, Java Control Rules
+
 Scripts here can be used to gather information on applications for creating rule sets for App Masking & Java Control.
 
 `Get-ApplicationRegistryKey.ps1` returns Registry keys from well known locations that contain application information to return application keys for App Masking rules. An example use case for this would be determining specific locations for an application in a suite with shared components (e.g. Visio, Project or Skype for Business as a part of Office 365 ProPlus).
@@ -16,9 +10,9 @@ There are two methods for installing the script:
 
 1. Install from the [PowerShell Gallery](https://www.powershellgallery.com/packages/Get-ApplicationRegistryKey/). This is the preferred method as the installation can be handled directly from Windows PowerShell or PowerShell Core with the following command:
 
-    ```powershell
-    Install-Script -Name Get-ApplicationRegistryKey
-    ```
+```powershell
+Install-Script -Name Get-ApplicationRegistryKey
+```
 
 2. Download from the [repository](https://github.com/aaronparker/fslogix). `Get-ApplicationRegistryKey.ps1` can be downloaded directly from this repository and saved to a preferred location.
 
@@ -118,5 +112,3 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisioViewerDWGDisplayCreator.VisioViewerDWGD
 HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisOcx.DrawingControl
 HKEY_LOCAL_MACHINE\SOFTWARE\Classes\VisOcx.DrawingControl.1
 ```
-
-{% include links.html %}

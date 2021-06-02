@@ -10,4 +10,4 @@ Example - this will retrieve details for container files in a target share and o
 
 Outputing a view similar to this:
 
-![File stats for FSLogix Containers](https://raw.githubusercontent.com/aaronparker/fslogix/main/img/FileStatsGridView.PNG "File stats for FSLogix Containers")
+![File stats for FSLogix Containers](assets/images/FileStatsGridView.PNG "File stats for FSLogix Containers")

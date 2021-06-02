@@ -70,7 +70,7 @@ To search for Registry keys specific to Visio and Project by passing strings to 
 C:\> "Visio", "Project" | .\Get-ApplicationRegistryKey.ps1
 #>
 [OutputType([System.Array])]
-[CmdletBinding(SupportsShouldProcess = $False, HelpUri = "https://docs.stealthpuppy.com/docs/fslogix/appkeys")]
+[CmdletBinding(SupportsShouldProcess = $False, HelpUri = "https://stealthpuppy.com/fslogix/appkeys/")]
 Param (
     [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline)]
     [ValidateNotNull()]
