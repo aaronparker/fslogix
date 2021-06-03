@@ -6,7 +6,7 @@ Function Convert-Size {
         number) of digits after the decimal.
 
         .DESCRIPTION
-        Size conversion in PowerShell is pretty starightforward. If you have a number in
+        Size conversion in PowerShell is pretty staright forward. If you have a number in
         bytes and want to convert it into MB, or GB, it is as simple as typing 12345/1GB, or
         12345/1MB in PowerShell prompt or script.
 

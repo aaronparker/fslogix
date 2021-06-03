@@ -60,7 +60,7 @@
         Use with traditional profile solutions to clean up profiles or with Container-based solution to keep Container sizes to minimum.
 #>
 [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High', `
-        HelpUri = 'https://stealthpuppy.com/fslogix/profile/')]
+        HelpUri = "https://stealthpuppy.com/fslogix/containercleanup/")]
 [OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]

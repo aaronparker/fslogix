@@ -69,12 +69,12 @@ Begin {
         C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Skype"
 
         .EXAMPLE
-        To search for Registry keys specific to Visio and Project by passing strings to Get-ApplicationRegistryKey.ps1 via the pilpeline, use:
+        To search for Registry keys specific to Visio and Project by passing strings to Get-ApplicationRegistryKey.ps1 via the pipeline, use:
 
         C:\> "Visio", "Project" | .\Get-ApplicationRegistryKey.ps1
     #>
         [OutputType([System.Array])]
-        [CmdletBinding(SupportsShouldProcess = $False, HelpUri = "https://stealthpuppy.com/fslogix/appkeys/")]
+        [CmdletBinding(SupportsShouldProcess = $False, HelpUri = "https://stealthpuppy.com/fslogix/applicationkeys/")]
         Param (
             [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline)]
             [ValidateNotNull()]

@@ -44,7 +44,7 @@
         Windows profiles can be cleaned up to reduce profile size and bloat.
         Use with traditional profile solutions to clean up profiles or with Container-based solution to keep Container sizes to minimum.
 #>
-[CmdletBinding(HelpUri = 'https://stealthpuppy.com/fslogix/profile/')]
+[CmdletBinding(HelpUri = 'https://stealthpuppy.com/fslogix/profilecleanup/')]
 [OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]

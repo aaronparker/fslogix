@@ -106,7 +106,7 @@ nav:
   - Home:
     - Introduction: index.md
     - Profile Cleanup: profilecleanup.md
-    - Container Cleanup: containers.md
+    - Container Cleanup: containercleanup.md
     - Container Redirections: redirectionsxml.md
     - App Masking: applicationkeys.md
 
