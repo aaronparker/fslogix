@@ -1,4 +1,4 @@
-# Creating FSLogix App Masking, Java Control Rules
+# Creating FSLogix App Masking rules
 
 Scripts here can be used to gather information on applications for creating rule sets for App Masking & Java Control.
 
@@ -21,7 +21,7 @@ Install-Script -Name Get-ApplicationRegistryKey
 The following example will find keys related to Microsoft Visio
 
 ```powershell
-. .\Get-ApplicationRegistryKey.ps1 -SeachString "Visio"
+. .\Get-ApplicationRegistryKey.ps1 -SearchString "Visio"
 ```
 
 The value for SearchString can be passed to `Get-ApplicationRegistryKey.ps1` via the pipeline. To search for Registry keys specific to Visio and Project by passing strings to Get-ApplicationRegistryKey.ps1 via the pipeline, use:
@@ -62,7 +62,7 @@ Path  HKLM:\SOFTWARE\Classes
 This object can be passed to `Get-ApplicationRegistryKey.ps1` on the pipeline as per the following example:
 
 ```powershell
-$List | . "\\Mac\Home\projects\FSLogix\Rules\Get-ApplicationRegistryKey.ps1" -Verbose -SearchString "Visio"
+$List | .\Get-ApplicationRegistryKey.ps1 -Verbose -SearchString "Visio"
 ```
 
 In each case, the script will output a list of keys, similar to the list below, that can then be validated and used in an App Masking ruleset:

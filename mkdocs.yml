@@ -105,10 +105,10 @@ markdown_extensions:
 nav:
   - Home:
     - Introduction: index.md
-    - Profile Cleanup: profile.md
-    - Container Cleanup: container.md
-    - Container Redirections: redirections.md
-    - App Masking: appkeys.md
+    - Profile Cleanup: profilecleanup.md
+    - Container Cleanup: containers.md
+    - Container Redirections: redirectionsxml.md
+    - App Masking: applicationskeys.md
 
 # Customization
 extra:
