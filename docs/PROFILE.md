@@ -1,7 +1,7 @@
 # Profile Cleanup script"
 
 !!! warning "Warning"
-  This script will **DELETE** target files and folders. Be certain that the targets listed in the XML are OK to be removed. Test and test again before putting the script into production.
+    This script will **DELETE** target files and folders. Be certain that the targets listed in the XML are OK to be removed. Test and test again before putting the script into production.
 
 ## Profile Capacity Management
 
