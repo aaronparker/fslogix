@@ -108,7 +108,7 @@ nav:
     - Profile Cleanup: profilecleanup.md
     - Container Cleanup: containers.md
     - Container Redirections: redirectionsxml.md
-    - App Masking: applicationskeys.md
+    - App Masking: applicationkeys.md
 
 # Customization
 extra:
