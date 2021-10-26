@@ -47,7 +47,6 @@
         Use with traditional profile solutions to clean up profiles or with Container-based solution to keep Container sizes to minimum.
 #>
 [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High", HelpUri = "https://stealthpuppy.com/fslogix/profilecleanup/")]
-[OutputType([System.String])]
 Param (
     [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline)]
     [ValidateNotNullOrEmpty()]
@@ -70,6 +69,35 @@ Param (
 Begin {
 
     #region Functions
+    Function Write-Log ($Message) {
+        If (Test-Path -Path $(Split-Path -Path $global:LogFile -Parent) -ErrorAction "SilentlyContinue") {}
+        Else {
+            $params = @{
+                Path        = (Split-Path -Path $global:LogFile -Parent)
+                ItemType    = "Directory"
+                ErrorAction = "SilentlyContinue"
+                Confirm      = $False
+            }
+            New-Item @params | Out-Null
+        }
+    
+        try {
+            $TimeStamp = "[{0:dd/MM/yyyy} {0:HH:mm:ss}]" -f (Get-Date)
+            Write-Verbose -Message "$TimeStamp : $Message"
+            $params = @{
+                FilePath    = $global:LogFile
+                Append      = $True
+                Encoding    = "Utf8"
+                Confirm      = $False
+                ErrorAction = "SilentlyContinue"
+            }
+            "$($TimeStamp): $Message" | Out-File @params
+        }
+        catch {
+            Write-Error -Message "Failed to add entry to $global:LogFile."
+        }
+    }
+
     Function ConvertTo-Path {
         <#
           .SYNOPSIS
@@ -214,41 +242,43 @@ Begin {
         )
         Process {
             If ((Split-Path -Path $Path -Leaf) -match "[*?]") {
-                $fileList = Split-Path -Path $Path -Parent
+                $List = Split-Path -Path $Path -Parent
             }
             Else {
-                $fileList = $Path
+                $List = $Path
             }
-            Write-Output -InputObject $fileList
+            Write-Output -InputObject $List
         }
     }
     #endregion
 
     # Output array, will contain the list of files/folders removed
-    $LogFile = Join-Path -Path $LogPath -ChildPath $("$($MyInvocation.MyCommand)-$((Get-Date).ToFileTimeUtc()).log")
+    $global:LogFile = Join-Path -Path $LogPath -ChildPath $("$($MyInvocation.MyCommand)-$((Get-Date).ToFileTimeUtc()).log")
+    Remove-Variable -Name "fileList" -ErrorAction "SilentlyContinue"
     $fileList = New-Object -TypeName "System.Collections.ArrayList"
 
     # Measure time taken to gather data
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
     If ($WhatIfPreference -eq $True) {
         $WhatIfPreference = $False
-        "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] WhatIf mode" | Out-File -FilePath $LogFile -Append
+        Write-Log -Message "WhatIf mode."
         $WhatIfPreference = $True
     }
     Else {
-        "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Delete mode" | Out-File -FilePath $LogFile -Append
+        Write-Log -Message "Delete mode."
     }
     Write-Verbose -Message "Writing file list to: $LogFile."
-    If ($Override) { "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Override mode enabled" | Out-File -FilePath $LogFile -Append }
+    If ($Override) { Write-Log -Message "Override mode enabled." }
 }
 
 Process {
     # Read the specified XML document
-    Try {
-        [System.XML.XMLDocument] $xmlDocument = Get-Content -Path $Targets -ErrorAction SilentlyContinue
+    try {
+        [System.XML.XMLDocument] $xmlDocument = Get-Content -Path $Targets -ErrorAction "SilentlyContinue"
     }
-    Catch {
-        Write-Warning -Message "$($MyInvocation.MyCommand): failed to read: $Targets."
+    catch {
+        Write-Warning -Message "Failed to read: $Targets."
+        Write-Log -Message "Failed to read: $Targets."
         Throw $_.Exception.Message
     }
 
@@ -265,7 +295,7 @@ Process {
                 Write-Verbose -Message "Processing folder: $thisPath"
 
                 # Get files to delete from Paths and file age; build output array
-                If (Test-Path -Path $(Get-TestPath -Path $thisPath) -ErrorAction SilentlyContinue) {
+                If (Test-Path -Path $(Get-TestPath -Path $thisPath) -ErrorAction "SilentlyContinue") {
 
                     Switch ($targetPath.Action) {
                         "Prune" {
@@ -278,16 +308,23 @@ Process {
                             }
 
                             # Construct the file list for this folder and add to the full list for logging
-                            Try {
-                                $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -le $dateFilter }
+                            try {
+                                $params = @{
+                                    Path        = $thisPath
+                                    Exclude     = "desktop.ini"
+                                    Recurse     = $True
+                                    Force       = $True
+                                    ErrorAction = "SilentlyContinue"
+                                }
+                                $files = Get-ChildItem @params | Where-Object { $_.LastWriteTime -le $dateFilter }
                             }
-                            Catch [System.UnauthorizedAccessException] {
-                                Write-Warning -Message "$($MyInvocation.MyCommand): Access exception error. Failed to access $thisPath."
-                                "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Access exception error. Failed to access $thisPath." | Out-File -FilePath $LogFile -Append
+                            catch [System.UnauthorizedAccessException] {
+                                Write-Warning -Message "Access exception error. Failed to access $thisPath."
+                                Write-Log -Message "Access exception error. Failed to access $thisPath."
                             }
-                            Catch [System.Exception] {
-                                Write-Warning -Message "$($MyInvocation.MyCommand): failed to resolve $thisPath."
-                                "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Failed to resolve $thisPath." | Out-File -FilePath $LogFile -Append
+                            catch [System.Exception] {
+                                Write-Warning -Message "failed to resolve $thisPath."
+                                Write-Log -Message "Failed to resolve $thisPath."
                             }
                             Finally {
                                 $fileList.Add($files) | Out-Null
@@ -296,20 +333,20 @@ Process {
                             # Delete files with support for -WhatIf
                             ForEach ($file in $files) {
                                 If ($PSCmdlet.ShouldProcess($file.FullName, "Prune")) {
-                                    Try {
-                                        Remove-Item -Path $file.FullName -Force -Recurse -ErrorAction SilentlyContinue
+                                    try {
+                                        Remove-Item -Path $file.FullName -Force -Recurse -ErrorAction "SilentlyContinue"
                                     }
-                                    Catch [System.IO.IOException] {
-                                        Write-Warning -Message "$($MyInvocation.MyCommand): IO exception error. Failed to remove $($file.FullName)."
-                                        "$($MyInvocation.MyCommand): IO exception error. Failed to remove $($file.FullName)." | Out-File -FilePath $LogFile
+                                    catch [System.IO.IOException] {
+                                        Write-Warning -Message "IO exception error. Failed to remove $($file.FullName)."
+                                        Write-Log -Message "IO exception error. Failed to remove $($file.FullName)."
                                     }
-                                    Catch [System.UnauthorizedAccessException] {
-                                        Write-Warning -Message "$($MyInvocation.MyCommand): Access exception error. Failed to remove $($file.FullName)."
-                                        "$($MyInvocation.MyCommand): Access exception error. Failed to remove $($file.FullName)." | Out-File -FilePath $LogFile
+                                    catch [System.UnauthorizedAccessException] {
+                                        Write-Warning -Message "Access exception error. Failed to remove $($file.FullName)."
+                                        Write-Log -Message "Access exception error. Failed to remove $($file.FullName)."
                                     }
-                                    Catch [System.Exception] {
-                                        Write-Warning -Message "$($MyInvocation.MyCommand): failed to remove $($file.FullName)."
-                                        "$($MyInvocation.MyCommand): failed to remove $($file.FullName)." | Out-File -FilePath $LogFile
+                                    catch [System.Exception] {
+                                        Write-Warning -Message "failed to remove $($file.FullName)."
+                                        Write-Log -Message "Failed to remove $($file.FullName)."
                                     }
                                 }
                             }
@@ -317,25 +354,25 @@ Process {
 
                         "Delete" {
                             # Construct the file list for this folder and add to the full list for logging
-                            $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction SilentlyContinue
+                            $files = Get-ChildItem -Path $thisPath -Recurse -Force -ErrorAction "SilentlyContinue"
                             $fileList.Add($files) | Out-Null
 
                             # Delete the target folder
                             If ($PSCmdlet.ShouldProcess($thisPath, "Delete")) {
-                                Try {
-                                    Remove-Item -Path $thisPath -Force -Recurse -ErrorAction SilentlyContinue
+                                try {
+                                    Remove-Item -Path $thisPath -Force -Recurse -ErrorAction "SilentlyContinue"
                                 }
-                                Catch [System.IO.IOException] {
-                                    Write-Warning -Message "$($MyInvocation.MyCommand): IO exception error. Failed to remove $thisPath."
-                                    "$($MyInvocation.MyCommand): IO exception error. Failed to remove $thisPath." | Out-File -FilePath $LogFile
+                                catch [System.IO.IOException] {
+                                    Write-Warning -Message "IO exception error. Failed to remove $thisPath."
+                                    Write-Log -Message "IO exception error. Failed to remove $thisPath."
                                 }
-                                Catch [System.UnauthorizedAccessException] {
-                                    Write-Warning -Message "$($MyInvocation.MyCommand): Access exception error. Failed to remove $thisPath."
-                                    "$($MyInvocation.MyCommand): Access exception error. Failed to remove $thisPath." | Out-File -FilePath $LogFile
+                                catch [System.UnauthorizedAccessException] {
+                                    Write-Warning -Message "Access exception error. Failed to remove $thisPath."
+                                    Write-Log -Message "Access exception error. Failed to remove $thisPath."
                                 }
-                                Catch [System.Exception] {
-                                    Write-Warning -Message "$($MyInvocation.MyCommand): failed to remove $thisPath."
-                                    "$($MyInvocation.MyCommand): failed to remove $thisPath." | Out-File -FilePath $LogFile
+                                catch [System.Exception] {
+                                    Write-Warning -Message "failed to remove $thisPath."
+                                    Write-Log -Message "failed to remove $thisPath."
                                 }
                             }
                         }
@@ -346,31 +383,32 @@ Process {
                             ForEach ($folder in $folders) {
 
                                 # Construct the file list for this folder and add to the full list for logging
-                                $files = Get-ChildItem -Path $folder -Recurse -Force -ErrorAction SilentlyContinue
+                                $files = Get-ChildItem -Path $folder -Recurse -Force -ErrorAction "SilentlyContinue"
                                 $fileList.Add($files) | Out-Null
 
                                 If ($PSCmdlet.ShouldProcess($folder, "Trim")) {
-                                    Try {
-                                        Remove-Item -Path $folder -Force -Recurse -ErrorAction SilentlyContinue
+                                    try {
+                                        Remove-Item -Path $folder -Force -Recurse -ErrorAction "SilentlyContinue"
                                     }
-                                    Catch [System.IO.IOException] {
-                                        Write-Warning -Message "$($MyInvocation.MyCommand): IO exception error. Failed to remove $folder."
-                                        "$($MyInvocation.MyCommand): IO exception error. Failed to remove $folder." | Out-File -FilePath $LogFile
+                                    catch [System.IO.IOException] {
+                                        Write-Warning -Message "IO exception error. Failed to remove $folder."
+                                        Write-Log -Message "IO exception error. Failed to remove $folder."
                                     }
-                                    Catch [System.UnauthorizedAccessException] {
-                                        Write-Warning -Message "$($MyInvocation.MyCommand): Access exception error. Failed to remove $folder."
-                                        "$($MyInvocation.MyCommand): Access exception error. Failed to remove $folder." | Out-File -FilePath $LogFile
+                                    catch [System.UnauthorizedAccessException] {
+                                        Write-Warning -Message "Access exception error. Failed to remove $folder."
+                                        Write-Log -Message "Access exception error. Failed to remove $folder."
                                     }
-                                    Catch [System.Exception] {
-                                        Write-Warning -Message "$($MyInvocation.MyCommand): failed to remove $folder."
-                                        "$($MyInvocation.MyCommand): failed to remove $folder." | Out-File -FilePath $LogFile
+                                    catch [System.Exception] {
+                                        Write-Warning -Message "failed to remove $folder."
+                                        Write-Log -Message "failed to remove $folder."
                                     }
                                 }
                             }
                         }
 
                         Default {
-                            Write-Warning -Message "$($MyInvocation.MyCommand): [Unable to determine action for $thisPath]"
+                            Write-Warning -Message "[Unable to determine action for $thisPath]"
+                            Write-Log -Message "Unable to determine action for $thisPath."
                         }
                     }
                 }
@@ -378,35 +416,36 @@ Process {
         }
     }
     Else {
-        Write-Error -Message "$($MyInvocation.MyCommand): $Targets failed XML validation. Aborting script."
-        "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)]$Targets failed validation" | Out-File -FilePath $LogFile -Append
+        Write-Error -Message "$Targets failed XML validation. Aborting script."
+        Write-Log -Message "$Targets failed validation. Aborting script."
     }
 
     # Output total size of files deleted
     If ($fileList.FullName.Count -gt 0) {
-        #$fileSize = ($fileList | Measure-Object -Sum Length).Sum
-        # Work around previous approach to calculating size not working
+
+        Remove-Variable -Name "fileSize" -ErrorAction "SilentlyContinue"
         ForEach ($item in $fileList) {
             ForEach ($file in $item) {
                 $fileSize += $file.Length
                 $fileCount += 1
             }
         }
-        $sizeMiB = Convert-Size -From B -To MiB -Value $fileSize
+        Remove-Variable -Name "sizeMiB" -ErrorAction "SilentlyContinue"
+        $sizeMiB = Convert-Size -From "B" -To "MiB" -Value $fileSize
 
         # Write deleted file list out to the log file
         If ($WhatIfPreference -eq $True) { $WhatIfPreference = $False }
-        "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] File list start" | Out-File -FilePath $LogFile -Append
-        $fileList.FullName | Out-File -FilePath $LogFile -Append
-        "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] File list end" | Out-File -FilePath $LogFile -Append
+        Write-Log -Message " File list start:"
+        Write-Log -Message ($fileList.FullName -join "`n")
+        Write-Log -Message " File list end."
     }
     Else {
         $sizeMiB = 0
     }
-    "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Total file size deleted $sizeMiB MiB" | Out-File -FilePath $LogFile -Append
+    Write-Log -Message "Total file size deleted $sizeMiB MiB."
 
     # Return the size of the deleted files in MiB to the pipeline
-    $PSObject = [PSCustomObject]@{
+    $PSObject = [PSCustomObject] @{
         Files   = $fileCount
         Deleted = "$sizeMiB MiB"
     }
@@ -417,12 +456,12 @@ End {
     # Stop time recording
     $stopWatch.Stop()
     Write-Verbose -Message "Script took $($stopWatch.Elapsed.TotalMilliseconds) ms to complete."
-    "[$($MyInvocation.MyCommand)][$(Get-Date -Format FileDateTime)] Time to complete $($stopWatch.Elapsed.TotalMilliseconds) ms" | Out-File -FilePath $LogFile -Append
+    Write-Log -Message "Time to complete $($stopWatch.Elapsed.TotalMilliseconds) ms."
 
     # Prune old log files. Keep last number of logs: $KeepLogs
     $Logs = Get-ChildItem -Path $LogPath -Filter $("$($MyInvocation.MyCommand)-*.log")
     If ($Logs.Count -gt $KeepLog) {
-        $Logs | Sort-Object -Property LastWriteTime | Select-Object -First ($Logs.Count - $KeepLog) | Remove-Item -Force
-        Write-Verbose -Message "$($MyInvocation.MyCommand): Removed log files: $($Logs.Count - $KeepLog)."
+        $Logs | Sort-Object -Property "LastWriteTime" | Select-Object -First ($Logs.Count - $KeepLog) | Remove-Item -Force
+        Write-Verbose -Message "Removed log files: $($Logs.Count - $KeepLog)."
     }
 }
