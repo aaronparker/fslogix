@@ -119,4 +119,4 @@ extra:
       link: https://twitter.com/stealthpuppy
     - icon: fontawesome/brands/linkedin
       link: https://linkedin.com/in/aaronedwardparker/
-  generator: false
+  generator: true
