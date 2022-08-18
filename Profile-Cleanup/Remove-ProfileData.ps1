@@ -50,12 +50,12 @@
 Param (
     [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline)]
     [ValidateNotNullOrEmpty()]
-    [ValidateScript( { If (Test-Path $_ -PathType "Leaf") { $True } Else { Throw "Cannot find targets file: $_." } })]
+    [ValidateScript( { if (Test-Path $_ -PathType "Leaf") { $True } else { Throw "Cannot find targets file: $_." } })]
     [Alias("Path", "Xml")]
     [System.String] $Targets,
 
     [Parameter(Mandatory = $False, Position = 1)]
-    [ValidateScript( { If (Test-Path -Path $_ -PathType "Container") { $True } Else { Throw "Cannot find log file directory: $_." } })]
+    [ValidateScript( { if (Test-Path -Path $_ -PathType "Container") { $True } else { Throw "Cannot find log file directory: $_." } })]
     [System.String] $LogPath = (Resolve-Path -Path $env:LocalAppData),
 
     [Parameter(Mandatory = $False)]
@@ -66,12 +66,12 @@ Param (
     [System.Int32] $KeepLog = 30
 )
 
-Begin {
+begin {
 
     #region Functions
-    Function Write-Log ($Message) {
-        If (Test-Path -Path $(Split-Path -Path $global:LogFile -Parent) -ErrorAction "SilentlyContinue") {}
-        Else {
+    function Write-Log ($Message) {
+        if (Test-Path -Path $(Split-Path -Path $global:LogFile -Parent) -ErrorAction "SilentlyContinue") {}
+        else {
             $params = @{
                 Path        = (Split-Path -Path $global:LogFile -Parent)
                 ItemType    = "Directory"
@@ -80,7 +80,7 @@ Begin {
             }
             New-Item @params | Out-Null
         }
-    
+
         try {
             $TimeStamp = "[{0:dd/MM/yyyy} {0:HH:mm:ss}]" -f (Get-Date)
             Write-Verbose -Message "$TimeStamp : $Message"
@@ -98,7 +98,7 @@ Begin {
         }
     }
 
-    Function ConvertTo-Path {
+    function ConvertTo-Path {
         <#
           .SYNOPSIS
             Replaces environment variables in strings with actual path
@@ -108,7 +108,7 @@ Begin {
             [System.String] $Path
         )
         Process {
-            Switch ($Path) {
+            switch ($Path) {
                 { $_ -match "%USERPROFILE%" } { $Path = $Path -replace "%USERPROFILE%", $env:USERPROFILE }
                 { $_ -match "%LocalAppData%" } { $Path = $Path -replace "%LocalAppData%", $env:LocalAppData }
                 { $_ -match "%AppData%" } { $Path = $Path -replace "%AppData%", $env:AppData }
@@ -118,7 +118,7 @@ Begin {
         }
     }
 
-    Function Convert-Size {
+    function Convert-Size {
         <#
             .SYNOPSIS
                 Converts computer data sizes between one format and another.
@@ -211,7 +211,7 @@ Begin {
         [Math]::Round($value, $Precision, [MidPointRounding]::AwayFromZero)
     }
 
-    Function Get-AllExceptLatest {
+    function Get-AllExceptLatest {
         <#
         .SYNOPSIS
         Returns all sub-folders of a specified path except for the latest folder, based on CreationTime.
@@ -223,28 +223,28 @@ Begin {
         )
         Process {
             $folders = Get-ChildItem -Path $Path -Directory
-            If ($folders.Count -gt 1) {
+            if ($folders.Count -gt 1) {
                 $folder = $folders | Sort-Object -Property CreationTime -Descending | Select-Object -First 1
                 Write-Output (Get-ChildItem -Path $Path -Exclude $folder.Name)
             }
         }
     }
 
-    Function Get-TestPath {
+    function Get-TestPath {
         <#
-        .SYNOPSIS
-        Check whether path includes wildcards in file names
-        If so, return parent path, or just return the same path
-    #>
-        Param (
+            .SYNOPSIS
+            Check whether path includes wildcards in file names
+            If so, return parent path, or just return the same path
+        #>
+        param (
             [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True)]
             [System.String] $Path
         )
-        Process {
-            If ((Split-Path -Path $Path -Leaf) -match "[*?]") {
+        process {
+            if ((Split-Path -Path $Path -Leaf) -match "[*?]") {
                 $List = Split-Path -Path $Path -Parent
             }
-            Else {
+            else {
                 $List = $Path
             }
             Write-Output -InputObject $List
@@ -259,19 +259,19 @@ Begin {
 
     # Measure time taken to gather data
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-    If ($WhatIfPreference -eq $True) {
+    if ($WhatIfPreference -eq $True) {
         $WhatIfPreference = $False
         Write-Log -Message "WhatIf mode."
         $WhatIfPreference = $True
     }
-    Else {
+    else {
         Write-Log -Message "Delete mode."
     }
     Write-Verbose -Message "Writing file list to: $LogFile."
-    If ($Override) { Write-Log -Message "Override mode enabled." }
+    if ($Override) { Write-Log -Message "Override mode enabled." }
 }
 
-Process {
+process {
     # Read the specified XML document
     try {
         [System.XML.XMLDocument] $xmlDocument = Get-Content -Path $Targets -ErrorAction "SilentlyContinue"
@@ -279,31 +279,31 @@ Process {
     catch {
         Write-Warning -Message "Failed to read: $Targets."
         Write-Log -Message "Failed to read: $Targets."
-        Throw $_.Exception.Message
+        throw $_.Exception.Message
     }
 
-    If ($xmlDocument -is [System.XML.XMLDocument]) {
+    if ($xmlDocument -is [System.XML.XMLDocument]) {
 
         # Select each Target XPath; walk through each target to delete files
-        ForEach ($target in (Select-Xml -Xml $xmlDocument -XPath "//Target")) {
+        foreach ($target in (Select-Xml -Xml $xmlDocument -XPath "//Target")) {
 
             Write-Verbose -Message "Processing target: [$($target.Node.Name)]"
-            ForEach ($targetPath in $target.Node.Path) {
+            foreach ($targetPath in $target.Node.Path) {
 
                 # Convert path from XML with environment variable to actual path
                 $thisPath = $(ConvertTo-Path -Path $targetPath.innerText)
                 Write-Verbose -Message "Processing folder: $thisPath"
 
                 # Get files to delete from Paths and file age; build output array
-                If (Test-Path -Path $(Get-TestPath -Path $thisPath) -ErrorAction "SilentlyContinue") {
+                if (Test-Path -Path $(Get-TestPath -Path $thisPath) -ErrorAction "SilentlyContinue") {
 
-                    Switch ($targetPath.Action) {
+                    switch ($targetPath.Action) {
                         "Prune" {
                             # Get file age from Days value in XML; if -Override used, set $dateFilter to now
-                            If ($Override) {
+                            if ($Override) {
                                 $dateFilter = Get-Date
                             }
-                            Else {
+                            else {
                                 $dateFilter = (Get-Date).AddDays(- $targetPath.Days)
                             }
 
@@ -326,13 +326,13 @@ Process {
                                 Write-Warning -Message "failed to resolve $thisPath."
                                 Write-Log -Message "Failed to resolve $thisPath."
                             }
-                            Finally {
+                            finally {
                                 $fileList.Add($files) | Out-Null
                             }
 
                             # Delete files with support for -WhatIf
-                            ForEach ($file in $files) {
-                                If ($PSCmdlet.ShouldProcess($file.FullName, "Prune")) {
+                            foreach ($file in $files) {
+                                if ($PSCmdlet.ShouldProcess($file.FullName, "Prune")) {
                                     try {
                                         Remove-Item -Path $file.FullName -Force -Recurse -ErrorAction "SilentlyContinue"
                                     }
@@ -358,7 +358,7 @@ Process {
                             $fileList.Add($files) | Out-Null
 
                             # Delete the target folder
-                            If ($PSCmdlet.ShouldProcess($thisPath, "Delete")) {
+                            if ($PSCmdlet.ShouldProcess($thisPath, "Delete")) {
                                 try {
                                     Remove-Item -Path $thisPath -Force -Recurse -ErrorAction "SilentlyContinue"
                                 }
@@ -380,13 +380,13 @@ Process {
                         "Trim" {
                             # Determine sub-folders of the target path to delete
                             $folders = Get-AllExceptLatest -Path $thisPath
-                            ForEach ($folder in $folders) {
+                            foreach ($folder in $folders) {
 
                                 # Construct the file list for this folder and add to the full list for logging
                                 $files = Get-ChildItem -Path $folder -Recurse -Force -ErrorAction "SilentlyContinue"
                                 $fileList.Add($files) | Out-Null
 
-                                If ($PSCmdlet.ShouldProcess($folder, "Trim")) {
+                                if ($PSCmdlet.ShouldProcess($folder, "Trim")) {
                                     try {
                                         Remove-Item -Path $folder -Force -Recurse -ErrorAction "SilentlyContinue"
                                     }
@@ -406,7 +406,7 @@ Process {
                             }
                         }
 
-                        Default {
+                        default {
                             Write-Warning -Message "[Unable to determine action for $thisPath]"
                             Write-Log -Message "Unable to determine action for $thisPath."
                         }
@@ -415,17 +415,17 @@ Process {
             }
         }
     }
-    Else {
+    else {
         Write-Error -Message "$Targets failed XML validation. Aborting script."
         Write-Log -Message "$Targets failed validation. Aborting script."
     }
 
     # Output total size of files deleted
-    If ($fileList.FullName.Count -gt 0) {
+    if ($fileList.FullName.Count -gt 0) {
 
         Remove-Variable -Name "fileSize" -ErrorAction "SilentlyContinue"
-        ForEach ($item in $fileList) {
-            ForEach ($file in $item) {
+        foreach ($item in $fileList) {
+            foreach ($file in $item) {
                 $fileSize += $file.Length
                 $fileCount += 1
             }
@@ -434,12 +434,12 @@ Process {
         $sizeMiB = Convert-Size -From "B" -To "MiB" -Value $fileSize
 
         # Write deleted file list out to the log file
-        If ($WhatIfPreference -eq $True) { $WhatIfPreference = $False }
+        if ($WhatIfPreference -eq $True) { $WhatIfPreference = $False }
         Write-Log -Message " File list start:"
         Write-Log -Message ($fileList.FullName -join "`n")
         Write-Log -Message " File list end."
     }
-    Else {
+    else {
         $sizeMiB = 0
     }
     Write-Log -Message "Total file size deleted $sizeMiB MiB."
@@ -452,7 +452,7 @@ Process {
     Write-Output -InputObject $PSObject
 }
 
-End {
+end {
     # Stop time recording
     $stopWatch.Stop()
     Write-Verbose -Message "Script took $($stopWatch.Elapsed.TotalMilliseconds) ms to complete."
@@ -460,7 +460,7 @@ End {
 
     # Prune old log files. Keep last number of logs: $KeepLogs
     $Logs = Get-ChildItem -Path $LogPath -Filter $("$($MyInvocation.MyCommand)-*.log")
-    If ($Logs.Count -gt $KeepLog) {
+    if ($Logs.Count -gt $KeepLog) {
         $Logs | Sort-Object -Property "LastWriteTime" | Select-Object -First ($Logs.Count - $KeepLog) | Remove-Item -Force
         Write-Verbose -Message "Removed log files: $($Logs.Count - $KeepLog)."
     }
