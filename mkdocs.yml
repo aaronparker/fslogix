@@ -109,6 +109,7 @@ nav:
     - Container Cleanup: containercleanup.md
     - Container Redirections: redirectionsxml.md
     - App Masking: applicationkeys.md
+  - stealthpuppy.com: https://stealthpuppy.com/
 
 # Customization
 extra:
