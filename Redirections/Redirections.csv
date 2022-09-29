@@ -1,4 +1,4 @@
-Action,Copy,Path,Description,Notes
+
 Exclude,0,AppData\Local\Downloaded 
 Exclude,0,AppData\Local\Assembly
 Exclude,0,AppData\Local\CrashDumps
