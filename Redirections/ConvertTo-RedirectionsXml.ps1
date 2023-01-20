@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.8
+.VERSION 1.0.9
 
 .GUID 118b1874-d4b2-45bc-a698-f91f9568416c
 
@@ -33,6 +33,7 @@
 - 1.0.6, Update to include Notes as comments in the XML; Minor code updates
 - 1.0.7, Update default $Redirections value due to changes in repository path
 - 1.0.8, Update references to repo name, help URL
+- 1.0.9, Code and tests clean-up
 
 .PRIVATEDATA
 
@@ -70,7 +71,7 @@
 #>
 [CmdletBinding(SupportsShouldProcess = $True, HelpURI = "https://stealthpuppy.com/fslogix/redirectionsxml/")]
 [OutputType([System.String])]
-Param (
+param (
     [Parameter(Mandatory = $false)]
     [System.String] $Redirections = "https://raw.githubusercontent.com/aaronparker/fslogix/main/Redirections/Redirections.csv",
 
@@ -79,29 +80,25 @@ Param (
 )
 
 #region Functions
-Function Convert-CsvContent {
+function Convert-CsvContent {
     [OutputType([System.Management.Automation.PSObject])]
-    Param (
+    param (
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline)]
         [System.String] $Content
     )
     try {
-        $convertedContent = $Content | ConvertFrom-Csv -ErrorAction "SilentlyContinue"
+        $convertedContent = $Content | ConvertFrom-Csv -ErrorAction "Stop"
+        Write-Output -InputObject $convertedContent
     }
     catch [System.Exception] {
         Write-Warning -Message "$($MyInvocation.MyCommand): Failed to convert content."
-        Throw $_.Exception.Message
-    }
-    finally {
-        If ($Null -ne $convertedContent) {
-            Write-Output -InputObject $convertedContent
-        }
+        throw $_.Exception.Message
     }
 }
 
-Function Get-WebRequest {
+function Get-WebRequest {
     [OutputType([System.Management.Automation.PSObject])]
-    Param (
+    param (
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline)]
         [System.String] $Uri
     )
@@ -113,30 +110,28 @@ Function Get-WebRequest {
             ErrorAction     = "SilentlyContinue"
         }
         $content = Invoke-WebRequest @params
-    }
-    catch [System.Net.Http.HttpResponseException] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file at $Redirections."
-        Throw $_.Exception.Message        
-    }
-    catch [System.Net.Http.HttpRequestException] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file. Likely an issue with the remote hostname."
-        Throw $_.Exception.Message        
-    }
-    catch [System.Exception] {
-        Throw $_
-    }
-    finally {
-        If (($Null -ne $content) -and ($content.Content.Length -gt 1)) {
+        if (($null -ne $content) -and ($content.Content.Length -gt 1)) {
             Write-Output -InputObject $content.Content
         }
     }
+    catch [System.Net.Http.HttpResponseException] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file at $Redirections."
+        throw $_.Exception.Message        
+    }
+    catch [System.Net.Http.HttpRequestException] {
+        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file. Likely an issue with the remote hostname."
+        throw $_.Exception.Message        
+    }
+    catch [System.Exception] {
+        throw $_
+    }
 }
 
-Function Get-FileContent {
+function Get-FileContent {
     [OutputType([System.Management.Automation.PSObject])]
-    Param (
+    param (
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline)]
-        [ValidateScript( { If (Test-Path -Path $_ -PathType 'Leaf') { $True } Else { Throw "$($MyInvocation.MyCommand): cannot find file $_" } })]
+        [ValidateScript( { if (Test-Path -Path $_ -PathType 'Leaf') { $True } Else { throw "$($MyInvocation.MyCommand): cannot find file $_" } })]
         [System.String] $Path
     )
     $Path = Resolve-Path -Path $Path
@@ -147,31 +142,29 @@ Function Get-FileContent {
             ErrorAction = "SilentlyContinue"
         }
         $content = Get-Content @params
+        if ($null -ne $content) {
+            Write-Output -InputObject $content
+        }
     }
     catch [System.IO.FileNotFoundException] {
         Write-Warning -Message "$($MyInvocation.MyCommand): Cannot find file: $Path."
-        Throw $_.Exception.Message
+        throw $_.Exception.Message
     }
     catch [System.IO.IOException] {
         Write-Warning -Message "$($MyInvocation.MyCommand): Error reading file: $Path."
-        Throw $_.Exception.Message
+        throw $_.Exception.Message
     }
     catch [System.Exception] {
-        Throw $_
-    }
-    finally {
-        If ($Null -ne $content) {
-            Write-Output -InputObject $content
-        }
+        throw $_
     }
 }
 #endregion
 
 # Read the file and convert from CSV. Support https or local file source
-If ($Redirections -match "http.*://") {
+if ($Redirections -match "http.*://") {
     $content = Get-WebRequest -Uri $Redirections
 }
-Else {
+else {
     $content = Get-FileContent -Path (Resolve-Path -Path $Redirections)
 }
 
@@ -179,10 +172,10 @@ Else {
 $Paths = Convert-CsvContent -Content $Content
 
 # Convert
-If ($Null -eq $Paths) {
+if ($null -eq $Paths) {
     Write-Warning -Message "$($MyInvocation.MyCommand): List of redirection paths is null."
 }
-Else {
+else {
     # Strings
     $xmlVersion = "1.0"
     $xmlEncoding = "UTF-8"
@@ -198,19 +191,19 @@ Else {
 
     # Create the XML document
     [xml] $xmlDoc = New-Object -TypeName System.Xml.XmlDocument
-    $declaration = $xmlDoc.CreateXmlDeclaration($xmlVersion, $xmlEncoding, $Null)
+    $declaration = $xmlDoc.CreateXmlDeclaration($xmlVersion, $xmlEncoding, $null)
     $xmlDoc.AppendChild($declaration) | Out-Null
 
     # Add a comment with generation details
     $xmlDoc.AppendChild($xmlDoc.CreateComment($xmlComment)) | Out-Null
 
     # Create the FrxProfileFolderRedirection root node
-    $root = $xmlDoc.CreateNode("element", $xmlRootNode, $Null)
+    $root = $xmlDoc.CreateNode("element", $xmlRootNode, $null)
     $root.SetAttribute($xmlRootNodeAttribute1, $xmlRootNodeAttribute1Value)
 
     # Create the Excludes child node of FrxProfileFolderRedirection
-    $excludes = $xmlDoc.CreateNode("element", $xmlExcludeNode, $Null)
-    ForEach ($path in ($Paths | Where-Object { $_.Action -eq $xmlExcludeNodeElement })) {
+    $excludes = $xmlDoc.CreateNode("element", $xmlExcludeNode, $null)
+    foreach ($path in ($Paths | Where-Object { $_.Action -eq $xmlExcludeNodeElement })) {
         $node = $xmlDoc.CreateElement($xmlExcludeNodeElement)
         $node.SetAttribute($xmlNodeAttribute1, $path.Copy)
         $node.InnerText = $path.Path
@@ -220,8 +213,8 @@ Else {
     $root.AppendChild($excludes) | Out-Null
 
     # Create the Includes child node of FrxProfileFolderRedirection
-    $includes = $xmlDoc.CreateNode("element", $xmlIncludeNode, $Null)
-    ForEach ($path in ($Paths | Where-Object { $_.Action -eq $xmlIncludeNodeElement })) {
+    $includes = $xmlDoc.CreateNode("element", $xmlIncludeNode, $null)
+    foreach ($path in ($Paths | Where-Object { $_.Action -eq $xmlIncludeNodeElement })) {
         $node = $xmlDoc.CreateElement($xmlIncludeNodeElement)
         $node.SetAttribute($xmlNodeAttribute1, $path.Copy)
         $node.InnerText = $path.Path
@@ -234,10 +227,10 @@ Else {
 
     # Check supplied output path and resolve full path
     $Parent = Split-Path -Path $OutFile -Parent
-    If ($Parent.Length -eq 0) {
+    if ($Parent.Length -eq 0) {
         $Parent = $PWD
     }
-    Else {
+    else {
         $Parent = Resolve-Path -Path $Parent
     }
     $outputFilePath = Join-Path -Path $Parent -ChildPath (Split-Path -Path $OutFile -Leaf)
@@ -248,18 +241,18 @@ Else {
     }
     catch [System.IO.FileNotFoundException] {
         Write-Warning -Message "$($MyInvocation.MyCommand): Error in output file path: $outputFilePath."
-        Throw $_.Exception.Message
+        throw $_.Exception.Message
     }
     catch [System.IO.IOException] {
         Write-Warning -Message "$($MyInvocation.MyCommand): Error saving XML to output file: $outputFilePath."
-        Throw $_.Exception.Message
+        throw $_.Exception.Message
     }
     catch [System.Exception] {
-        Throw $_
+        throw $_
     }
 
     # Write the output file path to the pipeline
-    If ($Null -ne $outputFilePath) {
-        Write-Output -InputObject $outputFilePath
+    if ($null -ne $outputFilePath) {
+        Write-Output -InputObject (Get-ChildItem -Path $outputFilePath)
     }
 }
