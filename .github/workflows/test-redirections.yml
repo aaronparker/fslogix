@@ -48,7 +48,7 @@ jobs:
       # Run Pester tests
       - name: Test with Pester
         shell: powershell
-        working-directory: "${{ github.workspace }}"
+        working-directory: "${{ github.workspace }}\\Redirections"
         run: |
           Import-Module -Name "Pester" -Force -ErrorAction "Stop"
 

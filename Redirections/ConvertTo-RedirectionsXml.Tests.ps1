@@ -54,7 +54,7 @@ Describe "Script validation: <Script.Name>" -ForEach $Scripts {
 
     Context "Validate ConvertTo-RedirectionsXml.ps1 default functionality" {
         It "Should not throw when passed no parameters" {
-            { $File = & $Script.FullName -Verbose } | Should -Not -Throw
+            { $File = & $Script.FullName } | Should -Not -Throw
         }
 
         It "Should have written the Redirections.xml" {
