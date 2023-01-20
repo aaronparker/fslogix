@@ -1,0 +1,91 @@
+name: "Test ConvertTo-RedirectionsXml"
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Redirections/**.ps1'
+      - 'Redirections/**.csv'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: "Validate script"
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Run PSScriptAnalyzer
+        uses: microsoft/psscriptanalyzer-action@6b2948b1944407914a58661c49941824d149734f
+        with:
+          # Check https://github.com/microsoft/action-psscriptanalyzer for more info about the options.
+          # The below set up runs PSScriptAnalyzer to your entire repository and runs some basic security rules.
+          path: ./Redirections
+          recurse: true 
+          # Include your own basic security rules. Removing this option will run all the rules 
+          # includeRule: '"PSAvoidGlobalAliases", "PSAvoidUsingConvertToSecureStringWithPlainText"'
+          output: results.sarif
+      
+      # Upload the SARIF file generated in the previous step
+      - name: Upload SARIF results file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: results.sarif
+
+      - name: Install Pester
+        shell: powershell
+        working-directory: "${{ github.workspace }}"
+        run: |
+          Install-Module -Name "Pester" -SkipPublisherCheck -Force
+
+      # Run Pester tests
+      - name: Test with Pester
+        shell: powershell
+        working-directory: "${{ github.workspace }}"
+        run: |
+          Import-Module -Name "Pester" -Force -ErrorAction "Stop"
+
+          $Config = New-PesterConfiguration
+          $Config.Run.Path = "$env:GITHUB_WORKSPACE\ConvertTo-RedirectionsXml.Tests.ps1"
+          $Config.Run.PassThru = $true
+          $Config.CodeCoverage.Enabled = $true
+          $Config.CodeCoverage.CoveragePercentTarget = 50
+          $Config.CodeCoverage.Path = "$env:GITHUB_WORKSPACE\Redirections\ConvertTo-RedirectionsXml.ps1"
+          $Config.CodeCoverage.OutputFormat = "JaCoCo"
+          $Config.CodeCoverage.OutputPath = "$env:GITHUB_WORKSPACE\CodeCoverage.xml"
+          $Config.TestResult.Enabled = $true
+          $Config.Output.Verbosity = "Detailed"
+          $Config.TestResult.OutputFormat = "NUnitXml"
+          $Config.TestResult.OutputPath = "$env:GITHUB_WORKSPACE\TestResults.xml"
+          Invoke-Pester -Configuration $Config
+
+      # Upload test results
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: "${{ github.workspace }}\\TestResults.xml"
+
+      # Publish test results
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        if: always()
+        with:
+          nunit_files: "${{ github.workspace }}\\tests\\TestResults.xml"
+
+      - name: Upload to Codecov
+        id: codecov
+        if: always()
+        uses: codecov/codecov-action@v3
+        with:
+          #token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./CodeCoverage.xml
+          verbose: true
