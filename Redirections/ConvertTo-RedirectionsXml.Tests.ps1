@@ -87,4 +87,10 @@ Describe "Script validation: <Script.Name>" -ForEach $Scripts {
             { & $Script.FullName -Redirections $LocalCsv } | Should -Not -Throw
         }
     }
+
+    Context "Validate ConvertTo-RedirectionsXml.ps1 throw scenarios" {
+        It "Throws with invalid Redirections path input" {
+            { & $Script.FullName -Redirections "$Env:Temp\Redirections.csv" } | Should -Throw
+        }
+    }
 }

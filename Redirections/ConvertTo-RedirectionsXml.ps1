@@ -110,17 +110,7 @@ function Get-WebRequest {
             ErrorAction     = "SilentlyContinue"
         }
         $content = Invoke-WebRequest @params
-        if (($null -ne $content) -and ($content.Content.Length -gt 1)) {
-            Write-Output -InputObject $content.Content
-        }
-    }
-    catch [System.Net.Http.HttpResponseException] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file at $Redirections."
-        throw $_.Exception.Message        
-    }
-    catch [System.Net.Http.HttpRequestException] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Failed to read source file. Likely an issue with the remote hostname."
-        throw $_.Exception.Message        
+        Write-Output -InputObject $content.Content
     }
     catch [System.Exception] {
         throw $_
@@ -131,7 +121,7 @@ function Get-FileContent {
     [OutputType([System.Management.Automation.PSObject])]
     param (
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline)]
-        [ValidateScript( { if (Test-Path -Path $_ -PathType 'Leaf') { $True } Else { throw "$($MyInvocation.MyCommand): cannot find file $_" } })]
+        [ValidateScript( { if (Test-Path -Path $_ -PathType 'Leaf') { $true } else { throw "$($MyInvocation.MyCommand): cannot find file $_" } })]
         [System.String] $Path
     )
     $Path = Resolve-Path -Path $Path
@@ -142,17 +132,7 @@ function Get-FileContent {
             ErrorAction = "SilentlyContinue"
         }
         $content = Get-Content @params
-        if ($null -ne $content) {
-            Write-Output -InputObject $content
-        }
-    }
-    catch [System.IO.FileNotFoundException] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Cannot find file: $Path."
-        throw $_.Exception.Message
-    }
-    catch [System.IO.IOException] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Error reading file: $Path."
-        throw $_.Exception.Message
+        Write-Output -InputObject $content
     }
     catch [System.Exception] {
         throw $_
@@ -238,14 +218,6 @@ else {
     # Save to an XML file
     try {
         $xmlDoc.Save($outputFilePath)
-    }
-    catch [System.IO.FileNotFoundException] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Error in output file path: $outputFilePath."
-        throw $_.Exception.Message
-    }
-    catch [System.IO.IOException] {
-        Write-Warning -Message "$($MyInvocation.MyCommand): Error saving XML to output file: $outputFilePath."
-        throw $_.Exception.Message
     }
     catch [System.Exception] {
         throw $_
