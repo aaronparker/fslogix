@@ -10,22 +10,21 @@ BeforeDiscovery {
     $Scripts = Get-ChildItem "$Env:GITHUB_WORKSPACE\Redirections" -Recurse -Include "ConvertTo-RedirectionsXml.ps1"
 }
 
-Describe "General project validation" -ForEach $Scripts {
+Describe "Script validation: <Script.Name>" -ForEach $Scripts {
     BeforeAll {
         $Script = $_
     }
 
     Context "Validate PowerShell code" {
-        # TestCases are splatted to the script so we need hashtables
-        It "Script <Script.Name> should be valid PowerShell" {
+        It "Script should be valid PowerShell" {
             $contents = Get-Content -Path $Script.FullName -ErrorAction "Stop"
             $errors = $null
             $null = [System.Management.Automation.PSParser]::Tokenize($contents, [ref]$errors)
-            $errors.Count | Should Be 0
+            $errors.Count | Should -Be 0
         }
 
         It "Should pass Test-ScriptFileInfo" {
-            { Test-ScriptFileInfo -Path $script.FullName } | Should -Not -Throw
+            { Test-ScriptFileInfo -Path $Script.FullName } | Should -Not -Throw
         }
     }
 
@@ -55,14 +54,16 @@ Describe "General project validation" -ForEach $Scripts {
 
     Context "Validate ConvertTo-RedirectionsXml.ps1 default functionality" {
         It "Should not throw when passed no parameters" {
-            { $File = & $Script.FullName } | Should -Not -Throw
+            { $File = & $Script.FullName -Verbose } | Should -Not -Throw
         }
 
         It "Should have written the Redirections.xml" {
+            $File = Get-ChildItem -Path "$Env:GITHUB_WORKSPACE\Redirections" -Recurse -Include "Redirections.xml"
             $File | Should -Exist
         }
 
         It "Should output redirections.xml as XML" {
+            $File = Get-ChildItem -Path "$Env:GITHUB_WORKSPACE\Redirections" -Recurse -Include "Redirections.xml"
             $Content = Get-Content -Path $File -Raw
             $Xml = $Content | ConvertTo-Xml
             $Xml | Should -BeOfType System.Xml.XmlNode
@@ -70,6 +71,7 @@ Describe "General project validation" -ForEach $Scripts {
 
         AfterAll {
             # Remove redirections.xml to ensure a clean state for next test run
+            $File = Get-ChildItem -Path "$Env:GITHUB_WORKSPACE\Redirections" -Recurse -Include "Redirections.xml"
             Remove-Item -Path $File -Force
         }
     }
