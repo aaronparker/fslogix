@@ -8,7 +8,7 @@
 
 .COMPANYNAME stealthpuppy
 
-.COPYRIGHT 2020, Aaron Parker. All rights reserved.
+.COPYRIGHT 2023, Aaron Parker. All rights reserved.
 
 .TAGS FSLogix Profile-Containers Profile
 
@@ -57,7 +57,7 @@
         Twitter: @stealthpuppy
 
     .LINK
-        https://stealthpuppy.com
+        https://stealthpuppy.com/fslogix/redirectionsxml/
 
     .EXAMPLE
         ConvertTo-RedirectionsXml.ps1
