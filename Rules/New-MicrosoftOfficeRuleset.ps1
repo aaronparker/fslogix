@@ -23,7 +23,7 @@
         C:\> .\New-MicrosoftOfficeRuleset.ps1 -SearchString "Access"
 #>
 [CmdletBinding()]
-Param (
+param (
     [Parameter(Mandatory = $True, Position = 0)]
     [ValidateNotNull()]
     [System.String[]] $SearchString,
@@ -37,7 +37,7 @@ Param (
         "${env:ProgramFiles(x86)}\Microsoft Office\root\rsod", "${env:ProgramFiles(x86)}\Microsoft Office\root\Office16\1033")
 )
 
-Begin {
+begin {
     #region Functions
     Function Get-ApplicationRegistryKey {
         <#
@@ -97,7 +97,7 @@ Begin {
         process {
             try {
                 # Walk through $Key
-                ForEach ($path in $Key) {
+                foreach ($path in $Key) {
                     Write-Verbose -Message "Searching: $path."
 
                     try {
@@ -111,11 +111,11 @@ Begin {
                         Write-Warning -Message "Exception when changing location to [$path]."
                     }
                     # If successfully changed to the target key, get child keys and match against data in the default values
-                    If ($result.Length -gt 0) {
+                    if ($result.Length -gt 0) {
                         $regItems = Get-ChildItem
-                        ForEach ($item in $regItems) {
-                            ForEach ($string in $SearchString) {
-                                If (($item | Get-ItemProperty).'(default)' | Where-Object { $_ -like "*$string*" }) {
+                        foreach ($item in $regItems) {
+                            foreach ($string in $SearchString) {
+                                if (($item | Get-ItemProperty).'(default)' | Where-Object { $_ -like "*$string*" }) {
                                     Write-Verbose -Message "Found '$(($item | Get-ItemProperty).'(default)')'."
                                     Write-Output -InputObject $item.Name
                                 }
@@ -167,7 +167,7 @@ Begin {
     #endregion
 }
 
-Process {
+process {
 
     # Set up the rule set file paths
     $Documents = [Environment]::GetFolderPath('MyDocuments')
@@ -175,23 +175,18 @@ Process {
     $RulesetFile = [System.IO.Path]::Combine($Documents, "FSLogix Rule Sets", "Microsoft$FileName.fxr")
 
     # Create the 'FSLogix Rule Sets'
-    If (!(Test-Path -Path (Split-Path -Path $RulesetFile -Parent))) {
-        try {
-            $params = @{
-                Path        = (Split-Path -Path $RulesetFile -Parent)
-                ItemType    = "Directory"
-                Force       = $True
-                ErrorAction = "SilentlyContinue"
-            }
-            New-Item @params > $Null
+    if (!(Test-Path -Path (Split-Path -Path $RulesetFile -Parent))) {
+        $params = @{
+            Path        = (Split-Path -Path $RulesetFile -Parent)
+            ItemType    = "Directory"
+            Force       = $True
+            ErrorAction = "SilentlyContinue"
         }
-        catch {
-            Throw "Failed to create the 'FSLogix Rule Sets' folder in: $Documents."
-        }
+        New-Item @params > $Null
     }
 
-    If (Test-Path -Path $(Split-Path -Path $RulesetFile -Parent)) {
-        If (Test-Path -Path $RulesetFile) {
+    if (Test-Path -Path $(Split-Path -Path $RulesetFile -Parent)) {
+        if (Test-Path -Path $RulesetFile) {
             Write-Warning -Message "File exists: $RulesetFile. Rules will be added to the existing file."
         }
         Write-Information -MessageData "INFO: Using rule set file: $RulesetFile." -InformationAction "Continue"
@@ -201,7 +196,7 @@ Process {
         $Files = [System.Collections.ArrayList] @()
         $Dirs = [System.Collections.ArrayList] @()
 
-        ForEach ($string in $SearchString) {
+        foreach ($string in $SearchString) {
             Write-Verbose -Message "Searching for string: $string."
         
             # Grab registry keys related to this application
@@ -210,7 +205,7 @@ Process {
             }
 
             # Grab files related to this application
-            ForEach ($folder in $Folders) {
+            foreach ($folder in $Folders) {
                 $params = @{
                     Path        = $folder
                     Filter      = "$string*"
@@ -222,7 +217,7 @@ Process {
             }
 
             # Grab folders related to this application
-            ForEach ($folder in $Folders) {
+            foreach ($folder in $Folders) {
                 $params = @{
                     Path        = $folder
                     Filter      = "$string*"
@@ -236,32 +231,32 @@ Process {
 
         # Write paths to the App Masking rule set file
         Write-Verbose -Message "Add registry key rules to: $RulesetFile."
-        ForEach ($key in $Keys) {
+        foreach ($key in $Keys) {
             $params = @{
-                Path       = $RulesetFile
-                FullName   = (Convert-Path -Path $key)
-                HidingType = "FolderOrKey"
-                Comment    = "Added by $($MyInvocation.MyCommand)."
+                RuleFilePath = $RulesetFile
+                FullName     = (Convert-Path -Path $key)
+                HidingType   = "FolderOrKey"
+                Comment      = "Added by $($MyInvocation.MyCommand)."
             }
             Add-FslRule @params
         }
         Write-Verbose -Message "Add file rules to: $RulesetFile."
-        ForEach ($file in $Files) {
+        foreach ($file in $Files) {
             $params = @{
-                Path       = $RulesetFile
-                FullName   = (Convert-Path -Path $file.FullName)
-                HidingType = "FileOrValue"
-                Comment    = "Added by $($MyInvocation.MyCommand)."
+                RuleFilePath = $RulesetFile
+                FullName     = (Convert-Path -Path $file.FullName)
+                HidingType   = "FileOrValue"
+                Comment      = "Added by $($MyInvocation.MyCommand)."
             }
             Add-FslRule @params
         }
         Write-Verbose -Message "Add folder rules to: $RulesetFile."
-        ForEach ($dir in $Dirs) {
+        foreach ($dir in $Dirs) {
             $params = @{
-                Path       = $RulesetFile
-                FullName   = (Convert-Path -Path $dir.FullName)
-                HidingType = "FolderOrKey"
-                Comment    = "Added by $($MyInvocation.MyCommand)."
+                RuleFilePath = $RulesetFile
+                FullName     = (Convert-Path -Path $dir.FullName)
+                HidingType   = "FolderOrKey"
+                Comment      = "Added by $($MyInvocation.MyCommand)."
             }
             Add-FslRule @params
         }
@@ -269,10 +264,10 @@ Process {
         # Output the location of the rule set file
         Write-Output -InputObject $RulesetFile
     }        
-    Else {
+    else {
         Write-Error -Message "Path does not exist: $(Split-Path -Path $RulesetFile -Parent)."
     }
 }
 
-End {
+end {
 }
