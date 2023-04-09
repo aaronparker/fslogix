@@ -1,71 +1,73 @@
-# Creating FSLogix App Masking rules
+# Creating FSLogix App Masking rule sets
 
 Scripts here can be used to gather information on applications for creating rule sets for App Masking & Java Control.
 
-`Get-ApplicationRegistryKey.ps1` returns Registry keys from well known locations that contain application information to return application keys for App Masking rules. An example use case for this would be determining specific locations for an application in a suite with shared components (e.g. Visio, Project or Skype for Business as a part of Office 365 ProPlus).
+## New-MicrosoftOfficeRuleset.ps1
 
-## Install the Script
+This script will create an FSLogix App Masking rule set for Office applications. The script requires the [`FSLogix.PowerShell.Rules`](https://www.powershellgallery.com/packages/FSLogix.PowerShell.Rules/) PowerShell module. Install this module first with:
 
-There are two methods for installing the script:
+```powershell
+Install-Module -Name "FSLogix.PowerShell.Rules" 
+```
 
-1. Install from the [PowerShell Gallery](https://www.powershellgallery.com/packages/Get-ApplicationRegistryKey/). This is the preferred method as the installation can be handled directly from Windows PowerShell or PowerShell Core with the following command:
+`New-MicrosoftOfficeRuleset.ps1` has been tested with the Microsoft 365 Apps / Office 365 ProPlus and should also work with Office 2019. It may work for Office 2013 / 2016. Download `New-MicrosoftOfficeRuleset.ps1` from here: [https://github.com/aaronparker/fslogix/tree/main/Rules](https://github.com/aaronparker/fslogix/tree/main/Rules)
+
+### Usage
+
+`New-MicrosoftOfficeRuleset.ps1` should be used to create an App Masking rule set for one application at a time. It will output a rule set files in the default `Documents\FSLogix Rulesets`. Adding the `-Verbose` parameter is recommended to print registry and folder search information to the screen during execution.
+
+For example, to create an FSLogix App Masking rule set for Microsoft Visio:
+
+```powershell
+.\New-MicrosoftOfficeRuleset.ps1 -SearchString "Visio"
+```
+
+To create an FSLogix App Masking rule set for Microsoft Project use the following syntax. Note that the word `Project` is a generic word and therefore the generated rule set file may also include Registry keys and folders that are not specific to Microsoft Project. Manually edit the rule set file once the script completes and remove any items that do not relate directly to Project.
+
+```powershell
+.\New-MicrosoftOfficeRuleset.ps1 -SearchString "Project", "WinProj"
+```
+
+To create an FSLogix App Masking rule set for Microsoft Access. Note that the word `Access` is a generic word and therefore the generated rule set file may also include Registry keys and folders that are not specific to Microsoft Access. Manually edit the rule set file once the script completes and remove any items that do not relate directly to Access.
+
+```powershell
+.\New-MicrosoftOfficeRuleset.ps1 -SearchString "Access"
+```
+
+To create an FSLogix App Masking rule set for Microsoft Publisher. Note that the word `Publisher` is a generic word and therefore the generated rule set file may also include Registry keys and folders that are not specific to Microsoft Publisher. Manually edit the rule set file once the script completes and remove any items that do not relate directly to Publisher.
+
+```powershell
+.\New-MicrosoftOfficeRuleset.ps1 -SearchString "Publisher"
+```
+
+## Get-ApplicationRegistryKey.ps1
+
+Returns Registry keys from well known locations that contain application information to return application keys for App Masking rules. An example use case for this would be determining specific locations for an application in a suite with shared components (e.g. Visio as a part of Office 365 ProPlus).
+
+### Installation
+
+`Get-ApplicationRegistryKey.ps1` can be installed from the [PowerShell Gallery](https://www.powershellgallery.com/packages/Get-ApplicationRegistryKey/) with the following command:
 
 ```powershell
 Install-Script -Name Get-ApplicationRegistryKey
 ```
 
-2. Download from the [repository](https://github.com/aaronparker/fslogix). `Get-ApplicationRegistryKey.ps1` can be downloaded directly from this repository and saved to a preferred location.
+If you encounter issues installing the script, ensure that [PowerShellGet](https://docs.microsoft.com/en-us/powershell/scripting/gallery/installing-psget) is up to date. On Windows 10 and Windows Server 2016 / 2019 the following commands can be used to update PowerShellGet.
 
-## Usage
+```powershell
+Install-Module -Name PowerShellGet -Force
+Update-Module -Name PowerShellGet
+```
+
+### Usage
 
 The following example will find keys related to Microsoft Visio
 
 ```powershell
-. .\Get-ApplicationRegistryKey.ps1 -SearchString "Visio"
+.\Get-ApplicationRegistryKey.ps1 -SearchString "Visio"
 ```
 
-The value for SearchString can be passed to `Get-ApplicationRegistryKey.ps1` via the pipeline. To search for Registry keys specific to Visio and Project by passing strings to Get-ApplicationRegistryKey.ps1 via the pipeline, use:
-
-```powershell
-C:\> "Visio", "Project" | .\Get-ApplicationRegistryKey.ps1
-```
-
-To search for Registry keys specific to Adobe Reader or Acrobat:
-
-```powershell
-C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Adobe"
-```
-
-To search for Registry keys specific to Visio and Project:
-
-```powershell
-C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Visio", "Project"
-```
-
-To search for Registry keys specific to Skype for Business:
-
-```powershell
-C:\> .\Get-ApplicationRegistryKey.ps1 -SearchString "Skype"
-```
-
-A list of Registry keys can be passed to `Get-ApplicationRegistryKey.ps1` on the pipeline from an object with a `Key` property. For example, consider an object named `$List` that has a set of Registry paths in a property named `Key`:
-
-```powershell
-C:\> $List
-
-Title Key
------ ---
-Path  HKLM:\SOFTWARE\Classes\CLSID
-Path  HKLM:\SOFTWARE\Classes
-```
-
-This object can be passed to `Get-ApplicationRegistryKey.ps1` on the pipeline as per the following example:
-
-```powershell
-$List | .\Get-ApplicationRegistryKey.ps1 -Verbose -SearchString "Visio"
-```
-
-In each case, the script will output a list of keys, similar to the list below, that can then be validated and used in an App Masking ruleset:
+The script will output a list of keys, similar to the list below, that can then be validated and used in an App Masking rule set for Visio:
 
 ```text
 HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Icad.ViewerDrawing
