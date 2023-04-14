@@ -2,9 +2,9 @@
 #Requires -Module FSLogix.Powershell.Rules
 #Requires -PSEdition Desktop
 <#
-    .SYNOPSIS    
+    .SYNOPSIS
         Creates FSLogix App Masking rule sets for Microsoft Office applications using the FSLogix.Powershell.Rules module.
-        
+
         Outputs files in "Documents\FSLogix Rule Sets". Rule sets will require manual validation.
 
     .EXAMPLE
@@ -39,7 +39,7 @@ param (
 
 begin {
     #region Functions
-    Function Get-ApplicationRegistryKey {
+    function Get-ApplicationRegistryKey {
         <#
         .DESCRIPTION
         Returns strings from well known Registry keys that define a Windows application. Used to assist in defining an FSLogix App Masking rule set.
@@ -75,7 +75,7 @@ begin {
     #>
         [OutputType([System.Array])]
         [CmdletBinding(SupportsShouldProcess = $False, HelpUri = "https://stealthpuppy.com/fslogix/applicationkeys/")]
-        Param (
+        param (
             [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline)]
             [ValidateNotNull()]
             [System.String[]] $SearchString = @("Visio", "Project"),
@@ -102,7 +102,7 @@ begin {
 
                     try {
                         # Attempt change location to $key
-                        $result = Push-Location -Path $path -ErrorAction SilentlyContinue -PassThru
+                        $result = Push-Location -Path $path -ErrorAction "SilentlyContinue" -PassThru
                     }
                     catch [System.Management.Automation.ItemNotFoundException] {
                         Write-Warning -Message "Item not found when changing location to [$path]."
@@ -110,6 +110,7 @@ begin {
                     catch [System.Exception] {
                         Write-Warning -Message "Exception when changing location to [$path]."
                     }
+
                     # If successfully changed to the target key, get child keys and match against data in the default values
                     if ($result.Length -gt 0) {
                         $regItems = Get-ChildItem
@@ -126,7 +127,7 @@ begin {
             }
             catch [System.Exception] {
                 Write-Warning -Message "Exception accessing registry."
-                Throw $_.Exception
+                throw $_.Exception
             }
             finally {
                 # Change back to original location
@@ -137,16 +138,16 @@ begin {
         }
     }
 
-    Function Convert-Path {
+    function Convert-Path {
         <#
-        .SYNOPSIS
-        Replaces paths with environment variables
-    #>
-        Param (
+            .SYNOPSIS
+            Replaces paths with environment variables
+        #>
+        param (
             [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True)]
             [System.String] $Path
         )
-        Switch ($Path) {
+        switch ($Path) {
             { $_ -match "HKEY_LOCAL_MACHINE" } { $Path = $Path -replace "HKEY_LOCAL_MACHINE", "HKLM" }
             { $_ -match "C:\\Program Files \(x86\)" } { $Path = $Path -replace "C:\\Program Files \(x86\)", "%ProgramFilesFolder32%" }
             { $_ -match "C:\\Program Files" } { $Path = $Path -replace "C:\\Program Files", "%ProgramFilesFolder64%" }
@@ -156,13 +157,22 @@ begin {
         Write-Output -InputObject $Path
     }
 
-    Function Remove-InvalidFileNameChars {
+    function Remove-InvalidFileNameChars {
         param(
             [System.String] $Name
         )
         $invalidChars = [IO.Path]::GetInvalidFileNameChars() -join ''
         $replaceChars = "[{0}]" -f [RegEx]::Escape($invalidChars)
         Write-Output -InputObject ($Name -replace $replaceChars)
+    }
+
+    function Get-RegistryDefaultValue {
+        [OutputType([System.String])]
+        [CmdletBinding()]
+        param (
+            [System.String] $Path
+        )
+        return (Get-ItemProperty -Path ($Path -replace "HKEY_LOCAL_MACHINE\\", "HKLM:\")).'(default)'
     }
     #endregion
 }
@@ -198,10 +208,10 @@ process {
 
         foreach ($string in $SearchString) {
             Write-Verbose -Message "Searching for string: $string."
-        
+
             # Grab registry keys related to this application
             Get-ApplicationRegistryKey -SearchString $string | ForEach-Object {
-                $Keys.Add($_) > $Null
+                $Keys.Add($_) | Out-Null
             }
 
             # Grab files related to this application
@@ -213,7 +223,7 @@ process {
                     ErrorAction = "SilentlyContinue"
                 }
                 Write-Verbose -Message "Searching for files in: $folder."
-                Get-ChildItem @params | ForEach-Object { $Files.Add($_) > $Null }
+                Get-ChildItem @params | ForEach-Object { $Files.Add($_) | Out-Null }
             }
 
             # Grab folders related to this application
@@ -236,7 +246,7 @@ process {
                 RuleFilePath = $RulesetFile
                 FullName     = (Convert-Path -Path $key)
                 HidingType   = "FolderOrKey"
-                Comment      = "Added by $($MyInvocation.MyCommand)."
+                Comment      = "Added by $($MyInvocation.MyCommand). Note: $(Get-RegistryDefaultValue -Path $key)"
             }
             Add-FslRule @params
         }
@@ -263,7 +273,7 @@ process {
 
         # Output the location of the rule set file
         Write-Output -InputObject $RulesetFile
-    }        
+    }
     else {
         Write-Error -Message "Path does not exist: $(Split-Path -Path $RulesetFile -Parent)."
     }
