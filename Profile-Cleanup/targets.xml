@@ -146,7 +146,6 @@
     <Target Name="Microsoft Edge Chromium">
         <Path Action="Prune" Days="30">%LocalAppData%\Microsoft\EdgeUpdate\Download</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Microsoft\EdgeUpdate\Install</Path>
-        <Path Action="Prune" Days="30">%LocalAppData%\Edge SxS\User Data\*\Cache</Path>        
         <Path Action="Prune" Days="30">%LocalAppData%\Edge Dev\User Data\*\Cache</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Edge Dev\User Data\*\Local Storage</Path>
         <Path Action="Prune" Days="30">%LocalAppData%\Edge Dev\User Data\*\GPUCache</Path>
