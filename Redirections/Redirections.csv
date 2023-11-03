@@ -4,8 +4,10 @@ Exclude,0,AppData\Local\Downloaded Installations,Microsoft Windows,May break per
 Exclude,0,AppData\Local\Assembly,.NET Framework Shadow Copies,May impact performance of .NET apps
 Exclude,0,AppData\Local\CrashDumps,Windows application crash dumps,Omit if you need to keep crash dumps for troubleshooting
 Exclude,0,AppData\Local\Microsoft\Terminal Server Client,Microsoft Remote Desktop Client cache,Omit if not using Remote Desktop Connection client inside a remote desktop
-Exclude,0,AppData\Local\Google\Chrome\User Data\Default\Cache,Google Chrome cache,Google Chrome browser cache - size can also be managed via policy
-Exclude,0,AppData\Local\Microsoft\Edge SxS\User Data\Default\Cache,Microsoft Edge (Chromium) cache,Microsoft Edge (Chromium) cache - size can also be managed via policy
-Exclude,0,AppData\Roaming\Microsoft\Teams\media-stack,Microsoft Teams stack tracing folder, Details here https://docs.microsoft.com/en-us/microsoftteams/teams-for-vdi#teams-cached-content-exclusion-list-for-non-persistent-setup
-Exclude,0,AppData\Roaming\Microsoft\Teams\Service Worker,Microsoft Teams service worker folder,Details here https://techcommunity.microsoft.com/t5/fslogix-blog/teams-setup-rapidly-grows-my-profile-disk/ba-p/1539064
-Exclude,0,AppData\Roaming\Microsoft\Teams\meeting-addin\Cache,Microsoft Teams addins cache folder,Details here https://docs.microsoft.com/en-us/microsoftteams/teams-for-vdi#non-persistent-setup
+Exclude,0,AppData\Local\Google\Chrome\User Data\Default\Cache,Google Chrome cache,Google Chrome browser cache for the primary profile - size can also be managed via policy
+Exclude,0,AppData\Local\Microsoft\Edge SxS\User Data\Default\Cache,Microsoft Edge (Chromium) cache,Microsoft Edge (Chromium) cache for the primary profile - size can also be managed via policy
+Exclude,0,AppData\Roaming\Microsoft\Teams\media-stack,Microsoft Teams (classic) stack tracing folder, Details: https://docs.microsoft.com/en-us/microsoftteams/teams-for-vdi#teams-cached-content-exclusion-list-for-non-persistent-setup
+Exclude,0,AppData\Roaming\Microsoft\Teams\Service Worker,Microsoft Teams (classic) service worker folder,Details: https://techcommunity.microsoft.com/t5/fslogix-blog/teams-setup-rapidly-grows-my-profile-disk/ba-p/1539064
+Exclude,0,AppData\Roaming\Microsoft\Teams\meeting-addin\Cache,Microsoft Teams (classic) addins cache folder,Details: https://docs.microsoft.com/en-us/microsoftteams/teams-for-vdi#non-persistent-setup
+Exclude,0,AppData\Local\Packages\MSTeams_8wekyb3d8bbwe\LocalCache\Microsoft\MSTeams\Logs,Microsoft Teams logs folder, Details: https://learn.microsoft.com/en-us/microsoftteams/new-teams-vdi-requirements-deploy#profile-and-cache-location-for-new-teams-client
+Exclude,0,AppData\Local\Packages\MSTeams_8wekyb3d8bbwe\LocalCache\Microsoft\MSTeams\PerfLogs,Microsoft Teams performance logs folder, Details: https://learn.microsoft.com/en-us/microsoftteams/new-teams-vdi-requirements-deploy#profile-and-cache-location-for-new-teams-client
