@@ -29,8 +29,6 @@ jobs:
           # The below set up runs PSScriptAnalyzer to your entire repository and runs some basic security rules.
           path: ./Redirections
           recurse: true 
-          # Include your own basic security rules. Removing this option will run all the rules 
-          # includeRule: '"PSAvoidGlobalAliases", "PSAvoidUsingConvertToSecureStringWithPlainText"'
           output: results.sarif
       
       # Upload the SARIF file generated in the previous step
@@ -68,7 +66,7 @@ jobs:
 
       # Upload test results
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: test-results
@@ -79,13 +77,4 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         if: always()
         with:
-          nunit_files: "${{ github.workspace }}\\TestResults.xml"
-
-      - name: Upload to Codecov
-        id: codecov
-        if: always()
-        uses: codecov/codecov-action@v5
-        with:
-          #token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./CodeCoverage.xml
-          verbose: true
+          files: "${{ github.workspace }}\\TestResults.xml"
